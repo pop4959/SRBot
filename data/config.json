@@ -1,0 +1,20 @@
+{
+  "commandPrefix": "!",
+  "gameName": "!commands",
+  "srAppId": 207140,
+  "queryTimeout": 1000,
+  "servers": {
+    "main": 264545227405131776,
+    "admin": 264545227405131776
+  },
+  "logging": {
+    "server": "admin",
+    "channel": 350091506343870484
+  },
+  "files": {
+    "discordToken": "data/tokendiscord",
+    "steamToken": "data/tokensteam",
+    "commands": "data/commands.json",
+    "helpImage": "data/help.png"
+  }
+}

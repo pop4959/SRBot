@@ -1,0 +1,85 @@
+{
+  "changelog": {
+    "description": "Returns the SpeedRunners changelog.",
+    "arguments": "",
+    "aliases": [
+      "changes"
+    ]
+  },
+  "channel": {
+    "description": "Create a custom temporary voice channel.",
+    "arguments": "<name> [size]",
+    "aliases": [
+      "voice"
+    ]
+  },
+  "commands": {
+    "description": "Lists all of the available commands.",
+    "arguments": "",
+    "aliases": [
+      "commandlist"
+    ]
+  },
+  "help": {
+    "description": "Provides a description and outlines usage for a given command.",
+    "arguments": "<command>",
+    "aliases": [
+    ]
+  },
+  "ping": {
+    "description": "Responds with 'Pong!'",
+    "arguments": "",
+    "aliases": [
+    ]
+  },
+  "players": {
+    "description": "The number of online users currently playing speedrunners.",
+    "arguments": "",
+    "aliases": [
+      "playing",
+      "online"
+    ]
+  },
+  "points": {
+    "description": "Returns SpeedRunners points and league of a user, given their Discord username, Discord ID, Steam ID64 or Steam custom ID.",
+    "arguments": "<username>",
+    "aliases": [
+      "p",
+      "pts"
+    ]
+  },
+  "randomcharacter": {
+    "description": "Chooses a random SpeedRunners character.",
+    "arguments": "",
+    "aliases": [
+      "rc",
+      "randchar",
+      "randomchar"
+    ],
+    "characters": [
+      "SpeedRunner",
+      "Unic",
+      "Cosmonaut Comrade",
+      "Hothead",
+      "Moonraker",
+      "Falcon",
+      "Buckshot",
+      "Maneki Neko",
+      "Gil",
+      "SkullDuggery",
+      "Salem",
+      "Luc J'adore",
+      "Sherlock Bones",
+      "Jailbird",
+      "Excel",
+      "Burger",
+      "Doctor Smart",
+      "Mr. Quick",
+      "Flamenco",
+      "Fort Knight",
+      "Veloci-T-Rex",
+      "Beach-Body SpeedRunner",
+      "Summertime Cosmo"
+    ]
+  }
+}

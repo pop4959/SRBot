@@ -1,0 +1,7 @@
+.gradle/
+.idea/
+build/
+data/tokendiscord
+data/tokensteam
+out/
+logs/

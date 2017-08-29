@@ -1,5 +1,6 @@
 .gradle/
 .idea/
+src/test/
 build/
 data/tokendiscord
 data/tokensteam

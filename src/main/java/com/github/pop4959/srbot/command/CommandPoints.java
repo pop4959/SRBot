@@ -32,13 +32,18 @@ public class CommandPoints extends BotCommand {
     public void execute(MessageReceivedEvent event, String[] args) {
         if (args.length > 0) {
             SteamUser user = new SteamUser(Main.getClient());
-            Matcher steamId = Pattern.compile("765\\d{14}+$").matcher(args[0]), vanityUrl = Pattern.compile("https?://steamcommunity\\.com/id/.+").matcher(args[0]);
+            Matcher steamId = Pattern.compile("765\\d{14}+").matcher(args[0]), vanityUrl = Pattern.compile("https?://steamcommunity\\.com/id/.+").matcher(args[0]);
             String id = null;
             if (steamId.find()) {
                 id = steamId.group();
             } else {
                 if (vanityUrl.find()) {
-                    id = StringUtils.substringAfter(vanityUrl.group(), "id/");
+                    String match = vanityUrl.group();
+                    if (match.endsWith("/")) {
+                        id = StringUtils.substringBetween(match, "id/", "/");
+                    } else {
+                        id = StringUtils.substringAfter(match, "id/");
+                    }
                 }
                 try {
                     Long result = user.getSteamIdFromVanityUrl(id == null ? args[0] : id, VanityUrlType.INDIVIDUAL_PROFILE).get(Integer.parseInt(Data.fromJSON("queryTimeout")), TimeUnit.MILLISECONDS);
@@ -65,13 +70,17 @@ public class CommandPoints extends BotCommand {
                 event.getChannel().sendMessage("The requested user does not own the game, is unranked, or has their profile set to private.").queue();
                 return;
             }
+            if (!jsonString.contains("{")) {
+                event.getChannel().sendMessage("The requested user does not own the game, is unranked, or has their profile set to private.").queue();
+                return;
+            }
             JSONObject jsonData = new JSONObject(jsonString);
             int eloTier = 0;
-            while (eloTier < 8 && BOUNDARIES[eloTier].getRight() < jsonData.getDouble("rating")) {
+            while (eloTier < 8 && BOUNDARIES[eloTier + 1].getRight() < jsonData.getDouble("rating")) {
                 eloTier++;
             }
             try {
-                event.getChannel().sendMessage(EmbedTemplates.plaintext("Points for " + user.getPlayerProfile(Long.parseLong(id)).get(Integer.parseInt(Data.fromJSON("queryTimeout")), TimeUnit.MILLISECONDS).getName(), "Beta season: " + jsonData.getInt("rating") + " points [" + BOUNDARIES[eloTier].getLeft() + " League]\nOff-season: " + jsonData.getInt("score") + " points [" + BOUNDARIES[jsonData.getInt("tier")].getLeft() + " League]").build()).queue();
+                event.getChannel().sendMessage(EmbedTemplates.plaintext("Points for " + user.getPlayerProfile(Long.parseLong(id)).get(Integer.parseInt(Data.fromJSON("queryTimeout")), TimeUnit.MILLISECONDS).getName(), "Beta season: " + jsonData.getDouble("rating") + " points [" + BOUNDARIES[eloTier].getLeft() + " League]\nOff-season: " + jsonData.getInt("score") + " points [" + BOUNDARIES[jsonData.getInt("tier")].getLeft() + " League]").build()).queue();
             } catch (BadRequestException | InterruptedException | ExecutionException | TimeoutException e) {
                 event.getChannel().sendMessage("Unable to retrieve data for the requested user.").queue();
                 return;

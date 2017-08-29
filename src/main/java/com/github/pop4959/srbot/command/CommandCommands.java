@@ -1,6 +1,7 @@
 package com.github.pop4959.srbot.command;
 
 import com.github.pop4959.srbot.Data;
+import com.github.pop4959.srbot.util.EmbedTemplates;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.json.JSONObject;
 
@@ -18,7 +19,7 @@ public class CommandCommands extends BotCommand {
         for (Object o : ((JSONObject) Data.asJSON(COMMANDS_FILE, "")).keySet()) {
             commands.add((String) o);
         }
-        event.getChannel().sendMessage("Available commands: " + commands.toString().replaceAll("[\\[\\]]", "")).queue();
+        event.getChannel().sendMessage(EmbedTemplates.plaintext("Commands", commands.toString().replaceAll("[\\[\\]]", "")).build()).queue();
     }
 
 }

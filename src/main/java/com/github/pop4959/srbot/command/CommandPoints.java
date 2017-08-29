@@ -2,6 +2,7 @@ package com.github.pop4959.srbot.command;
 
 import com.github.pop4959.srbot.Data;
 import com.github.pop4959.srbot.Main;
+import com.github.pop4959.srbot.util.EmbedTemplates;
 import com.ibasco.agql.core.exceptions.BadRequestException;
 import com.ibasco.agql.protocols.valve.steam.webapi.enums.VanityUrlType;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUser;
@@ -29,46 +30,55 @@ public class CommandPoints extends BotCommand {
     }
 
     public void execute(MessageReceivedEvent event, String[] args) {
-        SteamUser user = new SteamUser(Main.getClient());
-        Matcher steamId = Pattern.compile("765\\d{14}+$").matcher(args[0]), vanityUrl = Pattern.compile("https?://steamcommunity\\.com/id/.+").matcher(args[0]);
-        String id = null;
-        if (steamId.find()) {
-            id = steamId.group();
-        } else {
-            if (vanityUrl.find()) {
-                id = StringUtils.substringAfter(vanityUrl.group(), "id/");
-            }
-            try {
-                Long result = user.getSteamIdFromVanityUrl(id == null ? args[0] : id, VanityUrlType.INDIVIDUAL_PROFILE).get(Integer.parseInt(Data.fromJSON("queryTimeout")), TimeUnit.MILLISECONDS);
-                if (result != null) {
-                    id = result.toString();
-                } else {
+        if (args.length > 0) {
+            SteamUser user = new SteamUser(Main.getClient());
+            Matcher steamId = Pattern.compile("765\\d{14}+$").matcher(args[0]), vanityUrl = Pattern.compile("https?://steamcommunity\\.com/id/.+").matcher(args[0]);
+            String id = null;
+            if (steamId.find()) {
+                id = steamId.group();
+            } else {
+                if (vanityUrl.find()) {
+                    id = StringUtils.substringAfter(vanityUrl.group(), "id/");
+                }
+                try {
+                    Long result = user.getSteamIdFromVanityUrl(id == null ? args[0] : id, VanityUrlType.INDIVIDUAL_PROFILE).get(Integer.parseInt(Data.fromJSON("queryTimeout")), TimeUnit.MILLISECONDS);
+                    if (result != null) {
+                        id = result.toString();
+                    } else {
+                        event.getChannel().sendMessage("Invalid Steam ID or vanity URL provided.").queue();
+                        return;
+                    }
+                } catch (BadRequestException | InterruptedException | ExecutionException | TimeoutException e) {
                     event.getChannel().sendMessage("Invalid Steam ID or vanity URL provided.").queue();
                     return;
                 }
-            } catch (BadRequestException | InterruptedException | ExecutionException | TimeoutException e) {
-                event.getChannel().sendMessage("Invalid Steam ID or vanity URL provided.").queue();
+            }
+            String jsonString = "";
+            try {
+                URL url = new URL("http://api.speedrunners.doubledutchgames.com/GetRanking?id=" + id);
+                BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+                int character;
+                while ((character = in.read()) > -1) {
+                    jsonString += ((char) character);
+                }
+            } catch (IOException e) {
+                event.getChannel().sendMessage("The requested user does not own the game, is unranked, or has their profile set to private.").queue();
                 return;
             }
-        }
-        String jsonString = "";
-        try {
-            URL url = new URL("http://api.speedrunners.doubledutchgames.com/GetRanking?id=" + id);
-            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-            int character;
-            while ((character = in.read()) > -1) {
-                jsonString += ((char) character);
+            JSONObject jsonData = new JSONObject(jsonString);
+            int eloTier = 0;
+            while (eloTier < 8 && BOUNDARIES[eloTier].getRight() < jsonData.getDouble("rating")) {
+                eloTier++;
             }
-        } catch (IOException e) {
-            event.getChannel().sendMessage("The requested user does not own the game, is unranked, or has their profile set to private.").queue();
-            return;
+            try {
+                event.getChannel().sendMessage(EmbedTemplates.plaintext("Points for " + user.getPlayerProfile(Long.parseLong(id)).get(Integer.parseInt(Data.fromJSON("queryTimeout")), TimeUnit.MILLISECONDS).getName(), "Beta season: " + jsonData.getInt("rating") + " points [" + BOUNDARIES[eloTier].getLeft() + " League]\nOff-season: " + jsonData.getInt("score") + " points [" + BOUNDARIES[jsonData.getInt("tier")].getLeft() + " League]").build()).queue();
+            } catch (BadRequestException | InterruptedException | ExecutionException | TimeoutException e) {
+                event.getChannel().sendMessage("Unable to retrieve data for the requested user.").queue();
+                return;
+            }
+        } else {
+            event.getChannel().sendMessage("Please provide a Steam ID or vanity URL.").queue();
         }
-        JSONObject jsonData = new JSONObject(jsonString);
-        int eloTier = 0;
-        while (eloTier < 8 && BOUNDARIES[eloTier].getRight() < jsonData.getDouble("rating")) {
-            eloTier++;
-        }
-        event.getChannel().sendMessage("Beta season: " + jsonData.getInt("rating") + " points [" + BOUNDARIES[eloTier].getLeft() + " League]\nOff-season: " + jsonData.getInt("score") + " points [" + BOUNDARIES[jsonData.getInt("tier")].getLeft() + " League]").queue();
     }
 
 }

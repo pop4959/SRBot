@@ -1,6 +1,11 @@
 {
   "commandPrefix": "!",
   "gameName": "!commands",
+  "embedColor": {
+    "r": 168,
+    "g": 63,
+    "b": 35
+  },
   "srAppId": 207140,
   "queryTimeout": 1000,
   "servers": {

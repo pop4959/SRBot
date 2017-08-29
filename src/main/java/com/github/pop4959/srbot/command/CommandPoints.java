@@ -76,7 +76,7 @@ public class CommandPoints extends BotCommand {
             }
             JSONObject jsonData = new JSONObject(jsonString);
             int eloTier = 0;
-            while (eloTier < 8 && BOUNDARIES[eloTier + 1].getRight() < jsonData.getDouble("rating")) {
+            while (eloTier < 8 && BOUNDARIES[eloTier + 1].getRight() <= jsonData.getDouble("rating")) {
                 eloTier++;
             }
             try {

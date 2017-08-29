@@ -41,7 +41,7 @@
     ]
   },
   "points": {
-    "description": "Returns SpeedRunners points and league of a user, given their Discord username, Discord ID, Steam ID64 or Steam custom ID.",
+    "description": "Returns ranking information of a SpeedRunners player, given their Steam ID64 or vanity URL.",
     "arguments": "<username>",
     "aliases": [
       "p",

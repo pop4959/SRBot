@@ -25,7 +25,6 @@
   "files": {
     "discordToken": "data/tokendiscord",
     "steamToken": "data/tokensteam",
-    "commands": "data/commands.json",
-    "helpImage": "data/help.png"
+    "commands": "data/commands.json"
   }
 }

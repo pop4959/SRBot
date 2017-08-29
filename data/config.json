@@ -12,6 +12,12 @@
     "main": 264545227405131776,
     "admin": 264545227405131776
   },
+  "commandRestriction": {
+    "enabled": true,
+    "allowedChannels": [
+      318990675385516042
+    ]
+  },
   "logging": {
     "server": "admin",
     "channel": 350091506343870484

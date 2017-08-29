@@ -20,6 +20,10 @@ public class Logger {
         }
         if (destination.contains("f")) {
             try {
+                File logFolder = new File("logs/");
+                if (!logFolder.exists()) {
+                    logFolder.mkdir();
+                }
                 File log = new File("logs/" + LOG_FILE);
                 if (!log.exists()) {
                     log.createNewFile();

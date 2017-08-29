@@ -4,7 +4,7 @@ plugins {
     id'com.github.johnrengelman.shadow' version '1.2.4'
 }
 
-group 'org.popcraft.srbot'
+group 'com.github.pop4959.srbot'
 version '0.1-SNAPSHOT'
 mainClassName = 'com.github.pop4959.srbot.Main'
 def jdaVersion = '3.2.0_242'

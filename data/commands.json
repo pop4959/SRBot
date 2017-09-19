@@ -97,5 +97,13 @@
       "Beach-Body SpeedRunner",
       "Summertime Cosmo"
     ]
+  },
+  "pop4959": {
+    "description": "Annoys pop.",
+    "permission": "default",
+    "hidden": "true",
+    "arguments": "",
+    "aliases": [
+    ]
   }
 }

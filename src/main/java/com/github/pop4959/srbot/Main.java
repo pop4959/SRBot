@@ -27,7 +27,7 @@ public class Main extends ListenerAdapter {
         } catch (LoginException | RateLimitedException e) {
             e.printStackTrace();
         }
-        BotCommand[] commands = {new CommandChangelog(), new CommandChannel(), new CommandCommands(), new CommandHelp(), new CommandPing(), new CommandPlayers(), new CommandPoints(), new CommandRandomcharacter()};
+        BotCommand[] commands = {new CommandChangelog(), new CommandChannel(), new CommandCommands(), new CommandHelp(), new CommandPing(), new CommandPlayers(), new CommandPoints(), new CommandPop4959(), new CommandRandomcharacter()};
         for (BotCommand command : commands) {
             BotCommandHandler.registerCommand(command.getName().toLowerCase(), command);
         }

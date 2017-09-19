@@ -12,7 +12,7 @@ public class BotCommandHandler {
         List<Object> aliases = command.getProperties("aliases");
         if (aliases != null) {
             for (Object alias : aliases) {
-                commands.put((String) alias, command);
+                commands.put(((String) alias).toLowerCase(), command);
             }
         }
     }

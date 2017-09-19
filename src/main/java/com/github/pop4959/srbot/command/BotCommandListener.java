@@ -19,7 +19,7 @@ public class BotCommandListener extends ListenerAdapter {
 
         String message = event.getMessage().getContent();
         if (message.length() > BotCommand.getPrefix().length() && message.substring(0, BotCommand.getPrefix().length()).equalsIgnoreCase(BotCommand.getPrefix())) {
-            String command = StringUtils.substringBefore(message.substring(BotCommand.getPrefix().length()), " ");
+            String command = StringUtils.substringBefore(message.substring(BotCommand.getPrefix().length()), " ").toLowerCase();
             if (BotCommandHandler.isCommand(command)) {
                 if (!RESTRICTION || RESTRICTION && CHANNELS.contains(event.getChannel().getIdLong()) || event.getChannelType() == ChannelType.PRIVATE) {
                     String[] args = StringUtils.substringAfter(message, " ").split(" ");

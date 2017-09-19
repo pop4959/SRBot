@@ -3,11 +3,10 @@ package com.github.pop4959.srbot.command;
 import com.github.pop4959.srbot.Data;
 import com.github.pop4959.srbot.Main;
 import com.github.pop4959.srbot.util.EmbedTemplates;
+import com.github.pop4959.srbot.util.Steam;
 import com.ibasco.agql.core.exceptions.BadRequestException;
-import com.ibasco.agql.protocols.valve.steam.webapi.enums.VanityUrlType;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUser;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONObject;
 
@@ -18,8 +17,6 @@ import java.net.URL;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class CommandPoints extends BotCommand {
 
@@ -32,31 +29,10 @@ public class CommandPoints extends BotCommand {
     public void execute(MessageReceivedEvent event, String[] args) {
         if (args.length > 0) {
             SteamUser user = new SteamUser(Main.getClient());
-            Matcher steamId = Pattern.compile("765\\d{14}+").matcher(args[0]), vanityUrl = Pattern.compile("https?://steamcommunity\\.com/id/.+").matcher(args[0]);
-            String id = null;
-            if (steamId.find()) {
-                id = steamId.group();
-            } else {
-                if (vanityUrl.find()) {
-                    String match = vanityUrl.group();
-                    if (match.endsWith("/")) {
-                        id = StringUtils.substringBetween(match, "id/", "/");
-                    } else {
-                        id = StringUtils.substringAfter(match, "id/");
-                    }
-                }
-                try {
-                    Long result = user.getSteamIdFromVanityUrl(id == null ? args[0] : id, VanityUrlType.INDIVIDUAL_PROFILE).get(Integer.parseInt(Data.fromJSON("queryTimeout")), TimeUnit.MILLISECONDS);
-                    if (result != null) {
-                        id = result.toString();
-                    } else {
-                        event.getChannel().sendMessage("Invalid Steam ID or vanity URL provided.").queue();
-                        return;
-                    }
-                } catch (BadRequestException | InterruptedException | ExecutionException | TimeoutException e) {
-                    event.getChannel().sendMessage("Invalid Steam ID or vanity URL provided.").queue();
-                    return;
-                }
+            String id = Steam.resolveID64(user, args[0]);
+            if (id == null) {
+                event.getChannel().sendMessage("Invalid Steam ID or vanity URL provided.").queue();
+                return;
             }
             String jsonString = "";
             try {

@@ -28,7 +28,7 @@ public class Main extends ListenerAdapter {
         }
         BotCommand[] commands = {new CommandChangelog(), new CommandChannel(), new CommandCommands(), new CommandHelp(), new CommandPing(), new CommandPlayers(), new CommandPoints(), new CommandRandomcharacter()};
         for (BotCommand command : commands) {
-            BotCommandHandler.registerCommand(command.getName(), command);
+            BotCommandHandler.registerCommand(command.getName().toLowerCase(), command);
         }
         client = new SteamWebApiClient(Data.fromFile(Data.fromJSON("files.steamToken")));
     }

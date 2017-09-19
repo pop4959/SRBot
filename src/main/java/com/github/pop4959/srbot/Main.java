@@ -4,6 +4,7 @@ import com.github.pop4959.srbot.command.*;
 import com.github.pop4959.srbot.task.ChannelCleanup;
 import com.github.pop4959.srbot.task.Chatlog;
 import com.github.pop4959.srbot.task.GuildActivity;
+import com.github.pop4959.srbot.task.Superchat;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.AccountType;
@@ -22,7 +23,7 @@ public class Main extends ListenerAdapter {
 
     public static void main(String[] arguments) {
         try {
-            jda = jda = new JDABuilder(AccountType.BOT).setToken(Data.fromFile(Data.fromJSON("files.discordToken"))).setAutoReconnect(true).addEventListener(new Main(), new BotCommandListener(), new Chatlog(), new GuildActivity(), new ChannelCleanup()).setGame(Game.of(Data.fromJSON("gameName"))).buildAsync();
+            jda = jda = new JDABuilder(AccountType.BOT).setToken(Data.fromFile(Data.fromJSON("files.discordToken"))).setAutoReconnect(true).addEventListener(new Main(), new BotCommandListener(), new Chatlog(), new GuildActivity(), new ChannelCleanup(), new Superchat()).setGame(Game.of(Data.fromJSON("gameName"))).buildAsync();
         } catch (LoginException | RateLimitedException e) {
             e.printStackTrace();
         }

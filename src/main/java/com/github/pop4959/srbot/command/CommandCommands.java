@@ -17,7 +17,8 @@ public class CommandCommands extends BotCommand {
     public void execute(MessageReceivedEvent event, String[] args) {
         List<String> commands = new ArrayList<>();
         for (Object o : ((JSONObject) Data.asJSON(COMMANDS_FILE, "")).keySet()) {
-            commands.add((String) o);
+            if (((String) BotCommandHandler.getCommand((String) o).getProperty("hidden")).equalsIgnoreCase("false"))
+                commands.add((String) o);
         }
         event.getChannel().sendMessage(EmbedTemplates.plaintext("Commands", commands.toString().replaceAll("[\\[\\]]", "")).build()).queue();
     }

@@ -15,7 +15,8 @@
     "arguments": "<name> [size]",
     "aliases": [
       "voice"
-    ]
+    ],
+    "category": "360865903124021249"
   },
   "commands": {
     "description": "Lists all of the available commands.",

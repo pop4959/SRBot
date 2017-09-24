@@ -41,7 +41,7 @@ public class CommandChannel extends BotCommand {
                     event.getGuild().getController().moveVoiceMember(event.getMember(), (VoiceChannel) channel).queue();
                 };
                 try {
-                    event.getGuild().getController().createVoiceChannel(channelName.toString()).setUserlimit(channelSize).queue(channelCallback);
+                    event.getGuild().getController().createVoiceChannel(channelName.toString()).setParent(event.getJDA().getCategoryById((String) this.getProperty("category"))).setUserlimit(channelSize).queue(channelCallback);
                 } catch (IllegalArgumentException e) {
                     event.getChannel().sendMessage("The channel name you provide must be between 2 and 100 characters in length.").queue();
                 }

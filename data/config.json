@@ -2,25 +2,26 @@
   "commandPrefix": "!",
   "gameName": "!commands",
   "embedColor": {
-    "r": 168,
-    "g": 63,
-    "b": 35
+    "r": 241,
+    "g": 186,
+    "b": 40
   },
   "srAppId": 207140,
   "queryTimeout": 1000,
   "servers": {
-    "main": 264545227405131776,
-    "admin": 264545227405131776
+    "main": 211576474254311425,
+    "admin": 279036340488765441
   },
   "commandRestriction": {
     "enabled": true,
     "allowedChannels": [
-      318990675385516042
+      320646972338077697,
+      293042542327496704
     ]
   },
   "logging": {
     "server": "admin",
-    "channel": 350091506343870484
+    "channel": 310043042897854464
   },
   "files": {
     "discordToken": "data/tokendiscord",

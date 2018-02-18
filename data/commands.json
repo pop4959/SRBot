@@ -16,7 +16,7 @@
     "aliases": [
       "voice"
     ],
-    "category": "360865903124021249"
+    "category": "360896332640157696"
   },
   "commands": {
     "description": "Lists all of the available commands.",
@@ -74,29 +74,40 @@
       "randomchar"
     ],
     "characters": [
-      "SpeedRunner",
-      "Unic",
-      "Cosmonaut Comrade",
-      "Hothead",
-      "Moonraker",
-      "Falcon",
+      "Beach-Body SpeedRunner",
       "Buckshot",
-      "Maneki Neko",
-      "Gil",
-      "SkullDuggery",
-      "Salem",
-      "Luc J'adore",
-      "Sherlock Bones",
-      "Jailbird",
-      "Excel",
       "Burger",
+      "CinnamonToastKen",
+      "Cosmonaut Comrade",
       "Doctor Smart",
-      "Mr. Quick",
+      "Dodger",
+      "Excel",
+      "The Falcon",
       "Flamenco",
       "Fort Knight",
+      "Gil",
+      "Hothead",
+      "Jailbird",
+      "Jesse Cox",
+      "Luc J'adore",
+      "Maneki Neko",
+      "Markiplier",
+      "Moonraker",
+      "The Original Mr. Quick",
+      "Octodad",
+      "PeanutButterGamer",
+      "PewDiePie",
+      "Salem",
+      "The Scout",
+      "Sherlock Bones",
+      "SkullDuggery",
+      "SpeedRunner",
+      "Strippin",
+      "Summertime Cosmo",
+      "UberHaxorNova",
+      "Unic",
       "Veloci-T-Rex",
-      "Beach-Body SpeedRunner",
-      "Summertime Cosmo"
+      "XL"
     ]
   },
   "pop4959": {

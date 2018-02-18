@@ -1,6 +1,6 @@
 package com.github.pop4959.srbot.util;
 
-import com.github.pop4959.srbot.Data;
+import com.github.pop4959.srbot.data.Data;
 import com.ibasco.agql.core.exceptions.BadRequestException;
 import com.ibasco.agql.protocols.valve.steam.webapi.enums.VanityUrlType;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUser;

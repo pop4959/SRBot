@@ -1,12 +1,9 @@
 package com.github.pop4959.srbot.task;
 
-import com.github.pop4959.srbot.Data;
-import net.dv8tion.jda.core.Permission;
+import com.github.pop4959.srbot.data.Data;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONArray;
 
 import java.util.HashMap;

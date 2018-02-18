@@ -1,6 +1,6 @@
 package com.github.pop4959.srbot.command;
 
-import com.github.pop4959.srbot.Data;
+import com.github.pop4959.srbot.data.Data;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;

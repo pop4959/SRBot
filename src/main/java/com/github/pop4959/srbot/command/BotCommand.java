@@ -1,6 +1,6 @@
 package com.github.pop4959.srbot.command;
 
-import com.github.pop4959.srbot.Data;
+import com.github.pop4959.srbot.data.Data;
 import org.json.JSONArray;
 
 import java.util.ArrayList;

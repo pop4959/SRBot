@@ -1,6 +1,6 @@
 package com.github.pop4959.srbot.command;
 
-import com.github.pop4959.srbot.Data;
+import com.github.pop4959.srbot.data.Data;
 import com.github.pop4959.srbot.util.EmbedTemplates;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.json.JSONObject;

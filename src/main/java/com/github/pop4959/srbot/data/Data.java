@@ -1,4 +1,4 @@
-package com.github.pop4959.srbot;
+package com.github.pop4959.srbot.data;
 
 import org.json.JSONPointer;
 import org.json.JSONObject;

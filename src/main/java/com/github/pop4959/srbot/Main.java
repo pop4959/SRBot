@@ -1,6 +1,7 @@
 package com.github.pop4959.srbot;
 
 import com.github.pop4959.srbot.command.*;
+import com.github.pop4959.srbot.data.Data;
 import com.github.pop4959.srbot.task.ChannelCleanup;
 import com.github.pop4959.srbot.task.Chatlog;
 import com.github.pop4959.srbot.task.GuildActivity;

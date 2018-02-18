@@ -1,6 +1,6 @@
 package com.github.pop4959.srbot.util;
 
-import com.github.pop4959.srbot.Data;
+import com.github.pop4959.srbot.data.Data;
 import net.dv8tion.jda.core.EmbedBuilder;
 
 import java.awt.*;

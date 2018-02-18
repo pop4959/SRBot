@@ -1,5 +1,7 @@
 package com.github.pop4959.srbot;
 
+import com.github.pop4959.srbot.data.Data;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;

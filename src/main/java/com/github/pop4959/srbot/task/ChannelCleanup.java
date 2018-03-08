@@ -7,7 +7,7 @@ import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import java.util.Map;
+import java.util.Set;
 
 public class ChannelCleanup extends ListenerAdapter {
 
@@ -23,13 +23,12 @@ public class ChannelCleanup extends ListenerAdapter {
 
     private void cleanup(VoiceChannel channel) {
         if (channel.getMembers().size() == 0) {
-            Map<Long, VoiceChannel> channels = CommandChannel.getChannels();
-            if (channels.containsKey(channel.getIdLong())) {
-                channels.remove(channel.getIdLong());
+            Set<VoiceChannel> channels = CommandChannel.getChannels();
+            if (channels.contains(channel)) {
+                channels.remove(channel);
                 Logger.log("Channel '" + channel.getName() + "' was deleted.", "ctf");
                 channel.delete().queue();
             }
         }
     }
-
 }

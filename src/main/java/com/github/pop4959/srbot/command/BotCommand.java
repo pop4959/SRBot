@@ -36,9 +36,7 @@ public abstract class BotCommand implements IBotCommand {
     public List<Object> getProperties(String identifier) {
         List<Object> properties = new ArrayList<>();
         try {
-            for (Object o : ((JSONArray) Data.asJSON(COMMANDS_FILE, name + "." + identifier)).toList()) {
-                properties.add(o);
-            }
+            properties.addAll(((JSONArray) Data.asJSON(COMMANDS_FILE, name + "." + identifier)).toList());
             if (properties.isEmpty()) {
                 return null;
             } else {

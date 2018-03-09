@@ -5,13 +5,13 @@ import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class CommandChannel extends BotCommand {
 
-    private static Map<Long, VoiceChannel> channels = new HashMap<>();
+    private static Set<VoiceChannel> channels = new HashSet<>();
 
     public CommandChannel() {
         super("channel");
@@ -39,7 +39,7 @@ public class CommandChannel extends BotCommand {
             }
             if (event.getMember().getVoiceState().getChannel() != null) {
                 Consumer<Channel> channelCallback = (channel) -> {
-                    channels.put(channel.getIdLong(), (VoiceChannel) channel);
+                    channels.add((VoiceChannel) channel);
                     event.getGuild().getController().moveVoiceMember(event.getMember(), (VoiceChannel) channel).queue();
                 };
                 try {
@@ -55,7 +55,7 @@ public class CommandChannel extends BotCommand {
         }
     }
 
-    public static Map<Long, VoiceChannel> getChannels() {
+    public static Set<VoiceChannel> getChannels() {
         return channels;
     }
 

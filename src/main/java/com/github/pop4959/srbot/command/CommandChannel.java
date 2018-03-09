@@ -1,10 +1,12 @@
 package com.github.pop4959.srbot.command;
 
+import com.github.pop4959.srbot.data.Data;
 import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class CommandChannel extends BotCommand {
@@ -41,7 +43,7 @@ public class CommandChannel extends BotCommand {
                     event.getGuild().getController().moveVoiceMember(event.getMember(), (VoiceChannel) channel).queue();
                 };
                 try {
-                    event.getGuild().getController().createVoiceChannel(channelName.toString()).setParent(event.getJDA().getCategoryById((String) this.getProperty("category"))).setUserlimit(channelSize).queue(channelCallback);
+                    event.getGuild().getController().createVoiceChannel(channelName.toString()).setParent(event.getJDA().getCategoryById(Data.config().getVoiceCategory())).setUserlimit(channelSize).queue(channelCallback);
                 } catch (IllegalArgumentException e) {
                     event.getChannel().sendMessage("The channel name you provide must be between 2 and 100 characters in length.").queue();
                 }

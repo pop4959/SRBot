@@ -1,8 +1,7 @@
 package com.github.pop4959.srbot.command;
 
+import com.github.pop4959.srbot.data.CommandsData;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-
-import java.util.List;
 
 public interface IBotCommand {
 
@@ -10,8 +9,6 @@ public interface IBotCommand {
 
     String getName();
 
-    Object getProperty(String identifier);
-
-    List<Object> getProperties(String identifier);
+    CommandsData.CommandConfiguration getConfig();
 
 }

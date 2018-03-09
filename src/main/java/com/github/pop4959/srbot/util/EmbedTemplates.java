@@ -8,7 +8,7 @@ import java.awt.*;
 public class EmbedTemplates {
 
     public static EmbedBuilder plaintext(String title, String description) {
-        return (new EmbedBuilder()).setColor(new Color((int) Data.asJSON("embedColor.r"), (int) Data.asJSON("embedColor.g"), (int) Data.asJSON("embedColor.b"))).setAuthor(null, null, null).setTitle(title).setDescription(description);
+        return (new EmbedBuilder()).setColor(new Color(Data.config().getEmbedColor().getR(), Data.config().getEmbedColor().getG(), Data.config().getEmbedColor().getB())).setAuthor(null, null, null).setTitle(title).setDescription(description);
     }
 
 }

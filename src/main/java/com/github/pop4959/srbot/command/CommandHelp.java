@@ -11,7 +11,7 @@ public class CommandHelp extends BotCommand {
 
     public void execute(MessageReceivedEvent event, String[] args) {
         BotCommand cmd = BotCommandHandler.getCommand(args.length > 0 && BotCommandHandler.isCommand(args[0]) ? args[0] : this.getName());
-        event.getChannel().sendMessage(EmbedTemplates.plaintext("Help - " + cmd.getName(), "Usage: " + COMMAND_PREFIX + cmd.getName() + " " + cmd.getProperty("arguments") + "\nDescription: " + cmd.getProperty("description") + (cmd.getProperties("aliases") != null ? "\nAliases: " + cmd.getProperties("aliases").toString().replaceAll("[\\[\\]]", "") : "")).build()).queue();
+        event.getChannel().sendMessage(EmbedTemplates.plaintext("Help - " + cmd.getName(), "Usage: " + COMMAND_PREFIX + cmd.getName() + " " + cmd.getConfig().getArguments() + "\nDescription: " + cmd.getConfig().getDescription() + (cmd.getConfig().getAliases().isEmpty() ? "" : "\nAliases: " + cmd.getConfig().getAliases().toString().replaceAll("[\\[\\]]", ""))).build()).queue();
     }
 
 }

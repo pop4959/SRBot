@@ -1,43 +1,47 @@
 package com.github.pop4959.srbot.data;
 
-import org.json.JSONPointer;
-import org.json.JSONObject;
-import org.apache.commons.lang3.StringUtils;
+import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 
 public class Data {
 
+    private static final String CONFIG_PATH = "data/config.json";
+    private static final String COMMANDS_PATH = "data/commands.json";
+
+    private static ConfigData config;
+    private static CommandsData commands;
+
+    static {
+        Gson gson = new Gson();
+        try {
+            config = gson.fromJson(new FileReader(new File(CONFIG_PATH)), ConfigData.class);
+            commands = gson.fromJson(new FileReader(new File(COMMANDS_PATH)), CommandsData.class);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ConfigData config() {
+        return config;
+    }
+
+    public static CommandsData commands() {
+        return commands;
+    }
+
     public static String fromFile(String path) {
         try {
             return new String(Files.readAllBytes(new File(path).toPath()), Charset.defaultCharset());
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
         }
-    }
-
-    public static Object asJSON(String path, String resource) {
-        JSONPointer.Builder p = JSONPointer.builder();
-        String[] tokens = StringUtils.split(resource, ".");
-        for (String token : tokens)
-            p.append(token);
-        return p.build().queryFrom(new JSONObject(Data.fromFile(path)));
-    }
-
-    public static Object asJSON(String resource) {
-        return asJSON("data/config.json", resource);
-    }
-
-    public static String fromJSON(String path, String resource) {
-        return asJSON(path, resource).toString();
-    }
-
-    public static String fromJSON(String resource) {
-        return asJSON("data/config.json", resource).toString();
+        return null;
     }
 
 }

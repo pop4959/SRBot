@@ -4,15 +4,14 @@ import com.github.pop4959.srbot.data.Data;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import org.json.JSONArray;
 
 import java.util.HashMap;
 import java.util.List;
 
 public class Superchat extends ListenerAdapter {
 
-    private static boolean RESTRICTION = (boolean) Data.asJSON("commandRestriction.enabled");
-    private static List<Object> CHANNELS = ((JSONArray) Data.asJSON("commandRestriction.allowedChannels")).toList();
+    private static boolean RESTRICTION = Data.config().getCommandRestriction().isEnabled();
+    private static List<Long> CHANNELS = Data.config().getCommandRestriction().getAllowedChannels();
     private static final HashMap<String, String> RESPONSES = new HashMap<>();
 
     static {

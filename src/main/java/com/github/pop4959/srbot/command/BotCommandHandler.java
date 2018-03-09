@@ -9,10 +9,10 @@ public class BotCommandHandler {
 
     public static void registerCommand(String name, BotCommand command) {
         commands.put(name, command);
-        List<Object> aliases = command.getProperties("aliases");
+        List<String> aliases = command.getConfig().getAliases();
         if (aliases != null) {
-            for (Object alias : aliases) {
-                commands.put(((String) alias).toLowerCase(), command);
+            for (String alias : aliases) {
+                commands.put(alias.toLowerCase(), command);
             }
         }
     }

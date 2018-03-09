@@ -18,7 +18,7 @@ public class Logger {
             System.out.println(info);
         }
         if (destination.contains("t")) {
-            Main.getJda().getGuildById((Long) Data.asJSON("servers." + Data.fromJSON("logging.server"))).getTextChannelById((Long) Data.asJSON("logging.channel")).sendMessage(info).queue();
+            Main.getJda().getGuildById(Data.config().getLogging().getServer()).getTextChannelById(Data.config().getLogging().getChannel()).sendMessage(info).queue();
         }
         if (destination.contains("f")) {
             try {

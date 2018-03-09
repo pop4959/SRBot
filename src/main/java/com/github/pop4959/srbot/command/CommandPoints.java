@@ -1,7 +1,7 @@
 package com.github.pop4959.srbot.command;
 
-import com.github.pop4959.srbot.data.Data;
 import com.github.pop4959.srbot.Main;
+import com.github.pop4959.srbot.data.Data;
 import com.github.pop4959.srbot.util.EmbedTemplates;
 import com.github.pop4959.srbot.util.Steam;
 import com.ibasco.agql.core.exceptions.BadRequestException;
@@ -57,7 +57,7 @@ public class CommandPoints extends BotCommand {
                 eloTier++;
             }
             try {
-                event.getChannel().sendMessage(EmbedTemplates.plaintext("Points for " + user.getPlayerProfile(Long.parseLong(id)).get(Integer.parseInt(Data.fromJSON("queryTimeout")), TimeUnit.MILLISECONDS).getName(), "Winter season: " + (new DecimalFormat("#.##")).format(jsonData.getDouble("rating")) + " points [" + BOUNDARIES[eloTier].getLeft() + " League]\nOff-season: " + jsonData.getInt("score") + " points [" + BOUNDARIES[jsonData.getInt("tier")].getLeft() + " League]").build()).queue();
+                event.getChannel().sendMessage(EmbedTemplates.plaintext("Points for " + user.getPlayerProfile(Long.parseLong(id)).get(Data.config().getQueryTimeout(), TimeUnit.MILLISECONDS).getName(), "Winter season: " + (new DecimalFormat("#.##")).format(jsonData.getDouble("rating")) + " points [" + BOUNDARIES[eloTier].getLeft() + " League]\nOff-season: " + jsonData.getInt("score") + " points [" + BOUNDARIES[jsonData.getInt("tier")].getLeft() + " League]").build()).queue();
             } catch (BadRequestException | InterruptedException | ExecutionException | TimeoutException e) {
                 event.getChannel().sendMessage("Unable to retrieve data for the requested user.").queue();
             }

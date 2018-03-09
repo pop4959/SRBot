@@ -24,7 +24,7 @@ public class Main extends ListenerAdapter {
 
     public static void main(String[] arguments) {
         try {
-            jda = jda = new JDABuilder(AccountType.BOT).setToken(Data.fromFile(Data.fromJSON("files.discordToken"))).setAutoReconnect(true).addEventListener(new Main(), new BotCommandListener(), new Chatlog(), new GuildActivity(), new ChannelCleanup(), new Superchat()).setGame(Game.of(Data.fromJSON("gameName"))).buildAsync();
+            jda = new JDABuilder(AccountType.BOT).setToken(Data.fromFile(Data.config().getFiles().getDiscordToken())).setAutoReconnect(true).addEventListener(new Main(), new BotCommandListener(), new Chatlog(), new GuildActivity(), new ChannelCleanup(), new Superchat()).setGame(Game.of(Data.config().getGameName())).buildAsync();
         } catch (LoginException | RateLimitedException e) {
             e.printStackTrace();
         }
@@ -32,7 +32,7 @@ public class Main extends ListenerAdapter {
         for (BotCommand command : commands) {
             BotCommandHandler.registerCommand(command.getName().toLowerCase(), command);
         }
-        client = new SteamWebApiClient(Data.fromFile(Data.fromJSON("files.steamToken")));
+        client = new SteamWebApiClient(Data.fromFile(Data.config().getFiles().getSteamToken()));
     }
 
     @Override

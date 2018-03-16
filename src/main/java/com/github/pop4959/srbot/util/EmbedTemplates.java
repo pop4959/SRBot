@@ -11,4 +11,8 @@ public class EmbedTemplates {
         return (new EmbedBuilder()).setColor(new Color(Data.config().getEmbedColor().getR(), Data.config().getEmbedColor().getG(), Data.config().getEmbedColor().getB())).setAuthor(null, null, null).setTitle(title).setDescription(description);
     }
 
+    public static EmbedBuilder points(String description, String name, String authorURL, String iconURL) {
+        return plaintext(null, description).setAuthor(name, authorURL, iconURL);
+    }
+
 }

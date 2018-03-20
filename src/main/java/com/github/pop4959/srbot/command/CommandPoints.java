@@ -61,7 +61,7 @@ public class CommandPoints extends BotCommand {
             }
             try {
                 SteamPlayerProfile steamProfile = user.getPlayerProfile(Long.parseLong(id)).get(Data.config().getQueryTimeout(), TimeUnit.MILLISECONDS);
-                event.getChannel().sendMessage(EmbedTemplates.points("Winter season: " + (new DecimalFormat("#.##")).format(jsonData.getDouble("rating")) + " points (" + RANK_EMOTES[id.equals(KOS) ? 9 : eloTier] + BOUNDARIES[eloTier].getLeft() + " League )\nOff-season: " + jsonData.getInt("score") + " points (" + RANK_EMOTES[id.equals(KOS) ? 9 : jsonData.getInt("tier")] + BOUNDARIES[jsonData.getInt("tier")].getLeft() + " League )", "Points for " + steamProfile.getName(), steamProfile.getProfileUrl(), steamProfile.getAvatarFullUrl()).build()).queue();
+                event.getChannel().sendMessage(EmbedTemplates.points("Off-season: " + jsonData.getInt("score") + " points (" + RANK_EMOTES[id.equals(KOS) ? 9 : jsonData.getInt("tier")] + BOUNDARIES[jsonData.getInt("tier")].getLeft() + " League )\nWinter season: " + (new DecimalFormat("#.##")).format(jsonData.getDouble("rating")) + " points (" + RANK_EMOTES[id.equals(KOS) ? 9 : eloTier] + BOUNDARIES[eloTier].getLeft() + " League )", "Points for " + steamProfile.getName(), steamProfile.getProfileUrl(), steamProfile.getAvatarFullUrl()).build()).queue();
             } catch (BadRequestException | InterruptedException | ExecutionException | TimeoutException e) {
                 event.getChannel().sendMessage("Unable to retrieve data for the requested user.").queue();
             }

@@ -23,7 +23,7 @@ import java.util.concurrent.TimeoutException;
 public class CommandPoints extends BotCommand {
 
     private static final Pair<String, Integer>[] BOUNDARIES = new Pair[]{Pair.of("Entry", 0), Pair.of("Beginner", 8000), Pair.of("Advanced", 9000), Pair.of("Expert", 10000), Pair.of("Bronze", 12000), Pair.of("Silver", 17000), Pair.of("Gold", 20000), Pair.of("Platinum", 24000), Pair.of("Diamond", 29000)};
-    private static final String[] RANK_EMOTES = new String[]{"<:entry_league:408407631078621194>", "<:beginner_league:408407630755659778>", "<:advanced_league:408407631057911808>", "<:expert_league:408407630759854081>", "<:bronze_league:408407631007318016>", "<:silver_league:408407630864842755>", "<:gold_league:408407631149924352>", "<:platinum_league:408407631041134593>", "<:diamond_league:408407631120826368>", "<:king_of_speed:408407630931820545>"};
+    private static final String[] RANK_EMOTES = new String[]{"<:entry_league:427677594587234304>", "<:beginner_league:427677594335576065>", "<:advanced_league:427677594553679872>", "<:expert_league:427677594557612032>", "<:bronze_league:427677594259947522>", "<:silver_league:427677594289438732>", "<:gold_league:427677594637565952>", "<:platinum_league:427677594582777888>", "<:diamond_league:427677594368868353>", "<:king_of_speed:427677594318536706>"};
     private static final String KOS = "76561198166738162";
 
     public CommandPoints() {

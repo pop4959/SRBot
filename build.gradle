@@ -8,7 +8,7 @@ plugins {
 group 'com.github.pop4959.srbot'
 version '0.1-SNAPSHOT'
 mainClassName = 'com.github.pop4959.srbot.Main'
-def jdaVersion = '3.3.1_278'
+def jdaVersion = '3.6.0_367'
 
 sourceCompatibility = 1.8
 

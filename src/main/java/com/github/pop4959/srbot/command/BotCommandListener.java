@@ -17,7 +17,7 @@ public class BotCommandListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
 
-        String message = event.getMessage().getContent();
+        String message = event.getMessage().getContentRaw();
         if (message.length() > BotCommand.getPrefix().length() && message.substring(0, BotCommand.getPrefix().length()).equalsIgnoreCase(BotCommand.getPrefix())) {
             String commandString = StringUtils.substringBefore(message.substring(BotCommand.getPrefix().length()), " ").toLowerCase();
             if (BotCommandHandler.isCommand(commandString)) {

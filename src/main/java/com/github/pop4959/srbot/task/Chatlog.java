@@ -15,7 +15,7 @@ public class Chatlog extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss z");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Logger.log(dateFormat.format(new Date(System.currentTimeMillis())) + " | " + (event.getChannelType() == ChannelType.TEXT ? event.getChannel().getName() : event.getChannel().getId()) + " | " + event.getAuthor().getName() + ": " + event.getMessage().getContent(), "cf");
+        Logger.log(dateFormat.format(new Date(System.currentTimeMillis())) + " | " + (event.getChannelType() == ChannelType.TEXT ? event.getChannel().getName() : event.getChannel().getId()) + " | " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw(), "cf");
     }
 
 }

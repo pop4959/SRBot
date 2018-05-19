@@ -27,7 +27,7 @@ public class Main extends ListenerAdapter {
         Set<Class<? extends BotCommand>> commands = reflections.getSubTypesOf(BotCommand.class);
         Set<Class<? extends ListenerAdapter>> listeners = reflections.getSubTypesOf(ListenerAdapter.class);
         try {
-            JDABuilder jdabuilder = new JDABuilder(AccountType.BOT).setToken(Data.fromFile(Data.config().getFiles().getDiscordToken())).setAutoReconnect(true).setGame(Game.of(Data.config().getGameName()));
+            JDABuilder jdabuilder = new JDABuilder(AccountType.BOT).setToken(Data.fromFile(Data.config().getFiles().getDiscordToken())).setAutoReconnect(true).setGame(Game.of(Game.GameType.LISTENING, Data.config().getGameName()));
             for (Class<? extends ListenerAdapter> listener : listeners) {
                 jdabuilder.addEventListener(listener.newInstance());
             }
@@ -36,7 +36,7 @@ public class Main extends ListenerAdapter {
                 BotCommand instance = command.newInstance();
                 BotCommandHandler.registerCommand(instance.getName().toLowerCase(), instance);
             }
-        } catch (LoginException | RateLimitedException | InstantiationException | IllegalAccessException e) {
+        } catch (LoginException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
         client = new SteamWebApiClient(Data.fromFile(Data.config().getFiles().getSteamToken()));

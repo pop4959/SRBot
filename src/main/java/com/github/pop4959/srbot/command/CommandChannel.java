@@ -19,7 +19,7 @@ public class CommandChannel extends BotCommand {
 
     public void execute(MessageReceivedEvent event, String[] args) {
         if (args.length > 0) {
-            StringBuilder channelName = new StringBuilder();
+            StringBuilder channelNameBuilder = new StringBuilder();
             int channelSize = 0;
             if (args.length > 1) {
                 try {
@@ -27,15 +27,15 @@ public class CommandChannel extends BotCommand {
                     if (channelSize < 0 || channelSize > 99)
                         channelSize = 0;
                     for (int i = 0; i < args.length - 1; i++) {
-                        channelName.append(args[i] + (i != args.length - 1 ? " " : ""));
+                        channelNameBuilder.append(args[i] + (i != args.length - 1 ? " " : ""));
                     }
                 } catch (NumberFormatException e) {
                     for (int i = 0; i < args.length; i++) {
-                        channelName.append(args[i] + (i != args.length - 1 ? " " : ""));
+                        channelNameBuilder.append(args[i] + (i != args.length - 1 ? " " : ""));
                     }
                 }
             } else {
-                channelName.append(args[0]);
+                channelNameBuilder.append(args[0]);
             }
             if (event.getMember().getVoiceState().getChannel() != null) {
                 Consumer<Channel> channelCallback = (channel) -> {
@@ -43,7 +43,9 @@ public class CommandChannel extends BotCommand {
                     event.getGuild().getController().moveVoiceMember(event.getMember(), (VoiceChannel) channel).queue();
                 };
                 try {
-                    event.getGuild().getController().createVoiceChannel(channelName.toString()).setParent(event.getJDA().getCategoryById(Data.config().getVoiceCategory())).setUserlimit(channelSize).queue(channelCallback);
+                    String channelName = channelNameBuilder.toString().trim();
+                    event.getGuild().getController().createVoiceChannel(channelName).setParent(event.getJDA().getCategoryById(Data.config().getVoiceCategory())).setUserlimit(channelSize).queue(channelCallback);
+                    event.getChannel().sendMessage("Successfully created and joined voice channel \"" + channelName + "\"" + (channelSize == 0 ? "" : " (User limit: " + channelSize + ")")).queue();
                 } catch (IllegalArgumentException e) {
                     event.getChannel().sendMessage("The channel name you provide must be between 2 and 100 characters in length.").queue();
                 }

@@ -10,11 +10,13 @@ public class ConfigData {
     private int srAppId;
     private int queryTimeout;
     private Servers servers;
+    private long mainChannel;
     private CommandRestriction commandRestriction;
     private Logging logging;
     private Files files;
     private long voiceCategory;
     private List<String> characters;
+    private List<Long> autoRankBlacklist;
 
     public class EmbedColor {
 
@@ -125,6 +127,10 @@ public class ConfigData {
         return servers;
     }
 
+    public long getMainChannel() {
+        return mainChannel;
+    }
+
     public CommandRestriction getCommandRestriction() {
         return commandRestriction;
     }
@@ -143,6 +149,10 @@ public class ConfigData {
 
     public List<String> getCharacters() {
         return characters;
+    }
+
+    public List<Long> getAutoRankBlacklist() {
+        return autoRankBlacklist;
     }
 
 }

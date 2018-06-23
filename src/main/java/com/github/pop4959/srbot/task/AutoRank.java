@@ -18,10 +18,10 @@ public class AutoRank extends ListenerAdapter {
     private static final List<Long> BLACKLIST = Data.config().getAutoRankBlacklist();
 
     static {
-        String[] roleKeys = new String[]{"348050330413563914", "348050371316547584", "348050417902682112", "348049472800161792", "348050519841046538", "348050557333798922", "348050592817479680", "348050641266147328", "348050671460941824"};
-        long[] roleValues = new long[]{447856686724546571L, 447856627962609664L, 447856592503832576L, 447856504813649930L, 447856480310525953L, 447856450707128321L, 447856390359220234L, 447856348332556301L, 447856313574227977L};
-        for (int i = 0; i < roleKeys.length; ++i) {
-            ROLES.put(roleKeys[i], roleValues[i]);
+        List<String> roleKeys = Data.config().getRoleKeys();
+        List<Long> roleValues = Data.config().getRoleIds();
+        for (int i = 0; i < roleKeys.size(); ++i) {
+            ROLES.put(roleKeys.get(i), roleValues.get(i));
         }
     }
 
@@ -35,7 +35,9 @@ public class AutoRank extends ListenerAdapter {
                 Member member = event.getMember();
                 long roleId = ROLES.get(roleKey);
                 String league = guild.getRoleById(roleId).getName();
-                if (manageRankRoles(event.getGuild(), member, roleId)) {
+                boolean showMessage = hasRankRole(member);
+                boolean roleChanged = manageRankRoles(event.getGuild(), member, roleId);
+                if (showMessage && roleChanged) {
                     event.getGuild().getTextChannelById(CHANNEL).sendMessage(member.getAsMention() + " just reached " + league + "!").queue();
                 }
             }
@@ -57,6 +59,15 @@ public class AutoRank extends ListenerAdapter {
         }
         guildController.addSingleRoleToMember(member, guild.getRoleById(newRole)).queue();
         return true;
+    }
+
+    private boolean hasRankRole(Member member) {
+        for (Role memberRole : member.getRoles()) {
+            if (ROLES.containsValue(memberRole.getIdLong())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

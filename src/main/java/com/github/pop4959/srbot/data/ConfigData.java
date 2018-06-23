@@ -17,6 +17,8 @@ public class ConfigData {
     private long voiceCategory;
     private List<String> characters;
     private List<Long> autoRankBlacklist;
+    private List<String> roleKeys;
+    private List<Long> roleIds;
 
     public class EmbedColor {
 
@@ -153,6 +155,14 @@ public class ConfigData {
 
     public List<Long> getAutoRankBlacklist() {
         return autoRankBlacklist;
+    }
+
+    public List<String> getRoleKeys() {
+        return roleKeys;
+    }
+
+    public List<Long> getRoleIds() {
+        return roleIds;
     }
 
 }

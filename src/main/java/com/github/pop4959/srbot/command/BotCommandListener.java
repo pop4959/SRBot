@@ -11,6 +11,7 @@ import java.util.List;
 
 public class BotCommandListener extends ListenerAdapter {
 
+    private static long SERVER = Data.config().getServers().getMain();
     private static boolean RESTRICTION = Data.config().getCommandRestriction().isEnabled();
     private static List<Long> CHANNELS = Data.config().getCommandRestriction().getAllowedChannels();
 
@@ -24,7 +25,7 @@ public class BotCommandListener extends ListenerAdapter {
                 if (!RESTRICTION || RESTRICTION && CHANNELS.contains(event.getChannel().getIdLong()) || event.getChannelType() == ChannelType.PRIVATE) {
                     String[] args = StringUtils.substringAfter(message, " ").split(" ");
                     BotCommand command = BotCommandHandler.getCommand(commandString);
-                    if (command.getConfig().getPermission().equalsIgnoreCase("default") || event.getMember().hasPermission(Permission.MANAGE_SERVER))
+                    if (command.getConfig().getPermission().equalsIgnoreCase("default") || event.getJDA().getGuildById(SERVER).getMemberById(event.getAuthor().getIdLong()).hasPermission(Permission.MANAGE_SERVER))
                         command.execute(event, args.length == 1 && args[0] == "" ? new String[]{} : args);
                 } else {
                     event.getMember().getUser().openPrivateChannel().queue((channel) -> channel.sendMessage("You're not permitted to use bot commands in #" + event.getChannel().getName() + ". Please use the designated channels instead!").queue());

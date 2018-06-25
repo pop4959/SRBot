@@ -7,9 +7,8 @@ import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+
 
 public class CommandMatchmaker extends BotCommand {
 
@@ -26,7 +25,7 @@ public class CommandMatchmaker extends BotCommand {
             event.getChannel().sendMessage("You must have a rank role in order to use this command.").queue();
             return;
         }
-        List<Member> lobby = new ArrayList<>();
+        Set<Member> lobby = new HashSet<>();
         lobby.add(event.getMember());
         findPlayersForLobby(lobby, guild.getMembersWithRoles(scanRole));
         int rank = RANK_ROLES.indexOf(scanRole.getIdLong()), distance = 1;
@@ -40,14 +39,14 @@ public class CommandMatchmaker extends BotCommand {
             ++distance;
         }
         StringBuilder names = new StringBuilder();
-        for (int i = 0; i < lobby.size(); ++i) {
-            Member member = lobby.get(i);
-            names.append(member.getEffectiveName() + " (" + getMemberRankRole(member).getName() + ")" + (i == lobby.size() - 1 ? "" : ", "));
+        int i = 0;
+        for (Member member : lobby) {
+            names.append(member.getEffectiveName() + " (" + getMemberRankRole(member).getName() + ")" + (++i == lobby.size() ? "" : ", "));
         }
         event.getChannel().sendMessage("Suggested lobby: " + names).queue();
     }
 
-    private void findPlayersForLobby(List<Member> lobby, List<Member> pool) {
+    private void findPlayersForLobby(Set<Member> lobby, List<Member> pool) {
         Collections.shuffle(pool);
         for (Member member : pool) {
             Game game = member.getGame();

@@ -1,10 +1,9 @@
 package com.github.pop4959.srbot.command;
 
 import com.github.pop4959.srbot.data.Data;
-import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Role;
+import com.github.pop4959.srbot.util.EmbedTemplates;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.util.*;
@@ -13,6 +12,7 @@ import java.util.*;
 public class CommandMatchmaker extends BotCommand {
 
     private static final List<Long> RANK_ROLES = Data.config().getRoleIds();
+    private static final List<String> RANK_EMOTES = Data.config().getRankEmotes();
 
     public CommandMatchmaker() {
         super("matchmaker");
@@ -38,12 +38,16 @@ public class CommandMatchmaker extends BotCommand {
             findPlayersForLobby(lobby, players);
             ++distance;
         }
-        StringBuilder names = new StringBuilder();
+        EmbedBuilder embed = EmbedTemplates.empty("Suggested lobby");
         int i = 0;
         for (Member member : lobby) {
-            names.append(member.getEffectiveName() + " (" + getMemberRankRole(member).getName() + ")" + (++i == lobby.size() ? "" : ", "));
+            Role role = getMemberRankRole(member);
+            embed.addField(member.getEffectiveName(), getMemberRankEmote(role) + " " + role.getName(), true);
+            if (++i % 2 == 0) {
+                embed.addBlankField(true);
+            }
         }
-        event.getChannel().sendMessage("Suggested lobby: " + names).queue();
+        event.getChannel().sendMessage(embed.build()).queue();
     }
 
     private void findPlayersForLobby(Set<Member> lobby, List<Member> pool) {
@@ -65,6 +69,10 @@ public class CommandMatchmaker extends BotCommand {
             }
         }
         return null;
+    }
+
+    private String getMemberRankEmote(Role role) {
+        return RANK_EMOTES.get(RANK_ROLES.indexOf(role.getIdLong()));
     }
 
 }

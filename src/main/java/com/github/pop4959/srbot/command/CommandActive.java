@@ -9,6 +9,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CommandActive extends BotCommand {
@@ -33,7 +34,8 @@ public class CommandActive extends BotCommand {
         if (players.isEmpty()) {
             event.getChannel().sendMessage("There are currently no players from this server online in SpeedRunners.").queue();
         } else {
-            event.getChannel().sendMessage(EmbedTemplates.plaintext("Currently playing SpeedRunners from this server", StringUtils.join(players, ", ")).build()).queue();
+            Collections.sort(players);
+            event.getChannel().sendMessage(EmbedTemplates.plaintext("Currently playing SpeedRunners from this server (" + players.size() + ")", StringUtils.join(players, ", ")).build()).queue();
         }
     }
 

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -23,8 +24,8 @@ import java.util.concurrent.TimeoutException;
 public class CommandPoints extends BotCommand {
 
     private static final Pair<String, Integer>[] BOUNDARIES = new Pair[]{Pair.of("Entry", 0), Pair.of("Beginner", 8000), Pair.of("Advanced", 9000), Pair.of("Expert", 10000), Pair.of("Bronze", 12000), Pair.of("Silver", 17000), Pair.of("Gold", 20000), Pair.of("Platinum", 24000), Pair.of("Diamond", 29000)};
-    private static final String[] RANK_EMOTES = new String[]{"<:entry_league:427677594587234304>", "<:beginner_league:427677594335576065>", "<:advanced_league:427677594553679872>", "<:expert_league:427677594557612032>", "<:bronze_league:427677594259947522>", "<:silver_league:427677594289438732>", "<:gold_league:427677594637565952>", "<:platinum_league:427677594582777888>", "<:diamond_league:427677594368868353>", "<:king_of_speed:427677594318536706>"};
-    private static final String KOS = "76561198166738162";
+    private static final List<String> RANK_EMOTES = Data.config().getRankEmotes();
+    private static final String KOS = Data.config().getKingOfSpeed();
 
     public CommandPoints() {
         super("points");
@@ -61,7 +62,7 @@ public class CommandPoints extends BotCommand {
             }
             try {
                 SteamPlayerProfile steamProfile = user.getPlayerProfile(Long.parseLong(id)).get(Data.config().getQueryTimeout(), TimeUnit.MILLISECONDS);
-                event.getChannel().sendMessage(EmbedTemplates.points("Off-season: " + jsonData.getInt("score") + " points (" + RANK_EMOTES[id.equals(KOS) ? 9 : jsonData.getInt("tier")] + BOUNDARIES[jsonData.getInt("tier")].getLeft() + " League )\nWinter season: " + (new DecimalFormat("#.##")).format(jsonData.getDouble("rating")) + " points (" + RANK_EMOTES[id.equals(KOS) ? 9 : eloTier] + BOUNDARIES[eloTier].getLeft() + " League )", "Points for " + steamProfile.getName(), steamProfile.getProfileUrl(), steamProfile.getAvatarFullUrl()).build()).queue();
+                event.getChannel().sendMessage(EmbedTemplates.points("Off-season: " + jsonData.getInt("score") + " points (" + RANK_EMOTES.get(id.equals(KOS) ? 9 : jsonData.getInt("tier")) + BOUNDARIES[jsonData.getInt("tier")].getLeft() + " League )\nWinter season: " + (new DecimalFormat("#.##")).format(jsonData.getDouble("rating")) + " points (" + RANK_EMOTES.get(id.equals(KOS) ? 9 : eloTier) + BOUNDARIES[eloTier].getLeft() + " League )", "Points for " + steamProfile.getName(), steamProfile.getProfileUrl(), steamProfile.getAvatarFullUrl()).build()).queue();
             } catch (BadRequestException | InterruptedException | ExecutionException | TimeoutException e) {
                 event.getChannel().sendMessage("Unable to retrieve data for the requested user.").queue();
             }

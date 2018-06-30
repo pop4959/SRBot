@@ -2,6 +2,7 @@ package com.github.pop4959.srbot.command;
 
 import com.github.pop4959.srbot.Main;
 import com.github.pop4959.srbot.data.Data;
+import com.github.pop4959.srbot.util.EmbedTemplates;
 import com.github.pop4959.srbot.util.Steam;
 import com.ibasco.agql.core.exceptions.BadRequestException;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUser;
@@ -46,7 +47,7 @@ public class CommandStats extends BotCommand {
                 SteamPlayerProfile steamProfile = user.getPlayerProfile(Long.parseLong(id)).get(Data.config().getQueryTimeout(), TimeUnit.MILLISECONDS);
                 VALUES.clear();
                 steamUserStats.getUserStatsForGame(Long.parseLong(id), Data.config().getSrAppId()).get(Data.config().getQueryTimeout(), TimeUnit.MILLISECONDS).getStats().forEach(stat -> VALUES.put(stat.getName(), stat.getValue()));
-                event.getChannel().sendMessage((new EmbedBuilder().setDescription(groupforCodes(20)).setColor(new Color(Data.config().getEmbedColor().getR(), Data.config().getEmbedColor().getG(), Data.config().getEmbedColor().getB())).addField("Movement", groupforCodes(21, 22, 23, 24), true).addField("Sliding", groupforCodes(25, 26), true).addField("Grappling", groupforCodes(27, 28), true).addField("Golden Hook", groupforCodes(0, 1, 2), true).addField("Bomb", groupforCodes(3, 4, 5), true).addField("Shockwave", groupforCodes(6, 7, 8), true).addField("Crate", groupforCodes(9, 10, 11, 12, 13), true).addField("Rocket", groupforCodes(14, 15, 16), true).addField("Drill", groupforCodes(17, 18, 19), true).setAuthor("Stats for " + steamProfile.getName(), steamProfile.getProfileUrl(), steamProfile.getAvatarFullUrl())).build()).queue();
+                event.getChannel().sendMessage((new EmbedBuilder().setDescription(groupforCodes(20)).setColor(EmbedTemplates.getDefaultColor()).addField("Movement", groupforCodes(21, 22, 23, 24), true).addField("Sliding", groupforCodes(25, 26), true).addField("Grappling", groupforCodes(27, 28), true).addField("Golden Hook", groupforCodes(0, 1, 2), true).addField("Bomb", groupforCodes(3, 4, 5), true).addField("Shockwave", groupforCodes(6, 7, 8), true).addField("Crate", groupforCodes(9, 10, 11, 12, 13), true).addField("Rocket", groupforCodes(14, 15, 16), true).addField("Drill", groupforCodes(17, 18, 19), true).setAuthor("Stats for " + steamProfile.getName(), steamProfile.getProfileUrl(), steamProfile.getAvatarFullUrl())).build()).queue();
             } catch (BadRequestException | InterruptedException | ExecutionException | TimeoutException e) {
                 event.getChannel().sendMessage("The requested user does not own the game, or has their account's game details set to private.").queue();
             }

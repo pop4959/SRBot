@@ -19,6 +19,8 @@ public class ConfigData {
     private List<Long> autoRankBlacklist;
     private List<String> roleKeys;
     private List<Long> roleIds;
+    private List<String> rankEmotes;
+    private String kingOfSpeed;
 
     public class EmbedColor {
 
@@ -163,6 +165,14 @@ public class ConfigData {
 
     public List<Long> getRoleIds() {
         return roleIds;
+    }
+
+    public List<String> getRankEmotes() {
+        return rankEmotes;
+    }
+
+    public String getKingOfSpeed() {
+        return kingOfSpeed;
     }
 
 }

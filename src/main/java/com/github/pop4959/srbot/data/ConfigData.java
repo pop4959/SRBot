@@ -20,7 +20,8 @@ public class ConfigData {
     private List<String> roleKeys;
     private List<Long> roleIds;
     private List<String> rankEmotes;
-    private String kingOfSpeed;
+    private String kingOfSpeedSteam;
+    private long kingOfSpeedDiscord;
 
     public class EmbedColor {
 
@@ -171,8 +172,12 @@ public class ConfigData {
         return rankEmotes;
     }
 
-    public String getKingOfSpeed() {
-        return kingOfSpeed;
+    public String getKingOfSpeedSteam() {
+        return kingOfSpeedSteam;
+    }
+
+    public long getKingOfSpeedDiscord() {
+        return kingOfSpeedDiscord;
     }
 
 }

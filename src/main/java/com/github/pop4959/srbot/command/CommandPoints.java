@@ -25,7 +25,7 @@ public class CommandPoints extends BotCommand {
 
     private static final Pair<String, Integer>[] BOUNDARIES = new Pair[]{Pair.of("Entry", 0), Pair.of("Beginner", 8000), Pair.of("Advanced", 9000), Pair.of("Expert", 10000), Pair.of("Bronze", 12000), Pair.of("Silver", 17000), Pair.of("Gold", 20000), Pair.of("Platinum", 24000), Pair.of("Diamond", 29000)};
     private static final List<String> RANK_EMOTES = Data.config().getRankEmotes();
-    private static final String KOS = Data.config().getKingOfSpeed();
+    private static final String KOS = Data.config().getKingOfSpeedSteam();
 
     public CommandPoints() {
         super("points");

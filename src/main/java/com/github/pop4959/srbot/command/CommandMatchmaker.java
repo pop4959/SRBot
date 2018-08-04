@@ -13,6 +13,7 @@ public class CommandMatchmaker extends BotCommand {
 
     private static final List<Long> RANK_ROLES = Data.config().getRoleIds();
     private static final List<String> RANK_EMOTES = Data.config().getRankEmotes();
+    private static final long KING_OF_SPEED = Data.config().getKingOfSpeedDiscord();
 
     public CommandMatchmaker() {
         super("matchmaker");
@@ -42,7 +43,7 @@ public class CommandMatchmaker extends BotCommand {
         int i = 0;
         for (Member member : lobby) {
             Role role = getMemberRankRole(member);
-            embed.addField(member.getEffectiveName(), getMemberRankEmote(role) + " " + role.getName(), true);
+            embed.addField(member.getEffectiveName(), getMemberRankEmote(member, role) + " " + role.getName(), true);
             if (++i % 2 == 0) {
                 embed.addBlankField(true);
             }
@@ -71,7 +72,9 @@ public class CommandMatchmaker extends BotCommand {
         return null;
     }
 
-    private String getMemberRankEmote(Role role) {
+    private String getMemberRankEmote(Member member, Role role) {
+        if (member.getUser().getIdLong() == KING_OF_SPEED)
+            return RANK_EMOTES.get(9);
         return RANK_EMOTES.get(RANK_ROLES.indexOf(role.getIdLong()));
     }
 

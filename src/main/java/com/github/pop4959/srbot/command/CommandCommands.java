@@ -19,7 +19,7 @@ public class CommandCommands extends BotCommand {
             if (!BotCommandHandler.getCommand(cmdName).getConfig().isHidden())
                 commands.add(cmdName);
         }
-        event.getChannel().sendMessage(EmbedTemplates.plaintext("Commands", commands.toString().replaceAll("[\\[\\]]", "")).build()).queue();
+        event.getChannel().sendMessage(EmbedTemplates.plaintext(event.getGuild(), "Commands", commands.toString().replaceAll("[\\[\\]]", "")).build()).queue();
     }
 
 }

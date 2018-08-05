@@ -35,7 +35,7 @@ public class CommandActive extends BotCommand {
             event.getChannel().sendMessage("There are currently no players from this server online in SpeedRunners.").queue();
         } else {
             Collections.sort(players);
-            event.getChannel().sendMessage(EmbedTemplates.plaintext("Currently playing SpeedRunners from this server (" + players.size() + ")", StringUtils.join(players, ", ")).build()).queue();
+            event.getChannel().sendMessage(EmbedTemplates.plaintext(guild, "Currently playing SpeedRunners from this server (" + players.size() + ")", StringUtils.join(players, ", ")).build()).queue();
         }
     }
 

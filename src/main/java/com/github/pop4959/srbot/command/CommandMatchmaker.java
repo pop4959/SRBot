@@ -39,7 +39,7 @@ public class CommandMatchmaker extends BotCommand {
             findPlayersForLobby(lobby, players);
             ++distance;
         }
-        EmbedBuilder embed = EmbedTemplates.empty("Suggested lobby");
+        EmbedBuilder embed = EmbedTemplates.title(guild, "Suggested lobby");
         int i = 0;
         for (Member member : lobby) {
             Role role = getMemberRankRole(member);

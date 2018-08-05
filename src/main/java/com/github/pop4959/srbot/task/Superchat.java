@@ -1,17 +1,12 @@
 package com.github.pop4959.srbot.task;
 
-import com.github.pop4959.srbot.data.Data;
-import net.dv8tion.jda.core.entities.ChannelType;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class Superchat extends ListenerAdapter {
 
-    private static boolean RESTRICTION = Data.config().getCommandRestriction().isEnabled();
-    private static List<Long> CHANNELS = Data.config().getCommandRestriction().getAllowedChannels();
     private static final HashMap<String, String> RESPONSES = new HashMap<>();
 
     static {
@@ -34,7 +29,7 @@ public class Superchat extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         String message = event.getMessage().getContentRaw();
-        if (!event.getAuthor().isBot() && (!RESTRICTION || RESTRICTION && CHANNELS.contains(event.getChannel().getIdLong()) || event.getChannelType() == ChannelType.PRIVATE)) {
+        if (!event.getAuthor().isBot()) {
             if (RESPONSES.containsKey(message))
                 event.getChannel().sendMessage(RESPONSES.get(message)).queue();
         }

@@ -8,7 +8,6 @@ import com.ibasco.agql.core.exceptions.BadRequestException;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUser;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUserStats;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
-import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.awt.*;

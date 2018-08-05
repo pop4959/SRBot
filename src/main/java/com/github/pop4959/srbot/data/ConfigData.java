@@ -11,7 +11,6 @@ public class ConfigData {
     private int queryTimeout;
     private Servers servers;
     private long mainChannel;
-    private CommandRestriction commandRestriction;
     private Logging logging;
     private Files files;
     private long voiceCategory;
@@ -54,21 +53,6 @@ public class ConfigData {
 
         public long getAdmin() {
             return admin;
-        }
-
-    }
-
-    public class CommandRestriction {
-
-        private boolean enabled;
-        private List<Long> allowedChannels;
-
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public List<Long> getAllowedChannels() {
-            return allowedChannels;
         }
 
     }
@@ -134,10 +118,6 @@ public class ConfigData {
 
     public long getMainChannel() {
         return mainChannel;
-    }
-
-    public CommandRestriction getCommandRestriction() {
-        return commandRestriction;
     }
 
     public Logging getLogging() {

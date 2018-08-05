@@ -15,6 +15,7 @@ public class CommandsData {
         private String description;
         private String permission;
         private boolean hidden;
+        private boolean exclusive;
         private String arguments;
         private List<String> aliases;
 
@@ -32,6 +33,10 @@ public class CommandsData {
 
         public boolean isHidden() {
             return hidden;
+        }
+
+        public boolean isExclusive() {
+            return exclusive;
         }
 
         public String getArguments() {

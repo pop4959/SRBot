@@ -11,6 +11,7 @@ public class CommandSay extends BotCommand {
 
     public void execute(MessageReceivedEvent event, String[] args) {
         event.getChannel().sendMessage(StringUtils.join(args, " ")).queue();
+        event.getMessage().delete().queue();
     }
 
 }

@@ -2,6 +2,8 @@ package com.github.pop4959.srbot.task;
 
 import com.github.pop4959.srbot.Logger;
 import com.github.pop4959.srbot.data.Data;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -12,15 +14,19 @@ public class GuildActivity extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        if (event.getGuild().getIdLong() == SERVER) {
-            Logger.log(event.getMember().getAsMention() + " has joined the server. [" + event.getGuild().getMembers().size() + "]", "ctf");
+        Guild g = event.getGuild();
+        if (g.getIdLong() == SERVER) {
+            User u = event.getMember().getUser();
+            Logger.log(u.getName() + "#" + u.getDiscriminator() + " (" + u.getId() + ") has joined the server. [" + g.getMembers().size() + "]", "ctf");
         }
     }
 
     @Override
     public void onGuildMemberLeave(GuildMemberLeaveEvent event) {
-        if (event.getGuild().getIdLong() == SERVER) {
-            Logger.log(event.getMember().getAsMention() + " has left the server. [" + event.getGuild().getMembers().size() + "]", "ctf");
+        Guild g = event.getGuild();
+        if (g.getIdLong() == SERVER) {
+            User u = event.getMember().getUser();
+            Logger.log(u.getName() + "#" + u.getDiscriminator() + " (" + u.getId() + ") has left the server. [" + g.getMembers().size() + "]", "ctf");
         }
     }
 

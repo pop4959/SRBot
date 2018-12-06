@@ -8,6 +8,7 @@
       "arguments": "",
       "aliases": [
         "changes"
+        "updates"
       ]
     },
     {
@@ -18,6 +19,7 @@
       "arguments": "<name> [size]",
       "aliases": [
         "voice"
+        "vc"
       ]
     },
     {
@@ -28,6 +30,8 @@
       "arguments": "",
       "aliases": [
         "commandlist"
+        "cmd"
+        "list"
       ]
     },
     {
@@ -37,6 +41,7 @@
       "hidden": "false",
       "arguments": "<command>",
       "aliases": [
+        "h"
       ]
     },
     {
@@ -80,6 +85,8 @@
         "rc",
         "randchar",
         "randomchar"
+        "char"
+        "character"
       ]
     },
     {
@@ -89,6 +96,7 @@
       "hidden": "true",
       "arguments": "",
       "aliases": [
+        "pop"
       ]
     }
   ]

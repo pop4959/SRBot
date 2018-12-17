@@ -37,8 +37,8 @@ public class AutoRank extends ListenerAdapter {
                 String league = guild.getRoleById(roleId).getName();
                 boolean showMessage = hasRankRole(member);
                 boolean roleChanged = manageRankRoles(event.getGuild(), member, roleId);
-                if (showMessage && roleChanged) {
-                    event.getGuild().getTextChannelById(CHANNEL).sendMessage(member.getAsMention() + " just reached " + league + "!").queue();
+                if (roleChanged) {
+                    event.getGuild().getTextChannelById(CHANNEL).sendMessage(member.getAsMention() + (showMessage ? " just reached " : " started at ") + league + "!").queue();
                 }
             }
         }

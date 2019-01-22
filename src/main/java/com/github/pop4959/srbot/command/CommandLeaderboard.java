@@ -41,7 +41,7 @@ public class CommandLeaderboard extends BotCommand {
         }
         URL leaderboardUrl;
         try {
-            leaderboardUrl = new URL("http://api.speedrunners.doubledutchgames.com/GetLeaderboard?season=4&steamid=" + id + "&start=-10&end=10");
+            leaderboardUrl = new URL("http://api.speedrunners.doubledutchgames.com/GetLeaderboard?season=1&steamid=" + id + "&start=-10&end=10");
         } catch (MalformedURLException e) {
             event.getChannel().sendMessage("The requested user does not own the game, is unranked, or has their profile set to private.").queue();
             return;

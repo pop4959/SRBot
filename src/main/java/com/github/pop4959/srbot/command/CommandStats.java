@@ -11,7 +11,9 @@ import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.awt.*;
+import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -56,11 +58,13 @@ public class CommandStats extends BotCommand {
     }
 
     String fieldForCodeIndex(int index) {
+        Locale locale = new Locale("en", "GB");
+        NumberFormat nf = NumberFormat.getInstance(locale);
         String code = CODES[index];
         Integer value = VALUES.get(code);
         if (value == null)
             value = 0;
-        return NAMES.get(code) + ": " + value;
+        return NAMES.get(code) + ": " + nf.format(value);
     }
 
     String groupforCodes(int... indices) {

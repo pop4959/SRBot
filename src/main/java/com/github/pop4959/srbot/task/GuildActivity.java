@@ -10,24 +10,40 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public class GuildActivity extends ListenerAdapter {
 
-    private static final long SERVER = Data.config().getServers().getMain();
+	private static final long SERVER = Data.config().getServers().getMain();
 
-    @Override
-    public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        Guild g = event.getGuild();
-        if (g.getIdLong() == SERVER) {
-            User u = event.getMember().getUser();
-            Logger.log(u.getName() + "#" + u.getDiscriminator() + " (" + u.getId() + ") has joined the server. [" + g.getMembers().size() + "]", "ctf");
-        }
-    }
+	@Override
+	public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+		Guild g = event.getGuild();
+		if (g.getIdLong() == SERVER) {
+			User u = event.getMember().getUser();
+			Logger.log(
+					String.format(
+							"%s#%s (%s) has joined the server. [%d]",
+							u.getName(),
+							u.getDiscriminator(),
+							u.getId(),
+							g.getMembers().size()
+					), "ctf"
+			);
+		}
+	}
 
-    @Override
-    public void onGuildMemberLeave(GuildMemberLeaveEvent event) {
-        Guild g = event.getGuild();
-        if (g.getIdLong() == SERVER) {
-            User u = event.getMember().getUser();
-            Logger.log(u.getName() + "#" + u.getDiscriminator() + " (" + u.getId() + ") has left the server. [" + g.getMembers().size() + "]", "ctf");
-        }
-    }
+	@Override
+	public void onGuildMemberLeave(GuildMemberLeaveEvent event) {
+		Guild g = event.getGuild();
+		if (g.getIdLong() == SERVER) {
+			User u = event.getMember().getUser();
+			Logger.log(
+					String.format(
+							"%s#%s (%s) has left the server. [%d]",
+							u.getName(),
+							u.getDiscriminator(),
+							u.getId(),
+							g.getMembers().size()
+					), "ctf"
+			);
+		}
+	}
 
 }

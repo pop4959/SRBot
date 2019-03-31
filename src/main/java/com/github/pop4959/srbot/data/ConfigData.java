@@ -1,163 +1,181 @@
 package com.github.pop4959.srbot.data;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class ConfigData {
 
-    private String commandPrefix;
-    private String gameName;
-    private EmbedColor embedColor;
-    private int srAppId;
-    private int queryTimeout;
-    private Servers servers;
-    private long mainChannel;
-    private Logging logging;
-    private Files files;
-    private long voiceCategory;
-    private List<String> characters;
-    private List<Long> autoRankBlacklist;
-    private List<String> roleKeys;
-    private List<Long> roleIds;
-    private List<String> rankEmotes;
-    private String kingOfSpeedSteam;
-    private long kingOfSpeedDiscord;
+	private String commandPrefix;
+	private String gameName;
+	private EmbedColor embedColor;
+	private int srAppId;
+	private int queryTimeout;
+	private Servers servers;
+	private long mainChannel;
+	private Logging logging;
+	private Files files;
+	private long voiceCategory;
+	private List<String> characters;
+	private List<Long> autoRankBlacklist;
+	private List<String> roleKeys;
+	private List<Long> roleIds;
+	private List<String> rankEmotes;
+	private String kingOfSpeedSteam;
+	private long kingOfSpeedDiscord;
+	private String language;
 
-    public class EmbedColor {
+	public class EmbedColor {
 
-        private int r;
-        private int g;
-        private int b;
+		private int r;
+		private int g;
+		private int b;
 
-        public int getR() {
-            return r;
-        }
+		public int getR() {
+			return r;
+		}
 
-        public int getG() {
-            return g;
-        }
+		public int getG() {
+			return g;
+		}
 
-        public int getB() {
-            return b;
-        }
+		public int getB() {
+			return b;
+		}
 
-    }
+	}
 
-    public class Servers {
+	public class Servers {
 
-        private long main;
-        private long admin;
+		private long main;
+		private long admin;
 
-        public long getMain() {
-            return main;
-        }
+		public long getMain() {
+			return main;
+		}
 
-        public long getAdmin() {
-            return admin;
-        }
+		public long getAdmin() {
+			return admin;
+		}
 
-    }
+	}
 
-    public class Logging {
+	public class Logging {
 
-        private long server;
-        private long channel;
+		private long server;
+		private long channel;
 
-        public long getServer() {
-            return server;
-        }
+		public long getServer() {
+			return server;
+		}
 
-        public long getChannel() {
-            return channel;
-        }
+		public long getChannel() {
+			return channel;
+		}
 
-    }
+	}
 
-    public class Files {
+	public class Files {
 
-        private String discordToken;
-        private String steamToken;
-        private String commands;
+		private String discordToken;
+		private String steamToken;
+		private String commands;
 
-        public String getDiscordToken() {
-            return discordToken;
-        }
+		public String getDiscordToken() {
+			return discordToken;
+		}
 
-        public String getSteamToken() {
-            return steamToken;
-        }
+		public String getSteamToken() {
+			return steamToken;
+		}
 
-        public String getCommands() {
-            return commands;
-        }
+		public String getCommands() {
+			return commands;
+		}
 
-    }
+	}
 
-    public String getCommandPrefix() {
-        return commandPrefix;
-    }
+	public String fetchLanguage(){
+		return language;
+	}
 
-    public String getGameName() {
-        return gameName;
-    }
+	public LinkedHashMap<String, String> getLanguage(){
+		String lang = Data.fromFile(Data.config().fetchLanguage());
+		LinkedHashMap<String, String> map = new LinkedHashMap<>();
+		String[] contents = lang.split("\n");
+		for (String content : contents) {
+			if (content.startsWith("//")) continue;
+			String[] kv = content.split("=", 2);
+			map.put(kv[0].trim(), kv[1].trim());
+		}
+		return map;
+	}
 
-    public EmbedColor getEmbedColor() {
-        return embedColor;
-    }
+	public String getCommandPrefix() {
+		return commandPrefix;
+	}
 
-    public int getSrAppId() {
-        return srAppId;
-    }
+	public String getGameName() {
+		return gameName;
+	}
 
-    public int getQueryTimeout() {
-        return queryTimeout;
-    }
+	public EmbedColor getEmbedColor() {
+		return embedColor;
+	}
 
-    public Servers getServers() {
-        return servers;
-    }
+	public int getSrAppId() {
+		return srAppId;
+	}
 
-    public long getMainChannel() {
-        return mainChannel;
-    }
+	public int getQueryTimeout() {
+		return queryTimeout;
+	}
 
-    public Logging getLogging() {
-        return logging;
-    }
+	public Servers getServers() {
+		return servers;
+	}
 
-    public Files getFiles() {
-        return files;
-    }
+	public long getMainChannel() {
+		return mainChannel;
+	}
 
-    public long getVoiceCategory() {
-        return voiceCategory;
-    }
+	public Logging getLogging() {
+		return logging;
+	}
 
-    public List<String> getCharacters() {
-        return characters;
-    }
+	public Files getFiles() {
+		return files;
+	}
 
-    public List<Long> getAutoRankBlacklist() {
-        return autoRankBlacklist;
-    }
+	public long getVoiceCategory() {
+		return voiceCategory;
+	}
 
-    public List<String> getRoleKeys() {
-        return roleKeys;
-    }
+	public List<String> getCharacters() {
+		return characters;
+	}
 
-    public List<Long> getRoleIds() {
-        return roleIds;
-    }
+	public List<Long> getAutoRankBlacklist() {
+		return autoRankBlacklist;
+	}
 
-    public List<String> getRankEmotes() {
-        return rankEmotes;
-    }
+	public List<String> getRoleKeys() {
+		return roleKeys;
+	}
 
-    public String getKingOfSpeedSteam() {
-        return kingOfSpeedSteam;
-    }
+	public List<Long> getRoleIds() {
+		return roleIds;
+	}
 
-    public long getKingOfSpeedDiscord() {
-        return kingOfSpeedDiscord;
-    }
+	public List<String> getRankEmotes() {
+		return rankEmotes;
+	}
+
+	public String getKingOfSpeedSteam() {
+		return kingOfSpeedSteam;
+	}
+
+	public long getKingOfSpeedDiscord() {
+		return kingOfSpeedDiscord;
+	}
 
 }

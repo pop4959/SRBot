@@ -11,21 +11,27 @@ import java.util.List;
 
 public class CommandCommands extends BotCommand {
 
-    private static long SERVER = Data.config().getServers().getMain();
+	private static long SERVER = Data.config().getServers().getMain();
 
-    public CommandCommands() {
-        super("commands");
-    }
+	public CommandCommands() {
+		super("commands");
+	}
 
-    public void execute(MessageReceivedEvent event, String[] args) {
-        Guild guild = event.getGuild();
-        List<String> commands = new ArrayList<>();
-        for (String cmdName : Data.commands().getCommandConfigurationMap().keySet()) {
-            CommandsData.CommandConfiguration cc = BotCommandHandler.getCommand(cmdName).getConfig();
-            if (!cc.isHidden() && (!cc.isExclusive() || (guild != null && guild.getIdLong() == SERVER)))
-                commands.add(cmdName);
-        }
-        event.getChannel().sendMessage(EmbedTemplates.plaintext(event.getGuild(), "Commands", commands.toString().replaceAll("[\\[\\]]", "")).build()).queue();
-    }
+	public void execute(MessageReceivedEvent event, String[] args) {
+		Guild guild = event.getGuild();
+		List<String> commands = new ArrayList<>();
+		for (String cmdName : Data.commands().getCommandConfigurationMap().keySet()) {
+			CommandsData.CommandConfiguration cc = BotCommandHandler.getCommand(cmdName).getConfig();
+			if (!cc.isHidden() && (!cc.isExclusive() || (guild != null && guild.getIdLong() == SERVER)))
+				commands.add(cmdName);
+		}
+		event.getChannel().sendMessage(
+				EmbedTemplates.plaintext(
+						event.getGuild(),
+						"Commands",
+						commands.toString().replaceAll("[\\[\\]]", "")
+				).build()
+		).queue();
+	}
 
 }

@@ -14,29 +14,33 @@ import java.util.List;
 
 public class CommandActive extends BotCommand {
 
-    private static final List<Long> RANK_ROLES = Data.config().getRoleIds();
+	private static final List<Long> RANK_ROLES = Data.config().getRoleIds();
 
-    public CommandActive() {
-        super("active");
-    }
+	public CommandActive() {
+		super("active");
+	}
 
-    public void execute(MessageReceivedEvent event, String[] args) {
-        Guild guild = event.getGuild();
-        List<String> players = new ArrayList<>();
-        for (long rankId : RANK_ROLES) {
-            for (Member member : guild.getMembersWithRoles(guild.getRoleById(rankId))) {
-                Game game = member.getGame();
-                if (game != null && "SpeedRunners".equals(game.getName())) {
-                    players.add(member.getEffectiveName());
-                }
-            }
-        }
-        if (players.isEmpty()) {
-            event.getChannel().sendMessage("There are currently no players from this server online in SpeedRunners.").queue();
-        } else {
-            Collections.sort(players);
-            event.getChannel().sendMessage(EmbedTemplates.plaintext(guild, "Currently playing SpeedRunners from this server (" + players.size() + ")", StringUtils.join(players, ", ")).build()).queue();
-        }
-    }
+	public void execute(MessageReceivedEvent event, String[] args) {
+		Guild guild = event.getGuild();
+		List<String> players = new ArrayList<>();
+		for (long rankId : RANK_ROLES) {
+			for (Member member : guild.getMembersWithRoles(guild.getRoleById(rankId))) {
+				Game game = member.getGame();
+				if (game != null && "SpeedRunners".equals(game.getName())) {
+					players.add(member.getEffectiveName());
+				}
+			}
+		}
+		if (players.isEmpty()) {
+			event.getChannel().sendMessage("There are currently no players from this server online in SpeedRunners.").queue();
+		} else {
+			Collections.sort(players);
+			event.getChannel().sendMessage(EmbedTemplates.plaintext(
+					guild,
+					String.format("Currently playing SpeedRunners from this server (%d)", players.size()),
+					StringUtils.join(players, ", ")
+			).build()).queue();
+		}
+	}
 
 }

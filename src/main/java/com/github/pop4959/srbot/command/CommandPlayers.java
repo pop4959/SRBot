@@ -11,17 +11,23 @@ import java.util.concurrent.TimeoutException;
 
 public class CommandPlayers extends BotCommand {
 
-    public CommandPlayers() {
-        super("players");
-    }
+	public CommandPlayers() {
+		super("players");
+	}
 
-    public void execute(MessageReceivedEvent event, String[] args) {
-        SteamUserStats stats = new SteamUserStats(Main.getClient());
-        try {
-            event.getChannel().sendMessage("Current players: " + stats.getNumberOfCurrentPlayers(Data.config().getSrAppId()).get(Data.config().getQueryTimeout(), TimeUnit.MILLISECONDS)).queue();
-        } catch (TimeoutException | ExecutionException | InterruptedException e) {
-            event.getChannel().sendMessage("Unable to fetch number of players currently online.").queue();
-        }
-    }
+	public void execute(MessageReceivedEvent event, String[] args) {
+		SteamUserStats stats = new SteamUserStats(Main.getClient());
+		try {
+			event.getChannel().sendMessage(
+					String.format(
+							"Current players: %d",
+							stats.getNumberOfCurrentPlayers(Data.config().getSrAppId())
+									.get(Data.config().getQueryTimeout(), TimeUnit.MILLISECONDS)
+					)
+			).queue();
+		} catch (Exception e) {
+			event.getChannel().sendMessage("Unable to fetch number of players currently online.").queue();
+		}
+	}
 
 }

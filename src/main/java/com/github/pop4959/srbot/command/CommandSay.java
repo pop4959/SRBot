@@ -5,13 +5,13 @@ import org.apache.commons.lang3.StringUtils;
 
 public class CommandSay extends BotCommand {
 
-    public CommandSay() {
-        super("say");
-    }
+	public CommandSay() {
+		super("say");
+	}
 
-    public void execute(MessageReceivedEvent event, String[] args) {
-        event.getChannel().sendMessage(StringUtils.join(args, " ")).queue();
-        event.getMessage().delete().queue();
-    }
+	public void execute(MessageReceivedEvent event, String[] args) {
+		event.getChannel().sendMessage(StringUtils.join(args, " ")).queue();
+		event.getMessage().delete().queue();
+	}
 
 }

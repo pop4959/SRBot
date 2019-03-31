@@ -5,10 +5,10 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public interface IBotCommand {
 
-    void execute(MessageReceivedEvent event, String[] args);
+	void execute(MessageReceivedEvent event, String[] args);
 
-    String getName();
+	String getName();
 
-    CommandsData.CommandConfiguration getConfig();
+	CommandsData.CommandConfiguration getConfig();
 
 }

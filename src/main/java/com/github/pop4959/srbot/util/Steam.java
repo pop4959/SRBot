@@ -42,9 +42,8 @@ public class Steam {
 			try {
 				Long result = user.getSteamIdFromVanityUrl(
 						id == null ? input : id,
-						VanityUrlType.INDIVIDUAL_PROFILE).get(Data.config().getQueryTimeout(),
-						TimeUnit.MILLISECONDS
-				);
+						VanityUrlType.INDIVIDUAL_PROFILE
+				).get(Data.config().getQueryTimeout(), TimeUnit.MILLISECONDS);
 				if (result != null) {
 					id = result.toString();
 				} else {

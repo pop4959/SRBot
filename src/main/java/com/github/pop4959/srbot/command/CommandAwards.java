@@ -80,17 +80,9 @@ public class CommandAwards extends BotCommand {
 		}
 
 		if (winner != null) {
-			String p = "winner.png";
-			Path path = Paths.get(p);
-			if (!Files.exists(path)) {
-				try {
-					Files.createFile(path);
-				} catch (Exception e) {
-					event.getChannel().sendMessage("An error has occured").queue();
-					return;
-				}
-			}
-			File file = new File(p);
+			Message.Attachment attachment = winner.getAttachments().get(0);
+			File file = new File("winner.png");
+			attachment.download(file);
 			winner.getAttachments().get(0).download(file);
 		}
 
@@ -121,7 +113,6 @@ public class CommandAwards extends BotCommand {
 		RestAction<Message> ra = channel.sendMessage(eb.build());
 		Message message = ra.complete();
 		message.addReaction(emote).queue();
-//		event.getChannel().sendMessage(eb.setTitle("Winner").setImage(winner.getAttachments().get(0).getUrl()).build()).queue();
 		event.getChannel().sendMessage((winner == null) ? "No winner" : "Winner - " + winner.getAuthor().getAsMention()).queue();
 	}
 }

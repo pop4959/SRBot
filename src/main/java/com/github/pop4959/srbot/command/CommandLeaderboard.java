@@ -29,8 +29,6 @@ public class CommandLeaderboard extends BotCommand {
 	}
 
 	public void execute(MessageReceivedEvent event, String[] args) {
-		long startTime = System.nanoTime();
-
 		if (args.length < 1) {
 			event.getChannel().sendMessage(LANGUAGE.get("noId")).queue();
 			return;
@@ -107,24 +105,6 @@ public class CommandLeaderboard extends BotCommand {
 				steamProfile.getProfileUrl(),
 				steamProfile.getAvatarFullUrl()
 		).build()).queue();
-
-		// WRITING
-
-		long end = System.nanoTime() - startTime;
-		System.out.println(end);
-
-		Path path = Paths.get("G:\\exectime1.txt");
-		String content = "";
-		try {
-			content = new String(Files.readAllBytes(path));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
-			Files.write(path, (content + end + "\n").getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 }

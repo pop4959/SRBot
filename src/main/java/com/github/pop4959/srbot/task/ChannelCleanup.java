@@ -11,24 +11,24 @@ import java.util.Set;
 
 public class ChannelCleanup extends ListenerAdapter {
 
-	@Override
-	public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
-		cleanup(event.getChannelLeft());
-	}
+    @Override
+    public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
+        cleanup(event.getChannelLeft());
+    }
 
-	@Override
-	public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
-		cleanup(event.getChannelLeft());
-	}
+    @Override
+    public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
+        cleanup(event.getChannelLeft());
+    }
 
-	private void cleanup(VoiceChannel channel) {
-		if (channel.getMembers().size() == 0) {
-			Set<VoiceChannel> channels = CommandChannel.getChannels();
-			if (channels.contains(channel)) {
-				channels.remove(channel);
-				Logger.log(String.format("Channel '%s' was deleted.", channel.getName()), "ctf");
-				channel.delete().queue();
-			}
-		}
-	}
+    private void cleanup(VoiceChannel channel) {
+        if (channel.getMembers().size() == 0) {
+            Set<VoiceChannel> channels = CommandChannel.getChannels();
+            if (channels.contains(channel)) {
+                channels.remove(channel);
+                Logger.log(String.format("Channel '%s' was deleted.", channel.getName()), "ctf");
+                channel.delete().queue();
+            }
+        }
+    }
 }

@@ -44,8 +44,7 @@ public class LeaderboardThread extends Thread{
 //			URLConnection currentSeasonConn = Steam.getConnection(Steam.getUrl(LANGUAGE.get("apiRank") + userProfile.getSteamId()));
 			String currentSeasonJson = Steam.getJson(Steam.getConnection(Steam.getUrl(LANGUAGE.get("apiRank") + userProfile.getSteamId())));
 //			boolean isNull = Steam.checkNull(currentSeasonUrl, currentSeasonConn, currentSeasonJson);
-			if (currentSeasonJson == null)
-				throw new NullPointerException("Is null");
+			if (currentSeasonJson == null) throw new NullPointerException("Is null");
 			JSONObject currentSeasonData = new JSONObject(currentSeasonJson);
 			points = nf.format(currentSeasonData.getInt("score"));
 			message = String.format("%s%d. %s %s%s%n", embold, object.getInt("rank"), userProfile.getName(), points, embold);

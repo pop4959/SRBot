@@ -58,6 +58,17 @@ public class Steam {
 		return id;
 	}
 
+	public static String getJson(URLConnection con) {
+		String json;
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
+			json = reader.lines().collect(Collectors.joining("\n"));
+			if (json == null) throw new NullPointerException();
+			if (!json.contains("{")) throw new IllegalArgumentException();
+		} catch (Exception e) {
+			return null;
+		} return json;
+	}
+
 	public static String getJson(MessageReceivedEvent event, URLConnection con) {
 		String json = null;
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
@@ -79,6 +90,16 @@ public class Steam {
 		} return steamProfile;
 	}
 
+	public static URLConnection getConnection(URL url) {
+		URLConnection con;
+		try{
+			con = url.openConnection();
+			if (con == null) throw new NullPointerException();
+		} catch (Exception e) {
+			return null;
+		} return con;
+	}
+
 	public static URLConnection getConnection(MessageReceivedEvent event, URL url){
 		URLConnection con = null;
 		try{
@@ -87,6 +108,15 @@ public class Steam {
 		} catch (Exception e) {
 			event.getChannel().sendMessage(LANGUAGE.get("errDD")).queue();
 		} return con;
+	}
+
+	public static URL getUrl(String str){
+		URL url;
+		try {
+			url = new URL(str);
+		} catch (Exception e){
+			url = null;
+		} return url;
 	}
 
 	public static URL getUrl(MessageReceivedEvent event, String str){

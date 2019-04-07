@@ -66,7 +66,7 @@ public class CommandMatchmaker extends BotCommand {
 		Collections.shuffle(pool);
 		for (Member member : pool) {
 			Game game = member.getGame();
-			if (game != null && "SpeedRunners".equals(game.getName())) {
+			if (game != null && game.getName().equals("SpeedRunners")) {
 				lobby.add(member);
 				if (lobby.size() == 4) {
 					return;

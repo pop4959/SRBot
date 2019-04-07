@@ -33,6 +33,7 @@ public class CommandStats extends BotCommand {
     }
 
     public void execute(MessageReceivedEvent event, String[] args) {
+        event.getChannel().sendTyping().queue();
         if (args.length > 0) {
             SteamUser user = new SteamUser(Main.getClient());
             SteamUserStats steamUserStats = new SteamUserStats(Main.getClient());

@@ -3,10 +3,18 @@ package com.github.pop4959.srbot.command;
 import com.github.pop4959.srbot.data.Data;
 import com.github.pop4959.srbot.util.EmbedTemplates;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
 
 
 public class CommandMatchmaker extends BotCommand {
@@ -14,6 +22,7 @@ public class CommandMatchmaker extends BotCommand {
     private static final List<Long> RANK_ROLES = Data.config().getRoleIds();
     private static final List<String> RANK_EMOTES = Data.config().getRankEmotes();
     private static final long KING_OF_SPEED = Data.config().getKingOfSpeedDiscord();
+    private static final LinkedHashMap<String, String> LANGUAGE = Data.config().getLanguage();
 
     public CommandMatchmaker() {
         super("matchmaker");
@@ -23,7 +32,7 @@ public class CommandMatchmaker extends BotCommand {
         Guild guild = event.getGuild();
         Role scanRole = getMemberRankRole(event.getMember());
         if (scanRole == null) {
-            event.getChannel().sendMessage("You must have a rank role in order to use this command.").queue();
+            event.getChannel().sendMessage(LANGUAGE.get("noRank")).queue();
             return;
         }
         Set<Member> lobby = new HashSet<>();
@@ -32,10 +41,12 @@ public class CommandMatchmaker extends BotCommand {
         int rank = RANK_ROLES.indexOf(scanRole.getIdLong()), distance = 1;
         while (lobby.size() < 4 && distance < 9) {
             List<Member> players = new ArrayList<>();
-            if (rank - distance >= 0)
+            if (rank - distance >= 0) {
                 players.addAll(guild.getMembersWithRoles(guild.getRoleById(RANK_ROLES.get(rank - distance))));
-            if (rank + distance < 9)
+            }
+            if (rank + distance < 9) {
                 players.addAll(guild.getMembersWithRoles(guild.getRoleById(RANK_ROLES.get(rank + distance))));
+            }
             findPlayersForLobby(lobby, players);
             ++distance;
         }
@@ -43,7 +54,7 @@ public class CommandMatchmaker extends BotCommand {
         int i = 0;
         for (Member member : lobby) {
             Role role = getMemberRankRole(member);
-            embed.addField(member.getEffectiveName(), getMemberRankEmote(member, role) + " " + role.getName(), true);
+            embed.addField(member.getEffectiveName(), String.format("%s %s", getMemberRankEmote(member, role), role.getName()), true);
             if (++i % 2 == 0) {
                 embed.addBlankField(true);
             }
@@ -57,8 +68,9 @@ public class CommandMatchmaker extends BotCommand {
             Game game = member.getGame();
             if (game != null && "SpeedRunners".equals(game.getName())) {
                 lobby.add(member);
-                if (lobby.size() == 4)
+                if (lobby.size() == 4) {
                     return;
+                }
             }
         }
     }
@@ -73,9 +85,11 @@ public class CommandMatchmaker extends BotCommand {
     }
 
     private String getMemberRankEmote(Member member, Role role) {
-        if (member.getUser().getIdLong() == KING_OF_SPEED)
+        if (member.getUser().getIdLong() == KING_OF_SPEED) {
             return RANK_EMOTES.get(9);
-        return RANK_EMOTES.get(RANK_ROLES.indexOf(role.getIdLong()));
+        } else {
+            return RANK_EMOTES.get(RANK_ROLES.indexOf(role.getIdLong()));
+        }
     }
 
 }

@@ -26,7 +26,7 @@ public class ChannelCleanup extends ListenerAdapter {
             Set<VoiceChannel> channels = CommandChannel.getChannels();
             if (channels.contains(channel)) {
                 channels.remove(channel);
-                Logger.log("Channel '" + channel.getName() + "' was deleted.", "ctf");
+                Logger.log(String.format("Channel '%s' was deleted.", channel.getName()), "ctf");
                 channel.delete().queue();
             }
         }

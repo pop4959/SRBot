@@ -10,8 +10,16 @@ public class CommandHelp extends BotCommand {
     }
 
     public void execute(MessageReceivedEvent event, String[] args) {
-        BotCommand cmd = BotCommandHandler.getCommand(args.length > 0 && BotCommandHandler.isCommand(args[0]) ? args[0] : this.getName());
-        event.getChannel().sendMessage(EmbedTemplates.plaintext(event.getGuild(), "Help - " + cmd.getName(), "Usage: " + COMMAND_PREFIX + cmd.getName() + " " + cmd.getConfig().getArguments() + "\nDescription: " + cmd.getConfig().getDescription() + (cmd.getConfig().getAliases().isEmpty() ? "" : "\nAliases: " + cmd.getConfig().getAliases().toString().replaceAll("[\\[\\]]", ""))).build()).queue();
+        BotCommand cmd = args.length > 0 && BotCommandHandler.isCommand(args[0])
+                ? BotCommandHandler.getCommand(args[0]) : this;
+        event.getChannel().sendMessage(EmbedTemplates.plaintext(event.getGuild(),
+                String.format("Help - %s", cmd.getName()),
+                String.format("Usage: %s%s %s%nDescription: %s%s",
+                        COMMAND_PREFIX, cmd.getName(),
+                        cmd.getConfig().getArguments(),
+                        cmd.getConfig().getDescription(),
+                        cmd.getConfig().getAliases().isEmpty() ? "" : String.format("%nAliases: %s",
+                                cmd.getConfig().getAliases().toString().replaceAll("[\\[\\]]", "")))).build()).queue();
     }
 
 }

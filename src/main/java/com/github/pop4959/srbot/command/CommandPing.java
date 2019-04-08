@@ -9,7 +9,7 @@ public class CommandPing extends BotCommand {
     }
 
     public void execute(MessageReceivedEvent event, String[] args) {
-        event.getChannel().sendMessage("Pong! (" + event.getJDA().getPing() + "ms)").queue();
+        event.getChannel().sendMessage(String.format("Pong! (%dms)", event.getJDA().getPing())).queue();
     }
 
 }

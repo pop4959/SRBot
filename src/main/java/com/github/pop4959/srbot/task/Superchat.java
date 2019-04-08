@@ -30,8 +30,9 @@ public class Superchat extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event) {
         String message = event.getMessage().getContentRaw();
         if (!event.getAuthor().isBot()) {
-            if (RESPONSES.containsKey(message))
+            if (RESPONSES.containsKey(message)) {
                 event.getChannel().sendMessage(RESPONSES.get(message)).queue();
+            }
         }
     }
 

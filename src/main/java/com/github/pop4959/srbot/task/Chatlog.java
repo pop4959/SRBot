@@ -25,7 +25,17 @@ public class Chatlog extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        Logger.log(LOG_DATE_FORMAT.format(Date.from(Instant.now())) + " | " + (event.getChannelType() == ChannelType.TEXT ? event.getChannel().getName() : event.getChannel().getId()) + " | " + event.getAuthor().getName() + ": " + event.getMessage().getContentRaw(), "cf");
+        Logger.log(
+                String.format(
+                        "%s | %s | %s: %s",
+                        LOG_DATE_FORMAT.format(Date.from(Instant.now())),
+                        event.getChannelType() == ChannelType.TEXT
+                                ? event.getChannel().getName()
+                                : event.getChannel().getId(),
+                        event.getAuthor().getName(),
+                        event.getMessage().getContentRaw()
+                ), "cf"
+        );
         if (!ATTACHMENT_LOCATION.exists()) {
             if (!ATTACHMENT_LOCATION.mkdir()) {
                 return;
@@ -33,7 +43,16 @@ public class Chatlog extends ListenerAdapter {
         }
         if (ATTACHMENT_LOCATION.getFreeSpace() > 1e10) {
             for (Message.Attachment attachment : event.getMessage().getAttachments()) {
-                attachment.download(Paths.get(ATTACHMENT_LOCATION.getAbsolutePath(), UUID.randomUUID().toString() + "-" + attachment.getFileName()).toFile());
+                attachment.download(
+                        Paths.get(
+                                ATTACHMENT_LOCATION.getAbsolutePath(),
+                                String.format(
+                                        "%s-%s",
+                                        UUID.randomUUID().toString(),
+                                        attachment.getFileName()
+                                )
+                        ).toFile()
+                );
             }
         }
     }

@@ -3,13 +3,13 @@ package com.github.pop4959.srbot;
 import com.github.pop4959.srbot.command.BotCommand;
 import com.github.pop4959.srbot.command.BotCommandHandler;
 import com.github.pop4959.srbot.data.Data;
+import com.ibasco.agql.protocols.valve.steam.webapi.SteamWebApiClient;
+import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
-import com.ibasco.agql.protocols.valve.steam.webapi.SteamWebApiClient;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
 
@@ -26,7 +26,9 @@ public class Main extends ListenerAdapter {
         Set<Class<? extends BotCommand>> commands = reflections.getSubTypesOf(BotCommand.class);
         Set<Class<? extends ListenerAdapter>> listeners = reflections.getSubTypesOf(ListenerAdapter.class);
         try {
-            JDABuilder jdabuilder = new JDABuilder(AccountType.BOT).setToken(Data.fromFile(Data.config().getFiles().getDiscordToken())).setAutoReconnect(true).setGame(Game.of(Game.GameType.LISTENING, Data.config().getGameName()));
+            JDABuilder jdabuilder = new JDABuilder(AccountType.BOT)
+                    .setToken(Data.fromFile(Data.config().getFiles().getDiscordToken()))
+                    .setAutoReconnect(true).setGame(Game.of(Game.GameType.LISTENING, Data.config().getGameName()));
             for (Class<? extends ListenerAdapter> listener : listeners) {
                 jdabuilder.addEventListener(listener.newInstance());
             }

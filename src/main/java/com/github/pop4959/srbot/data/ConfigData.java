@@ -1,5 +1,6 @@
 package com.github.pop4959.srbot.data;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class ConfigData {
@@ -21,6 +22,7 @@ public class ConfigData {
     private List<String> rankEmotes;
     private String kingOfSpeedSteam;
     private long kingOfSpeedDiscord;
+    private String language;
 
     public class EmbedColor {
 
@@ -90,6 +92,22 @@ public class ConfigData {
             return commands;
         }
 
+    }
+
+    public String fetchLanguage(){
+        return language;
+    }
+
+    public LinkedHashMap<String, String> getLanguage(){
+        String lang = Data.fromFile(Data.config().fetchLanguage());
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        String[] contents = lang.split("\n");
+        for (String content : contents) {
+            if (content.startsWith("//")) continue;
+            String[] kv = content.split("=", 2);
+            map.put(kv[0].trim(), kv[1].trim());
+        }
+        return map;
     }
 
     public String getCommandPrefix() {

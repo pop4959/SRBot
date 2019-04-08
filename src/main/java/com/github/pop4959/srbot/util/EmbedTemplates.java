@@ -8,7 +8,11 @@ import java.awt.*;
 
 public class EmbedTemplates {
 
-    private static final Color DEFAULT_COLOR = new Color(Data.config().getEmbedColor().getR(), Data.config().getEmbedColor().getG(), Data.config().getEmbedColor().getB());
+    private static final Color DEFAULT_COLOR = new Color(
+            Data.config().getEmbedColor().getR(),
+            Data.config().getEmbedColor().getG(),
+            Data.config().getEmbedColor().getB()
+    );
 
     public static EmbedBuilder empty(Guild guild) {
         return (new EmbedBuilder()).setColor(guild == null ? DEFAULT_COLOR : guild.getSelfMember().getColor());

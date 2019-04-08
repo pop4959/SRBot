@@ -17,7 +17,15 @@ public class GuildActivity extends ListenerAdapter {
         Guild g = event.getGuild();
         if (g.getIdLong() == SERVER) {
             User u = event.getMember().getUser();
-            Logger.log(u.getName() + "#" + u.getDiscriminator() + " (" + u.getId() + ") has joined the server. [" + g.getMembers().size() + "]", "ctf");
+            Logger.log(
+                    String.format(
+                            "%s#%s (%s) has joined the server. [%d]",
+                            u.getName(),
+                            u.getDiscriminator(),
+                            u.getId(),
+                            g.getMembers().size()
+                    ), "ctf"
+            );
         }
     }
 
@@ -26,7 +34,15 @@ public class GuildActivity extends ListenerAdapter {
         Guild g = event.getGuild();
         if (g.getIdLong() == SERVER) {
             User u = event.getMember().getUser();
-            Logger.log(u.getName() + "#" + u.getDiscriminator() + " (" + u.getId() + ") has left the server. [" + g.getMembers().size() + "]", "ctf");
+            Logger.log(
+                    String.format(
+                            "%s#%s (%s) has left the server. [%d]",
+                            u.getName(),
+                            u.getDiscriminator(),
+                            u.getId(),
+                            g.getMembers().size()
+                    ), "ctf"
+            );
         }
     }
 

@@ -22,10 +22,12 @@ public class CommandCommands extends BotCommand {
         List<String> commands = new ArrayList<>();
         for (String cmdName : Data.commands().getCommandConfigurationMap().keySet()) {
             CommandsData.CommandConfiguration cc = BotCommandHandler.getCommand(cmdName).getConfig();
-            if (!cc.isHidden() && (!cc.isExclusive() || (guild != null && guild.getIdLong() == SERVER)))
+            if (!cc.isHidden() && (!cc.isExclusive() || (guild != null && guild.getIdLong() == SERVER))) {
                 commands.add(cmdName);
+            }
         }
-        event.getChannel().sendMessage(EmbedTemplates.plaintext(event.getGuild(), "Commands", commands.toString().replaceAll("[\\[\\]]", "")).build()).queue();
+        event.getChannel().sendMessage(EmbedTemplates.plaintext(event.getGuild(), "Commands",
+                commands.toString().replaceAll("[\\[\\]]", "")).build()).queue();
     }
 
 }

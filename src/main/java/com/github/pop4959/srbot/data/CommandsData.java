@@ -54,9 +54,11 @@ public class CommandsData {
     }
 
     public CommandConfiguration get(String name) {
-        if (commandConfigurationMap.isEmpty())
-            for (CommandConfiguration commandConfig : commandConfigurations)
+        if (commandConfigurationMap.isEmpty()) {
+            for (CommandConfiguration commandConfig : commandConfigurations) {
                 commandConfigurationMap.put(commandConfig.name, commandConfig);
+            }
+        }
         return commandConfigurationMap.get(name);
     }
 

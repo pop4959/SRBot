@@ -1,7 +1,6 @@
 package com.github.pop4959.srbot.util;
 
 import com.github.pop4959.srbot.data.Data;
-import com.ibasco.agql.core.exceptions.BadRequestException;
 import com.ibasco.agql.protocols.valve.steam.webapi.enums.VanityUrlType;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUser;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
@@ -11,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
@@ -49,7 +49,7 @@ public class Steam {
                 } else {
                     return null;
                 }
-            } catch (Exception e) {
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
                 return null;
             }
         } else {
@@ -64,9 +64,10 @@ public class Steam {
             json = reader.lines().collect(Collectors.joining("\n"));
             if (json == null) throw new NullPointerException();
             if (!json.contains("{")) throw new IllegalArgumentException();
-        } catch (Exception e) {
+        } catch (IOException e) {
             event.getChannel().sendMessage(LANGUAGE.get("private")).queue();
-        } return json;
+        }
+        return json;
     }
 
     public static SteamPlayerProfile getSteamProfile(MessageReceivedEvent event, SteamUser user, String id) {
@@ -74,32 +75,39 @@ public class Steam {
         try {
             steamProfile = user.getPlayerProfile(Long.parseLong(id)).get(Data.config().getQueryTimeout(), TimeUnit.MILLISECONDS);
             if (steamProfile == null) throw new NullPointerException();
-        } catch (Exception e) {
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
             event.getChannel().sendMessage(LANGUAGE.get("unableData")).queue();
-        } return steamProfile;
+        }
+        return steamProfile;
     }
 
-    public static URLConnection getConnection(MessageReceivedEvent event, URL url){
+    public static URLConnection getConnection(MessageReceivedEvent event, URL url) {
         URLConnection con = null;
-        try{
+        try {
             con = url.openConnection();
             if (con == null) throw new NullPointerException();
-        } catch (Exception e) {
+        } catch (IOException e) {
             event.getChannel().sendMessage(LANGUAGE.get("errDD")).queue();
-        } return con;
+        }
+        return con;
     }
 
-    public static URL getUrl(MessageReceivedEvent event, String str){
+    public static URL getUrl(MessageReceivedEvent event, String str) {
         URL url = null;
         try {
             url = new URL(str);
-        } catch (Exception e){
+        } catch (MalformedURLException e) {
             event.getChannel().sendMessage(LANGUAGE.get("errDD")).queue();
-        } return url;
+        }
+        return url;
     }
 
-    public static boolean checkNull(Object ...tab){
-        for (Object o : tab) if (o == null) return true;
+    public static boolean checkNull(Object... tab) {
+        for (Object o : tab) {
+            if (o == null) {
+                return true;
+            }
+        }
         return false;
     }
 

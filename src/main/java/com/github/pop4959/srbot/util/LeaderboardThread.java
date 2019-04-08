@@ -6,9 +6,11 @@ import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-public class LeaderboardThread extends Thread{
+public class LeaderboardThread extends Thread {
 
     private final JSONObject object;
     private final SteamUser user;
@@ -30,7 +32,7 @@ public class LeaderboardThread extends Thread{
                     .get(Data.config().getQueryTimeout(), TimeUnit.MILLISECONDS);
             String embold = steamProfile.getName().equals(userProfile.getName()) ? "**" : "";
             message = String.format("%s%d. %s%s%n", embold, object.getInt("rank"), userProfile.getName(), embold);
-        } catch (Exception e) {
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
             System.out.println(e.getMessage());
         }
         synchronized (list) {

@@ -10,11 +10,13 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class CommandActive extends BotCommand {
 
     private static final List<Long> RANK_ROLES = Data.config().getRoleIds();
+    private static LinkedHashMap<String, String> LANGUAGE = Data.config().getLanguage();
 
     public CommandActive() {
         super("active");
@@ -32,14 +34,12 @@ public class CommandActive extends BotCommand {
             }
         }
         if (players.isEmpty()) {
-            event.getChannel().sendMessage("There are currently no players from this server online in SpeedRunners.").queue();
+            event.getChannel().sendMessage(LANGUAGE.get("noOnline")).queue();
         } else {
             Collections.sort(players);
-            event.getChannel().sendMessage(EmbedTemplates.plaintext(
-                    guild,
-                    String.format("Currently playing SpeedRunners from this server (%d)", players.size()),
-                    StringUtils.join(players, ", ")
-            ).build()).queue();
+            event.getChannel().sendMessage(EmbedTemplates.plaintext(guild,
+                    String.format("%s (%d)", LANGUAGE.get("current"), players.size()),
+                    StringUtils.join(players, ", ")).build()).queue();
         }
     }
 

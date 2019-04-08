@@ -3,10 +3,18 @@ package com.github.pop4959.srbot.command;
 import com.github.pop4959.srbot.data.Data;
 import com.github.pop4959.srbot.util.EmbedTemplates;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
 
 
 public class CommandMatchmaker extends BotCommand {
@@ -46,15 +54,7 @@ public class CommandMatchmaker extends BotCommand {
         int i = 0;
         for (Member member : lobby) {
             Role role = getMemberRankRole(member);
-            embed.addField(
-                    member.getEffectiveName(),
-                    String.format(
-                            "%s %s",
-                            getMemberRankEmote(member, role),
-                            role.getName()
-                    ),
-                    true
-            );
+            embed.addField(member.getEffectiveName(), String.format("%s %s", getMemberRankEmote(member, role), role.getName()), true);
             if (++i % 2 == 0) {
                 embed.addBlankField(true);
             }
@@ -66,7 +66,7 @@ public class CommandMatchmaker extends BotCommand {
         Collections.shuffle(pool);
         for (Member member : pool) {
             Game game = member.getGame();
-            if (game != null && game.getName().equals("SpeedRunners")) {
+            if (game != null && "SpeedRunners".equals(game.getName())) {
                 lobby.add(member);
                 if (lobby.size() == 4) {
                     return;

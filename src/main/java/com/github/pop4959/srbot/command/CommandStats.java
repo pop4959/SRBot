@@ -10,8 +10,14 @@ import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class CommandStats extends BotCommand {
 
@@ -24,7 +30,9 @@ public class CommandStats extends BotCommand {
         Set entrySet = LANGUAGE.entrySet();
         for (Object o : entrySet) {
             String[] kv = o.toString().split("=");
-            if (n++ < 29) CODES[n-1] = kv[0];
+            if (n++ < 29) {
+                CODES[n - 1] = kv[0];
+            }
         }
     }
 
@@ -33,6 +41,7 @@ public class CommandStats extends BotCommand {
     }
 
     public void execute(MessageReceivedEvent event, String[] args) {
+        event.getChannel().sendTyping().queue();
         if (args.length > 0) {
             SteamUser user = new SteamUser(Main.getClient());
             SteamUserStats steamUserStats = new SteamUserStats(Main.getClient());
@@ -61,7 +70,7 @@ public class CommandStats extends BotCommand {
                         .addField("Drill", groupforCodes(17, 18, 19), true)
                         .setAuthor("Stats for " + steamProfile.getName(), steamProfile.getProfileUrl(), steamProfile.getAvatarFullUrl())
                         .build()).queue();
-            } catch (Exception e) {
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
                 event.getChannel().sendMessage(LANGUAGE.get("private")).queue();
             }
         } else {

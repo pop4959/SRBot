@@ -11,13 +11,11 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,8 +27,6 @@ public class CommandLeaderboard extends BotCommand {
     }
 
     public void execute(MessageReceivedEvent event, String[] args) {
-        long startTime = System.nanoTime();
-
         if (args.length < 1) {
             event.getChannel().sendMessage(LANGUAGE.get("noId")).queue();
             return;
@@ -46,11 +42,10 @@ public class CommandLeaderboard extends BotCommand {
         }
 
         URL leaderboardUrl = Steam.getUrl(event, LANGUAGE.get("apiLeaderboard") + id + "&start=-10&end=10");
-        URLConnection leaderboardConn = Steam.getConnection(event, leaderboardUrl);
-        String leaderboardJson = Steam.getJson(event, leaderboardConn);
+        String leaderboardJson = Steam.getJson(event, Steam.getConnection(event, leaderboardUrl));
         SteamPlayerProfile steamProfile = Steam.getSteamProfile(event, user, id);
 
-        boolean isNull = Steam.checkNull(leaderboardUrl, leaderboardConn, leaderboardJson, steamProfile);
+        boolean isNull = Steam.checkNull(leaderboardUrl, leaderboardJson, steamProfile);
         if (isNull) return;
 
         StringBuilder message = new StringBuilder();
@@ -62,8 +57,7 @@ public class CommandLeaderboard extends BotCommand {
             return;
         }
 
-        int tmp = 0;
-        int size = leaderboardEntries.length();
+        int tmp = 0, size = leaderboardEntries.length();
         Thread[] tab = new Thread[size];
         List<String> list = new ArrayList<>();
 
@@ -75,30 +69,34 @@ public class CommandLeaderboard extends BotCommand {
         for (byte i = 0; i < size; ++i) {
             try {
                 tab[i].join();
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 System.out.println(e.getMessage());
                 return;
             }
         }
 
+        Pattern standard = Pattern.compile("^(\\d{1,8})\\.\\s.+"),
+                current = Pattern.compile("^\\*\\*(\\d{1,8})\\.\\s.+");
+
         list.sort(Comparator.comparingInt(str -> {
             String formatted;
-            Pattern normal = Pattern.compile("^(\\d{1,12})\\.\\s.+"),
-                    asterix = Pattern.compile("^\\*\\*(\\d{1,12})\\.\\s.+");
-            Matcher matcher1 = normal.matcher(str),
-                    matcher2 = asterix.matcher(str);
+            Matcher matcher1 = standard.matcher(str),
+                    matcher2 = current.matcher(str);
 
-            if (matcher1.find())
+            if (matcher1.find()) {
                 formatted = matcher1.group(1);
-            else if (matcher2.find())
+            } else if (matcher2.find()) {
                 formatted = matcher2.group(1);
-            else
+            } else {
                 return 0;
+            }
 
             return Integer.parseInt(formatted);
         }));
 
-        for (String a : list) message.append(a);
+        for (String a : list) {
+            message.append(a);
+        }
 
         event.getChannel().sendMessage(EmbedTemplates.points(
                 event.getGuild(),

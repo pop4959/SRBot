@@ -6,12 +6,14 @@ import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.function.Consumer;
 
 public class CommandChannel extends BotCommand {
 
     private static Set<VoiceChannel> channels = new HashSet<>();
+    private static LinkedHashMap<String, String> LANGUAGE = Data.config().getLanguage();
 
     public CommandChannel() {
         super("channel");
@@ -25,8 +27,9 @@ public class CommandChannel extends BotCommand {
             if (len > 1) {
                 try {
                     channelSize = Integer.parseInt(args[len - 1]);
-                    if (channelSize < 0 || channelSize > 99)
+                    if (channelSize < 0 || channelSize > 99) {
                         channelSize = 0;
+                    }
                     for (int i = 0; i < len - 1; ++i) {
                         channelNameBuilder.append(args[i]).append(i != (len - 1) ? " " : "");
                     }
@@ -49,19 +52,16 @@ public class CommandChannel extends BotCommand {
                             .setParent(event.getJDA().getCategoryById(Data.config().getVoiceCategory()))
                             .setUserlimit(channelSize).queue(channelCallback);
                     event.getChannel().sendMessage(
-                            String.format(
-                                    "Successfully created and joined voice channel \"%s\"%s", channelName,
-                                    channelSize == 0 ? "" : String.format(" (User limit: %d)", channelSize)
-                            )
-                    ).queue();
+                            String.format("%s \"%s\"%s", channelName, LANGUAGE.get("channelSuccess"),
+                                    channelSize == 0 ? "" : String.format(" (User limit: %d)", channelSize))).queue();
                 } catch (IllegalArgumentException e) {
-                    event.getChannel().sendMessage("The channel name you provide must be between 2 and 100 characters in length.").queue();
+                    event.getChannel().sendMessage(LANGUAGE.get("channelLen")).queue();
                 }
             } else {
-                event.getChannel().sendMessage("You must be connected to voice to create a custom channel.").queue();
+                event.getChannel().sendMessage(LANGUAGE.get("channelCon")).queue();
             }
         } else {
-            event.getChannel().sendMessage("You must provide the name of a channel to create!").queue();
+            event.getChannel().sendMessage(LANGUAGE.get("channelName")).queue();
         }
     }
 

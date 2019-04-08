@@ -3,13 +3,13 @@ package com.github.pop4959.srbot;
 import com.github.pop4959.srbot.command.BotCommand;
 import com.github.pop4959.srbot.command.BotCommandHandler;
 import com.github.pop4959.srbot.data.Data;
+import com.ibasco.agql.protocols.valve.steam.webapi.SteamWebApiClient;
+import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
-import com.ibasco.agql.protocols.valve.steam.webapi.SteamWebApiClient;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
 

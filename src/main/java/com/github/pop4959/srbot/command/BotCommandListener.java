@@ -35,7 +35,7 @@ public class BotCommandListener extends ListenerAdapter {
                         || event.getChannel().getType() == ChannelType.PRIVATE
                         || event.getMember().hasPermission(Permission.MANAGE_SERVER)
                 ) {
-                    command.execute(event, (args.length == 1 && args[0].equals("")) ? new String[]{} : args);
+                    command.execute(event, args.length == 1 && args[0].equals("") ? new String[]{} : args);
                 }
             }
         }

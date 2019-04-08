@@ -13,15 +13,16 @@ public class Logger {
 
     protected static final String LOG_FILE = (
             new SimpleDateFormat("yyyy-MM-dd'.log'"))
-            .format(new Date(System.currentTimeMillis())
-    );
+            .format(new Date(System.currentTimeMillis()));
 
     public static void log(String info, String destination) {
         if (destination.contains("c")) {
             System.out.println(info);
         }
         if (destination.contains("t")) {
-            Main.getJda().getGuildById(Data.config().getLogging().getServer()).getTextChannelById(Data.config().getLogging().getChannel()).sendMessage(info).queue();
+            Main.getJda().getGuildById(Data.config().getLogging().getServer())
+                    .getTextChannelById(Data.config().getLogging().getChannel())
+                    .sendMessage(info).queue();
         }
         if (destination.contains("f")) {
             try {

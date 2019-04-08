@@ -12,7 +12,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URL;
-import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -61,20 +60,11 @@ public class CommandPoints extends BotCommand {
 
         URL currentSeasonUrl = Steam.getUrl(event, LANGUAGE.get("apiRank") + id),
                 oldSeasonUrl = Steam.getUrl(event, LANGUAGE.get("apiSeason") + id);
-        URLConnection currentSeasonConn = Steam.getConnection(event, currentSeasonUrl),
-                oldSeasonConn = Steam.getConnection(event, oldSeasonUrl);
-        String currentSeasonJson = Steam.getJson(event, currentSeasonConn),
-                oldSeasonJson = Steam.getJson(event, oldSeasonConn);
+        String currentSeasonJson = Steam.getJson(event, Steam.getConnection(event, currentSeasonUrl)),
+                oldSeasonJson = Steam.getJson(event, Steam.getConnection(event, oldSeasonUrl));
         SteamPlayerProfile steamProfile = Steam.getSteamProfile(event, user, id);
 
-        boolean isNull = Steam.checkNull(
-                currentSeasonUrl,
-                oldSeasonUrl,
-                currentSeasonConn,
-                oldSeasonConn,
-                currentSeasonJson,
-                oldSeasonJson
-        );
+        boolean isNull = Steam.checkNull(currentSeasonUrl, oldSeasonUrl, currentSeasonJson, oldSeasonJson);
         if (isNull) return;
 
         JSONObject currentSeasonData = new JSONObject(currentSeasonJson);
@@ -85,13 +75,11 @@ public class CommandPoints extends BotCommand {
 
         StringBuilder embedMessage = new StringBuilder();
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        addSeason(
-                embedMessage,
+        addSeason(embedMessage,
                 SEASONS[0],
                 RANK_EMOTES.get(id.equals(KOS) ? 9 : currentSeasonData.getInt("tier")),
                 BOUNDARIES[currentSeasonData.getInt("tier")].getLeft(),
-                Integer.toString(currentSeasonData.getInt("score"))
-        );
+                Integer.toString(currentSeasonData.getInt("score")));
 
         JSONArray oldSeasonDataArray = new JSONArray(oldSeasonJson);
         for (Object o : oldSeasonDataArray) {
@@ -100,39 +88,33 @@ public class CommandPoints extends BotCommand {
                 try {
                     int season = oldSeasonData.getInt("seasonid"), tier;
                     double score = oldSeasonData.getDouble("score");
-                    if (season == 2){
+                    if (season == 2) {
                         tier = 0;
                         while (tier < 8 && (BOUNDARIES[tier + 1].getRight() / 10) <= (long) score) tier++;
-                        addSeason(
-                                embedMessage,
+                        addSeason(embedMessage,
                                 SEASONS[1],
                                 RANK_EMOTES.get(id.equals(KOS) ? 9 : tier),
                                 BOUNDARIES[tier].getLeft(),
-                                decimalFormat.format(score)
-                        );
-                    } else if (season != 1){
+                                decimalFormat.format(score));
+                    } else if (season != 1) {
                         tier = 0;
                         while (tier < 8 && BOUNDARIES[tier + 1].getRight() <= score) tier++;
-                        addSeason(
-                                embedMessage,
-                                SEASONS[season-1],
+                        addSeason(embedMessage,
+                                SEASONS[season - 1],
                                 RANK_EMOTES.get(id.equals(KOS) ? 9 : tier),
                                 BOUNDARIES[tier].getLeft(),
-                                decimalFormat.format(score)
-                        );
+                                decimalFormat.format(score));
                     }
                 } catch (Exception e) {
                     event.getChannel().sendMessage(LANGUAGE.get("errJson")).queue();
                 }
-            } catch (Exception e) {
+            } catch (ClassCastException e) {
                 event.getChannel().sendMessage(LANGUAGE.get("errJson")).queue();
             }
         }
-        event.getChannel().sendMessage(EmbedTemplates.points(
-                event.getGuild(), embedMessage.toString(),
+        event.getChannel().sendMessage(EmbedTemplates.points(event.getGuild(), embedMessage.toString(),
                 String.format("Points for %s", steamProfile.getName()),
-                steamProfile.getProfileUrl(), steamProfile.getAvatarFullUrl()
-        ).build()).queue();
+                steamProfile.getProfileUrl(), steamProfile.getAvatarFullUrl()).build()).queue();
     }
 
     private static void addSeason(StringBuilder embedMessage, String season, String emote, String league, String points) {

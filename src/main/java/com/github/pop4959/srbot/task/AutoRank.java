@@ -1,7 +1,10 @@
 package com.github.pop4959.srbot.task;
 
 import com.github.pop4959.srbot.data.Data;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.user.update.UserUpdateGameEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.managers.GuildController;
@@ -38,16 +41,10 @@ public class AutoRank extends ListenerAdapter {
                 boolean showMessage = hasRankRole(member),
                         roleChanged = manageRankRoles(event.getGuild(), member, roleId);
                 if (roleChanged) {
-                    event.getGuild().getTextChannelById(CHANNEL).sendMessage(
-                            String.format(
-                                    "%s%s%s!",
-                                    member.getAsMention(),
-                                    showMessage
-                                            ? " just reached "
-                                            : " started at ",
-                                    league
-                            )
-                    ).queue();
+                    event.getGuild().getTextChannelById(CHANNEL).sendMessage(String.format("%s%s%s!",
+                            member.getAsMention(),
+                            showMessage ? " just reached " : " started at ",
+                            league)).queue();
                 }
             }
         }

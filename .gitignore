@@ -3,8 +3,7 @@
 *.iml
 src/test/
 build/
-data/tokendiscord
-data/tokensteam
+data/
 out/
 logs/
 bot/

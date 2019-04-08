@@ -77,7 +77,6 @@ public class CommandStats extends BotCommand {
             event.getChannel().sendMessage(LANGUAGE.get("noId")).queue();
         }
     }
-
     private String fieldForCodeIndex(int index) {
         NumberFormat nf = NumberFormat.getInstance(new Locale("en", "GB"));
         String code = CODES[index];

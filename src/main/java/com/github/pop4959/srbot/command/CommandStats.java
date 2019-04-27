@@ -4,11 +4,18 @@ import com.github.pop4959.srbot.Main;
 import com.github.pop4959.srbot.data.Data;
 import com.github.pop4959.srbot.util.EmbedTemplates;
 import com.github.pop4959.srbot.util.Steam;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUser;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUserStats;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -57,17 +64,33 @@ public class CommandStats extends BotCommand {
                 steamUserStats.getUserStatsForGame(Long.parseLong(id), Data.config().getSrAppId())
                         .get(Data.config().getQueryTimeout(), TimeUnit.MILLISECONDS)
                         .getStats().forEach(stat -> VALUES.put(stat.getName(), stat.getValue()));
+
+                String json = new Gson().toJson(VALUES);
+                JsonObject object = new JsonParser().parse(json).getAsJsonObject();
+                object.addProperty("username", steamProfile.getName());
+                json = object.toString();
+
+                File stats = new File("./stats");
+                if (!stats.exists() || !stats.isDirectory())
+                    stats.mkdir();
+                File stat = new File(String.format("%s\\%s.json", stats.getAbsolutePath(), steamProfile.getSteamId()));
+                try {
+                    stat.createNewFile();
+                    Files.write(Paths.get(stat.getAbsolutePath()), json.getBytes());
+                } catch (IOException e) {
+                    System.out.println("Could not access file");
+                }
                 event.getChannel().sendMessage(EmbedTemplates.empty(event.getGuild())
-                        .setDescription(groupforCodes(20))
-                        .addField("Movement", groupforCodes(21, 22, 23, 24), true)
-                        .addField("Sliding", groupforCodes(25, 26), true)
-                        .addField("Grappling", groupforCodes(27, 28), true)
-                        .addField("Golden Hook", groupforCodes(0, 1, 2), true)
-                        .addField("Bomb", groupforCodes(3, 4, 5), true)
-                        .addField("Shockwave", groupforCodes(6, 7, 8), true)
-                        .addField("Crate", groupforCodes(9, 10, 11, 12, 13), true)
-                        .addField("Rocket", groupforCodes(14, 15, 16), true)
-                        .addField("Drill", groupforCodes(17, 18, 19), true)
+                        .setDescription(groupForCodes(20))
+                        .addField("Movement", groupForCodes(21, 22, 23, 24), true)
+                        .addField("Sliding", groupForCodes(25, 26), true)
+                        .addField("Grappling", groupForCodes(27, 28), true)
+                        .addField("Golden Hook", groupForCodes(0, 1, 2), true)
+                        .addField("Bomb", groupForCodes(3, 4, 5), true)
+                        .addField("Shockwave", groupForCodes(6, 7, 8), true)
+                        .addField("Crate", groupForCodes(9, 10, 11, 12, 13), true)
+                        .addField("Rocket", groupForCodes(14, 15, 16), true)
+                        .addField("Drill", groupForCodes(17, 18, 19), true)
                         .setAuthor("Stats for " + steamProfile.getName(), steamProfile.getProfileUrl(), steamProfile.getAvatarFullUrl())
                         .build()).queue();
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -86,7 +109,7 @@ public class CommandStats extends BotCommand {
         return String.format("%s: %s", LANGUAGE.get(code), nf.format(value));
     }
 
-    private String groupforCodes(int... indices) {
+    private String groupForCodes(int... indices) {
         StringBuilder sb = new StringBuilder();
         for (int i : indices) sb.append(fieldForCodeIndex(i)).append("\n");
         return sb.toString();

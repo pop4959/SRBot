@@ -58,16 +58,16 @@ public class CommandStats extends BotCommand {
                         .get(Data.config().getQueryTimeout(), TimeUnit.MILLISECONDS)
                         .getStats().forEach(stat -> VALUES.put(stat.getName(), stat.getValue()));
                 event.getChannel().sendMessage(EmbedTemplates.empty(event.getGuild())
-                        .setDescription(groupforCodes(20))
-                        .addField("Movement", groupforCodes(21, 22, 23, 24), true)
-                        .addField("Sliding", groupforCodes(25, 26), true)
-                        .addField("Grappling", groupforCodes(27, 28), true)
-                        .addField("Golden Hook", groupforCodes(0, 1, 2), true)
-                        .addField("Bomb", groupforCodes(3, 4, 5), true)
-                        .addField("Shockwave", groupforCodes(6, 7, 8), true)
-                        .addField("Crate", groupforCodes(9, 10, 11, 12, 13), true)
-                        .addField("Rocket", groupforCodes(14, 15, 16), true)
-                        .addField("Drill", groupforCodes(17, 18, 19), true)
+                        .setDescription(groupForCodes(20))
+                        .addField("Movement", groupForCodes(21, 22, 23, 24), true)
+                        .addField("Sliding", groupForCodes(25, 26), true)
+                        .addField("Grappling", groupForCodes(27, 28), true)
+                        .addField("Golden Hook", groupForCodes(0, 1, 2), true)
+                        .addField("Bomb", groupForCodes(3, 4, 5), true)
+                        .addField("Shockwave", groupForCodes(6, 7, 8), true)
+                        .addField("Crate", groupForCodes(9, 10, 11, 12, 13), true)
+                        .addField("Rocket", groupForCodes(14, 15, 16), true)
+                        .addField("Drill", groupForCodes(17, 18, 19), true)
                         .setAuthor("Stats for " + steamProfile.getName(), steamProfile.getProfileUrl(), steamProfile.getAvatarFullUrl())
                         .build()).queue();
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -85,7 +85,7 @@ public class CommandStats extends BotCommand {
         return String.format("%s: %s", LANGUAGE.get(code), nf.format(value));
     }
 
-    private String groupforCodes(int... indices) {
+    private String groupForCodes(int... indices) {
         StringBuilder sb = new StringBuilder();
         for (int i : indices) sb.append(fieldForCodeIndex(i)).append("\n");
         return sb.toString();

@@ -4,18 +4,11 @@ import com.github.pop4959.srbot.Main;
 import com.github.pop4959.srbot.data.Data;
 import com.github.pop4959.srbot.util.EmbedTemplates;
 import com.github.pop4959.srbot.util.Steam;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUser;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUserStats;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -64,22 +57,6 @@ public class CommandStats extends BotCommand {
                 steamUserStats.getUserStatsForGame(Long.parseLong(id), Data.config().getSrAppId())
                         .get(Data.config().getQueryTimeout(), TimeUnit.MILLISECONDS)
                         .getStats().forEach(stat -> VALUES.put(stat.getName(), stat.getValue()));
-
-                String json = new Gson().toJson(VALUES);
-                JsonObject object = new JsonParser().parse(json).getAsJsonObject();
-                object.addProperty("username", steamProfile.getName());
-                json = object.toString();
-
-                File stats = new File("./stats");
-                if (!stats.exists() || !stats.isDirectory())
-                    stats.mkdir();
-                File stat = new File(String.format("%s\\%s.json", stats.getAbsolutePath(), steamProfile.getSteamId()));
-                try {
-                    stat.createNewFile();
-                    Files.write(Paths.get(stat.getAbsolutePath()), json.getBytes());
-                } catch (IOException e) {
-                    System.out.println("Could not access file");
-                }
                 event.getChannel().sendMessage(EmbedTemplates.empty(event.getGuild())
                         .setDescription(groupForCodes(20))
                         .addField("Movement", groupForCodes(21, 22, 23, 24), true)

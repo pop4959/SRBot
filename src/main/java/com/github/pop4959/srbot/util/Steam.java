@@ -66,6 +66,8 @@ public class Steam {
             if (!json.contains("{")) throw new IllegalArgumentException();
         } catch (IOException e) {
             event.getChannel().sendMessage(LANGUAGE.get("private")).queue();
+        } catch (NullPointerException | IllegalArgumentException e) {
+            e.printStackTrace();
         }
         return json;
     }

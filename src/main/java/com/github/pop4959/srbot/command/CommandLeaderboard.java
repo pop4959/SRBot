@@ -4,7 +4,7 @@ import com.github.pop4959.srbot.Main;
 import com.github.pop4959.srbot.data.Data;
 import com.github.pop4959.srbot.util.EmbedTemplates;
 import com.github.pop4959.srbot.util.LeaderboardThread;
-import com.github.pop4959.srbot.util.Steam;
+import com.github.pop4959.srbot.util.Utils;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUser;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -35,17 +35,17 @@ public class CommandLeaderboard extends BotCommand {
         event.getChannel().sendTyping().queue();
 
         SteamUser user = new SteamUser(Main.getClient());
-        String id = Steam.resolveID64(user, args[0]);
+        String id = Utils.resolveID64(user, args[0]);
         if (id == null) {
             event.getChannel().sendMessage(LANGUAGE.get("wrongId")).queue();
             return;
         }
 
-        URL leaderboardUrl = Steam.getUrl(event, LANGUAGE.get("apiLeaderboard") + id + "&start=-10&end=10");
-        String leaderboardJson = Steam.getJson(event, Steam.getConnection(event, leaderboardUrl));
-        SteamPlayerProfile steamProfile = Steam.getSteamProfile(event, user, id);
+        URL leaderboardUrl = Utils.getUrl(event, LANGUAGE.get("apiLeaderboard") + id + "&start=-10&end=10");
+        String leaderboardJson = Utils.getJson(Utils.getConnection(event, leaderboardUrl));
+        SteamPlayerProfile steamProfile = Utils.getSteamProfile(event, user, id);
 
-        boolean isNull = Steam.checkNull(leaderboardUrl, leaderboardJson, steamProfile);
+        boolean isNull = Utils.checkNull(leaderboardUrl, leaderboardJson, steamProfile);
         if (isNull) return;
 
         StringBuilder message = new StringBuilder();

@@ -3,7 +3,7 @@ package com.github.pop4959.srbot.command;
 import com.github.pop4959.srbot.Main;
 import com.github.pop4959.srbot.data.Data;
 import com.github.pop4959.srbot.util.EmbedTemplates;
-import com.github.pop4959.srbot.util.Steam;
+import com.github.pop4959.srbot.util.Utils;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUser;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUserStats;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
@@ -45,7 +45,7 @@ public class CommandStats extends BotCommand {
         if (args.length > 0) {
             SteamUser user = new SteamUser(Main.getClient());
             SteamUserStats steamUserStats = new SteamUserStats(Main.getClient());
-            String id = Steam.resolveID64(user, args[0]);
+            String id = Utils.resolveID64(user, args[0]);
             if (id == null) {
                 event.getChannel().sendMessage(LANGUAGE.get("wrongId")).queue();
                 return;

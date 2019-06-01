@@ -22,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class Steam {
+public class Utils {
 
     private static final LinkedHashMap<String, String> LANGUAGE = Data.config().getLanguage();
 
@@ -58,14 +58,15 @@ public class Steam {
         return id;
     }
 
-    public static String getJson(MessageReceivedEvent event, URLConnection con) {
+    public static String getJson(URLConnection con) {
         String json = null;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
             json = reader.lines().collect(Collectors.joining("\n"));
             if (json == null) throw new NullPointerException();
+            if (json.equals("") || json.equals(LANGUAGE.get("privateDD"))) throw new IOException();
             if (!json.contains("{")) throw new IllegalArgumentException();
         } catch (IOException e) {
-            event.getChannel().sendMessage(LANGUAGE.get("private")).queue();
+            json = null;
         } catch (NullPointerException | IllegalArgumentException e) {
             e.printStackTrace();
         }

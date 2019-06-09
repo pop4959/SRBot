@@ -40,6 +40,7 @@ public class CommandStats extends BotCommand {
         super("stats");
     }
 
+    @SuppressWarnings("deprecation")
     public void execute(MessageReceivedEvent event, String[] args) {
         event.getChannel().sendTyping().queue();
         if (args.length > 0) {

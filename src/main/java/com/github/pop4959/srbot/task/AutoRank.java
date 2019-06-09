@@ -32,7 +32,7 @@ public class AutoRank extends ListenerAdapter {
     public void onUserUpdateGame(UserUpdateGameEvent event) {
         Guild guild = event.getGuild();
         Game game = event.getNewGame();
-        if (guild.getIdLong() == SERVER && "SpeedRunners".equals(game.getName())) {
+        if (guild.getIdLong() == SERVER && game != null && "SpeedRunners".equals(game.getName())) {
             String roleKey = game.asRichPresence().getSmallImage().getKey();
             if (ROLES.containsKey(roleKey)) {
                 Member member = event.getMember();

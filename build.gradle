@@ -17,7 +17,10 @@ version = project.property("version")
 jdaVersion = project.property("jdaVersion")
 botFolder = project.property("botFolder")
 
-compileJava.options.encoding = project.property("compileJavaEncoding")
+compileJava {
+    options.encoding = project.property("compileJavaEncoding")
+    options.compilerArgs += ["-Xlint:deprecation"]
+}
 
 dependencies {
     compile "net.dv8tion:JDA:$jdaVersion"

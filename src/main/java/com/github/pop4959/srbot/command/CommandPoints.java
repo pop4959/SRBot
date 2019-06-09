@@ -18,6 +18,7 @@ import java.util.List;
 
 public class CommandPoints extends BotCommand {
 
+    @SuppressWarnings("unchecked")
     private static final Pair<String, Integer>[] BOUNDARIES = new Pair[]{
             Pair.of("Entry", 0),
             Pair.of("Beginner", 8000),

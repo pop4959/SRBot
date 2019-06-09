@@ -3,7 +3,7 @@ package com.github.pop4959.srbot.command;
 import com.github.pop4959.srbot.Main;
 import com.github.pop4959.srbot.data.Data;
 import com.github.pop4959.srbot.util.EmbedTemplates;
-import com.github.pop4959.srbot.util.Steam;
+import com.github.pop4959.srbot.util.Utils;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUser;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -50,7 +50,7 @@ public class CommandPoints extends BotCommand {
         }
 
         SteamUser user = new SteamUser(Main.getClient());
-        String id = Steam.resolveID64(user, args[0]);
+        String id = Utils.resolveID64(user, args[0]);
         if (id == null) {
             event.getChannel().sendMessage(LANGUAGE.get("wrongId")).queue();
             return;
@@ -58,14 +58,17 @@ public class CommandPoints extends BotCommand {
 
         event.getChannel().sendTyping().queue();
 
-        URL currentSeasonUrl = Steam.getUrl(event, LANGUAGE.get("apiRank") + id),
-                oldSeasonUrl = Steam.getUrl(event, LANGUAGE.get("apiSeason") + id);
-        String currentSeasonJson = Steam.getJson(event, Steam.getConnection(event, currentSeasonUrl)),
-                oldSeasonJson = Steam.getJson(event, Steam.getConnection(event, oldSeasonUrl));
-        SteamPlayerProfile steamProfile = Steam.getSteamProfile(event, user, id);
+        URL currentSeasonUrl = Utils.getUrl(event, LANGUAGE.get("apiRank") + id),
+                oldSeasonUrl = Utils.getUrl(event, LANGUAGE.get("apiSeason") + id);
+        String currentSeasonJson = Utils.getJson(Utils.getConnection(event, currentSeasonUrl)),
+                oldSeasonJson = Utils.getJson(Utils.getConnection(event, oldSeasonUrl));
+        SteamPlayerProfile steamProfile = Utils.getSteamProfile(event, user, id);
 
-        boolean isNull = Steam.checkNull(currentSeasonUrl, oldSeasonUrl, currentSeasonJson, oldSeasonJson);
-        if (isNull) return;
+        boolean isNull = Utils.checkNull(currentSeasonUrl, oldSeasonUrl, currentSeasonJson, oldSeasonJson);
+        if (isNull) {
+            event.getChannel().sendMessage(LANGUAGE.get("private")).queue();
+            return;
+        }
 
         JSONObject currentSeasonData = new JSONObject(currentSeasonJson);
         int currentEloTier = 0;

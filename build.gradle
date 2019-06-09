@@ -15,14 +15,15 @@ group = "com.github.pop4959.srbot"
 mainClassName = "com.github.pop4959.srbot.Main"
 version = project.property("version")
 jdaVersion = project.property("jdaVersion")
-botFolder = project.property("botFolder");
+botFolder = project.property("botFolder")
 
 compileJava.options.encoding = project.property("compileJavaEncoding")
 
 dependencies {
     compile "net.dv8tion:JDA:$jdaVersion"
     compile "com.ibasco.agql:agql-steam-webapi:0.1.4"
-    compile "org.slf4j:slf4j-nop:1.7.25"
+    compile "org.slf4j:slf4j-api:1.7.26"
+    compile "org.slf4j:slf4j-simple:1.7.26"
     compile "org.reflections:reflections:0.9.11"
 }
 

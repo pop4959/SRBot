@@ -56,17 +56,17 @@ public class CommandPlaytime extends BotCommand {
         double mins = (double) minutes;
         DecimalFormat df = new DecimalFormat("#.##");
         if (minutes < 60)
-            return (minutes + " minutes");
+            return Integer.toString(minutes) + " minutes";
         else if (minutes < 1440)
-            return (df.format((mins / 60) + " hours"));
+            return df.format(mins / 60) + " hours";
         else if (minutes < 10080)
-            return (df.format((mins / 1440) + " days"));
+            return df.format(mins / 1440) + " days";
         else if (minutes < 43200)
-            return (df.format((mins / 10080) + " weeks"));
+            return df.format(mins / 10080) + " weeks";
         else if (minutes < 525600)
-            return (df.format((mins / 43200) + " months"));
+            return df.format(mins / 43200) + " months";
         else
-            return (df.format((mins / 525600) + " years"));
+            return df.format(mins / 525600) + " years";
     }
 
     private String makeTimeString(String preference, int minutes) {
@@ -75,17 +75,17 @@ public class CommandPlaytime extends BotCommand {
         String pref = preference.toLowerCase();
         switch (pref) {
             case "minutes":
-                return (minutes + " minutes");
+                return Integer.toString(minutes) + " minutes";
             case "hours":
-                return (df.format(mins / 60) + " hours");
+                return df.format(mins / 60) + " hours";
             case "days":
-                return (df.format(mins / 1440) + " days");
+                return df.format(mins / 1440) + " days";
             case "weeks":
-                return (df.format(mins / 10080) + " weeks");
+                return df.format(mins / 10080) + " weeks";
             case "months":
-                return (df.format(mins / 43200) + " months");
+                return df.format(mins / 43200) + " months";
             case "years":
-                return (df.format(mins / 525600) + " years");
+                return df.format(mins / 525600) + " years";
             default:
                 return makeTimeString(minutes);
         }

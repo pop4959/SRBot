@@ -56,7 +56,7 @@ public class CommandPlaytime extends BotCommand {
         double mins = (double) minutes;
         DecimalFormat df = new DecimalFormat("#.##");
         if (minutes < 60)
-            return Integer.toString(minutes) + " minutes";
+            return String.format("%d minutes", minutes);
         else if (minutes < 1440)
             return df.format(mins / 60) + " hours";
         else if (minutes < 10080)
@@ -75,7 +75,7 @@ public class CommandPlaytime extends BotCommand {
         String pref = preference.toLowerCase();
         switch (pref) {
             case "minutes":
-                return Integer.toString(minutes) + " minutes";
+                return String.format("%d minutes", minutes);
             case "hours":
                 return df.format(mins / 60) + " hours";
             case "days":

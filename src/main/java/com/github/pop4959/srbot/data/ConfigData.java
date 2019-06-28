@@ -23,6 +23,7 @@ public class ConfigData {
     private String kingOfSpeedSteam;
     private long kingOfSpeedDiscord;
     private String language;
+    private Web web;
 
     public class EmbedColor {
 
@@ -94,11 +95,45 @@ public class ConfigData {
 
     }
 
-    public String fetchLanguage(){
+    public class Web {
+
+        private String host;
+        private int port;
+        private String keystoreFile;
+        private String keystorePass;
+        private String steamRedirect;
+        private String steamLogin;
+
+        public String getHost() {
+            return host;
+        }
+
+        public int getPort() {
+            return port;
+        }
+
+        public String getKeystoreFile() {
+            return keystoreFile;
+        }
+
+        public String getKeystorePass() {
+            return keystorePass;
+        }
+
+        public String getSteamRedirect() {
+            return steamRedirect;
+        }
+
+        public String getSteamLogin() {
+            return steamLogin;
+        }
+    }
+
+    public String fetchLanguage() {
         return language;
     }
 
-    public LinkedHashMap<String, String> getLanguage(){
+    public LinkedHashMap<String, String> getLanguage() {
         String lang = Data.fromFile(Data.config().fetchLanguage());
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
         String[] contents = lang.split("\n");
@@ -178,4 +213,7 @@ public class ConfigData {
         return kingOfSpeedDiscord;
     }
 
+    public Web getWeb() {
+        return web;
+    }
 }

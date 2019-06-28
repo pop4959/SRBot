@@ -28,6 +28,12 @@ dependencies {
     compile "org.slf4j:slf4j-api:1.7.26"
     compile "org.slf4j:slf4j-simple:1.7.26"
     compile "org.reflections:reflections:0.9.11"
+    compile "org.glassfish.jersey.core:jersey-common:2.28"
+    compile "org.glassfish.jersey.containers:jersey-container-servlet:2.28"
+    compile "org.glassfish.jersey.containers:jersey-container-grizzly2-http:2.28"
+    compile "org.glassfish.jersey.inject:jersey-hk2:2.28"
+    compile "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.9.8"
+    compile "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8"
 }
 
 task cleanBotJar(type: Delete) {

@@ -40,14 +40,16 @@ public class Utils {
                 }
             }
             try {
-                Long result = user.getSteamIdFromVanityUrl(
-                        id == null ? input : id,
-                        VanityUrlType.INDIVIDUAL_PROFILE
-                ).get(Data.config().getQueryTimeout(), TimeUnit.MILLISECONDS);
-                if (result != null) {
-                    id = result.toString();
-                } else {
-                    return null;
+                if (user != null) {
+                    Long result = user.getSteamIdFromVanityUrl(
+                            id == null ? input : id,
+                            VanityUrlType.INDIVIDUAL_PROFILE
+                    ).get(Data.config().getQueryTimeout(), TimeUnit.MILLISECONDS);
+                    if (result != null) {
+                        id = result.toString();
+                    } else {
+                        return null;
+                    }
                 }
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
                 return null;
@@ -82,6 +84,17 @@ public class Utils {
             event.getChannel().sendMessage(LANGUAGE.get("unableData")).queue();
         }
         return steamProfile;
+    }
+
+    public static URLConnection getConnection(URL url) {
+        URLConnection con;
+        try {
+            con = url.openConnection();
+            if (con == null) return null;
+        } catch (IOException e) {
+            return null;
+        }
+        return con;
     }
 
     public static URLConnection getConnection(MessageReceivedEvent event, URL url) {

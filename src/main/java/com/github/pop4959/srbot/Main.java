@@ -3,6 +3,7 @@ package com.github.pop4959.srbot;
 import com.github.pop4959.srbot.command.BotCommand;
 import com.github.pop4959.srbot.command.BotCommandHandler;
 import com.github.pop4959.srbot.data.Data;
+import com.github.pop4959.srbot.task.SteamOpenID;
 import com.ibasco.agql.protocols.valve.steam.webapi.SteamWebApiClient;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -10,10 +11,17 @@ import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.ssl.SSLContextConfigurator;
+import org.glassfish.grizzly.ssl.SSLEngineConfigurator;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
 
 import javax.security.auth.login.LoginException;
+import javax.ws.rs.core.UriBuilder;
+import java.net.URI;
 import java.util.Set;
 
 public class Main extends ListenerAdapter {
@@ -41,6 +49,12 @@ public class Main extends ListenerAdapter {
             e.printStackTrace();
         }
         client = new SteamWebApiClient(Data.fromFile(Data.config().getFiles().getSteamToken()));
+        URI webUri = UriBuilder.fromUri(Data.config().getWeb().getHost()).port(Data.config().getWeb().getPort()).build();
+        ResourceConfig config = new ResourceConfig(SteamOpenID.class);
+        SSLContextConfigurator sslContext = new SSLContextConfigurator();
+        sslContext.setKeyStoreFile(Data.config().getWeb().getKeystoreFile());
+        sslContext.setKeyStorePass(Data.config().getWeb().getKeystorePass());
+        HttpServer grizzlyServer = GrizzlyHttpServerFactory.createHttpServer(webUri, config, true, new SSLEngineConfigurator(sslContext).setClientMode(false).setNeedClientAuth(false));
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.github.pop4959.srbot.data.Data;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.RichPresence;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.user.update.UserUpdateGameEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -33,24 +34,27 @@ public class AutoRank extends ListenerAdapter {
         Guild guild = event.getGuild();
         Game game = event.getNewGame();
         if (guild.getIdLong() == SERVER && game != null && "SpeedRunners".equals(game.getName())) {
-            String roleKey = game.asRichPresence().getSmallImage().getKey();
-            if (ROLES.containsKey(roleKey)) {
-                Member member = event.getMember();
-                long roleId = ROLES.get(roleKey);
-                String league = guild.getRoleById(roleId).getName();
-                boolean showMessage = hasRankRole(member),
-                        roleChanged = manageRankRoles(event.getGuild(), member, roleId);
-                if (roleChanged) {
-                    event.getGuild().getTextChannelById(CHANNEL).sendMessage(String.format("%s%s%s!",
-                            member.getAsMention(),
-                            showMessage ? " just reached " : " started at ",
-                            league)).queue();
+            RichPresence.Image image = game.asRichPresence().getSmallImage();
+            if (image != null) {
+                String roleKey = image.getKey();
+                if (ROLES.containsKey(roleKey)) {
+                    Member member = event.getMember();
+                    long roleId = ROLES.get(roleKey);
+                    String league = guild.getRoleById(roleId).getName();
+                    boolean showMessage = hasRankRole(member),
+                            roleChanged = manageRankRoles(event.getGuild(), member, roleId);
+                    if (roleChanged) {
+                        event.getGuild().getTextChannelById(CHANNEL).sendMessage(String.format("%s%s%s!",
+                                member.getAsMention(),
+                                showMessage ? " just reached " : " started at ",
+                                league)).queue();
+                    }
                 }
             }
         }
     }
 
-    private boolean manageRankRoles(Guild guild, Member member, long newRole) {
+    public static boolean manageRankRoles(Guild guild, Member member, long newRole) {
         if (BLACKLIST.contains(member.getUser().getIdLong())) {
             return false;
         }

@@ -38,7 +38,7 @@ public class CommandChart extends BotCommand {
 
         String output;
         try {
-            Process chart = Runtime.getRuntime().exec(String.format("node ../scripts/chart.js %s %s", id, season));
+            Process chart = Runtime.getRuntime().exec(String.format("node scripts/chart.js %s %s", id, season));
             BufferedReader out = new BufferedReader(new InputStreamReader(chart.getInputStream()));
             output = out.readLine();
             if (output == null) {

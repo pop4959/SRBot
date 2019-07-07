@@ -127,4 +127,32 @@ public class Utils {
         return false;
     }
 
+    public static Integer getSeason(String input) {
+        String[] seasons = {"off", "beta", "winter", "christmas"};
+        Integer season = null;
+        try {
+            season = Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            for (int i = 0; i < 4; ++i) {
+                if (seasons[i].toLowerCase().equals(input.toLowerCase())) {
+                    season = ++i;
+                    break;
+                }
+            }
+        }
+        return season;
+    }
+
+    public static boolean checkSeason(MessageReceivedEvent event, String id, Integer season) {
+        if (id == null) {
+            event.getChannel().sendMessage(LANGUAGE.get("wrongId")).queue();
+            return false;
+        } else if (season == null || season < 1 || season > 4) {
+            event.getChannel().sendMessage(LANGUAGE.get("wrongSeason")).queue();
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 }

@@ -172,8 +172,11 @@ axios.all([
 		}
 	}
 
+	let last = trace.y.shift();
 	trace.x.reverse();
 	trace.y.reverse();
+	trace.x.push(Date.now());
+	trace.y.push(last, last);
 
 	let figure = {
 		data: [trace],

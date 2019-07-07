@@ -25,39 +25,12 @@ public class CommandChart extends BotCommand {
         if (args.length < 1) {
             event.getChannel().sendMessage(LANGUAGE.get("noId")).queue();
             return;
-        } else if (args.length < 2) {
-            event.getChannel().sendMessage(LANGUAGE.get("noSeason")).queue();
-            return;
         }
 
         String id = Utils.resolveID64(new SteamUser(Main.getClient()), args[0]);
-        if (id == null) {
-            event.getChannel().sendMessage(LANGUAGE.get("wrongId")).queue();
-            return;
-        }
+        Integer season = args.length < 2 ? Integer.valueOf(1) : Utils.getSeason(args[1]);
 
-        String[] seasons = {"off", "beta", "winter", "christmas"};
-
-        int season = -1;
-        boolean isInt = true;
-
-        try {
-            season = Integer.parseInt(args[1]);
-        } catch (NumberFormatException e) {
-            isInt = false;
-        }
-
-        if (!isInt) {
-            for (int i = 0; i < 4; ++i) {
-                if (seasons[i].toLowerCase().equals(args[1].toLowerCase())) {
-                    season = ++i;
-                    break;
-                }
-            }
-        }
-
-        if (season < 1 || season > 4) {
-            event.getChannel().sendMessage(LANGUAGE.get("wrongSeason")).queue();
+        if (!Utils.checkSeason(event, id, season)) {
             return;
         }
 
@@ -65,9 +38,14 @@ public class CommandChart extends BotCommand {
 
         String output;
         try {
-            Process chart = Runtime.getRuntime().exec(String.format("node scripts/chart.js %s %s", id, season));
+            Process chart = Runtime.getRuntime().exec(String.format("node ../scripts/chart.js %s %s", id, season));
             BufferedReader out = new BufferedReader(new InputStreamReader(chart.getInputStream()));
             output = out.readLine();
+            if (output == null) {
+                BufferedReader err = new BufferedReader(new InputStreamReader(chart.getErrorStream()));
+                err.lines().forEach(System.out::println);
+                output = LANGUAGE.get("unknownError");
+            }
         } catch (IOException e) {
             e.printStackTrace();
             event.getChannel().sendMessage(LANGUAGE.get("errPy")).queue();

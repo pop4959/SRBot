@@ -1,8 +1,5 @@
 package com.github.pop4959.srbot.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Ranking {
     private Integer count;
     private Double rating;
@@ -11,20 +8,6 @@ public class Ranking {
     private Long time;
     private Integer tier;
 
-    @JsonCreator
-    public Ranking(@JsonProperty(value = "count") Integer count,
-                   @JsonProperty(value = "rating") Double rating,
-                   @JsonProperty(value = "season") Integer season,
-                   @JsonProperty(value = "score") Integer score,
-                   @JsonProperty(value = "time") Long time,
-                   @JsonProperty(value = "tier") Integer tier) {
-        this.count = count;
-        this.rating = rating;
-        this.season = season;
-        this.score = score;
-        this.time = time;
-        this.tier = tier;
-    }
 
     public Integer getCount() {
         return count;

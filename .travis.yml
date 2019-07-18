@@ -1,0 +1,6 @@
+language: java
+jdk:
+  - openjdk8
+install:
+  - chmod a+x gradlew
+  - ./gradlew clean build

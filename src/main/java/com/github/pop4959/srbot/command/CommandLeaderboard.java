@@ -2,14 +2,15 @@ package com.github.pop4959.srbot.command;
 
 import com.github.pop4959.srbot.Main;
 import com.github.pop4959.srbot.data.Data;
+import com.github.pop4959.srbot.models.Leaderboard;
+import com.github.pop4959.srbot.models.LeaderboardEntry;
 import com.github.pop4959.srbot.util.EmbedTemplates;
 import com.github.pop4959.srbot.util.LeaderboardThread;
 import com.github.pop4959.srbot.util.Utils;
+import com.google.gson.Gson;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUser;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CommandLeaderboard extends BotCommand {
+
     private static final LinkedHashMap<String, String> LANGUAGE = Data.config().getLanguage();
 
     public CommandLeaderboard() {
@@ -32,16 +34,17 @@ public class CommandLeaderboard extends BotCommand {
             return;
         }
 
-        event.getChannel().sendTyping().queue();
-
         SteamUser user = new SteamUser(Main.getClient());
         String id = Utils.resolveID64(user, args[0]);
-        if (id == null) {
-            event.getChannel().sendMessage(LANGUAGE.get("wrongId")).queue();
+        Integer season = args.length < 2 ? Integer.valueOf(1) : Utils.getSeason(args[1]);
+
+        if (!Utils.checkSeason(event, id, season)) {
             return;
         }
 
-        URL leaderboardUrl = Utils.getUrl(event, LANGUAGE.get("apiLeaderboard") + id + "&start=-10&end=10");
+        event.getChannel().sendTyping().queue();
+
+        URL leaderboardUrl = Utils.getUrl(event, String.format(LANGUAGE.get("apiLeaderboard"), season, id));
         String leaderboardJson = Utils.getJson(Utils.getConnection(event, leaderboardUrl));
         SteamPlayerProfile steamProfile = Utils.getSteamProfile(event, user, id);
 
@@ -49,20 +52,17 @@ public class CommandLeaderboard extends BotCommand {
         if (isNull) return;
 
         StringBuilder message = new StringBuilder();
-        JSONArray leaderboardEntries = (new JSONObject(leaderboardJson))
-                .getJSONObject("leaderboardEntryInformation")
-                .getJSONArray("leaderboardEntries");
-        if (leaderboardEntries.length() == 0) {
+        Leaderboard leaderboard = new Gson().fromJson(leaderboardJson, Leaderboard.class);
+        if (leaderboard.getEntriesLength() == 0) {
             event.getChannel().sendMessage(LANGUAGE.get("noPlay")).queue();
             return;
         }
 
-        int tmp = 0, size = leaderboardEntries.length();
+        int tmp = 0, size = leaderboard.getEntriesLength();
         Thread[] tab = new Thread[size];
         List<String> list = new ArrayList<>();
 
-        for (Object o : leaderboardEntries) {
-            JSONObject entry = (JSONObject) o;
+        for (LeaderboardEntry entry : leaderboard.getEntries()) {
             tab[tmp] = new LeaderboardThread(entry, user, steamProfile, list);
             tab[tmp++].start();
         }

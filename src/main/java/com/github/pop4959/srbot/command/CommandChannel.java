@@ -52,7 +52,7 @@ public class CommandChannel extends BotCommand {
                             .setParent(event.getJDA().getCategoryById(Data.config().getVoiceCategory()))
                             .setUserlimit(channelSize).queue(channelCallback);
                     event.getChannel().sendMessage(
-                            String.format("%s \"%s\"%s", channelName, LANGUAGE.get("channelSuccess"),
+                            String.format("%s \"%s\"%s", LANGUAGE.get("channelSuccess"), channelName,
                                     channelSize == 0 ? "" : String.format(" (User limit: %d)", channelSize))).queue();
                 } catch (IllegalArgumentException e) {
                     event.getChannel().sendMessage(LANGUAGE.get("channelLen")).queue();

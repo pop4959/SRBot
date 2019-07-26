@@ -2,14 +2,15 @@ package com.github.pop4959.srbot.command;
 
 import com.github.pop4959.srbot.Main;
 import com.github.pop4959.srbot.data.Data;
+import com.github.pop4959.srbot.models.Ranking;
+import com.github.pop4959.srbot.models.Season;
 import com.github.pop4959.srbot.util.EmbedTemplates;
 import com.github.pop4959.srbot.util.Utils;
+import com.google.gson.Gson;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUser;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.apache.commons.lang3.tuple.Pair;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -71,9 +72,10 @@ public class CommandPoints extends BotCommand {
             return;
         }
 
-        JSONObject currentSeasonData = new JSONObject(currentSeasonJson);
+        Gson gson = new Gson();
+        Ranking ranking = gson.fromJson(currentSeasonJson, Ranking.class);
         int currentEloTier = 0;
-        while (currentEloTier < 8 && BOUNDARIES[currentEloTier + 1].getRight() <= currentSeasonData.getDouble("rating")) {
+        while (currentEloTier < 8 && BOUNDARIES[currentEloTier + 1].getRight() <= ranking.getRating()) {
             currentEloTier++;
         }
 
@@ -81,40 +83,30 @@ public class CommandPoints extends BotCommand {
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
         addSeason(embedMessage,
                 SEASONS[0],
-                RANK_EMOTES.get(id.equals(KOS) ? 9 : currentSeasonData.getInt("tier")),
-                BOUNDARIES[currentSeasonData.getInt("tier")].getLeft(),
-                Integer.toString(currentSeasonData.getInt("score")));
+                RANK_EMOTES.get(id.equals(KOS) ? 9 : ranking.getTier()),
+                BOUNDARIES[ranking.getTier()].getLeft(),
+                Integer.toString(ranking.getScore()));
 
-        JSONArray oldSeasonDataArray = new JSONArray(oldSeasonJson);
-        for (Object o : oldSeasonDataArray) {
-            try {
-                JSONObject oldSeasonData = (JSONObject) o;
-                try {
-                    int season = oldSeasonData.getInt("seasonid"), tier;
-                    double score = oldSeasonData.getDouble("score");
-                    if (season == 2) {
-                        tier = 0;
-                        while (tier < 8 && (BOUNDARIES[tier + 1].getRight() / 10) <= (long) score) tier++;
-                        addSeason(embedMessage,
-                                SEASONS[1],
-                                RANK_EMOTES.get(id.equals(KOS) ? 9 : tier),
-                                BOUNDARIES[tier].getLeft(),
-                                decimalFormat.format(score));
-                    } else if (season != 1) {
-                        tier = 0;
-                        while (tier < 8 && BOUNDARIES[tier + 1].getRight() <= score) tier++;
-                        addSeason(embedMessage,
-                                SEASONS[season - 1],
-                                RANK_EMOTES.get(id.equals(KOS) ? 9 : tier),
-                                BOUNDARIES[tier].getLeft(),
-                                decimalFormat.format(score));
-                    }
-                } catch (Exception e) {
-                    event.getChannel().sendMessage(LANGUAGE.get("errJson")).queue();
-                }
-            } catch (ClassCastException e) {
-                event.getChannel().sendMessage(LANGUAGE.get("errJson")).queue();
+        boolean kos = id.equals(KOS);
+        Season[] seasons = gson.fromJson(oldSeasonJson, Season[].class);
+        for (Season season : seasons) {
+            boolean beta = season.getSeasonid() == 2;
+            double score = season.getScore();
+            int seasonid = season.getSeasonid(),
+                    tier = 0;
+
+            if (seasonid == 1) {
+                continue;
             }
+
+            while (tier < 8 && BOUNDARIES[tier + 1].getRight() <= (score * (beta ? 1 : 10))) {
+                ++tier;
+            }
+
+            addSeason(embedMessage, SEASONS[beta ? 1 : (seasonid - 1)],
+                    RANK_EMOTES.get(kos ? 9 : tier),
+                    BOUNDARIES[tier].getLeft(),
+                    decimalFormat.format(score));
         }
         event.getChannel().sendMessage(EmbedTemplates.points(event.getGuild(), embedMessage.toString(),
                 String.format("Points for %s", steamProfile.getName()),

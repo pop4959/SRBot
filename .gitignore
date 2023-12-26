@@ -3,7 +3,7 @@
 *.iml
 src/test/
 build/
-data/
+data/*
 out/
 logs/
 bot/

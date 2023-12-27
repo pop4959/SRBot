@@ -1,29 +1,18 @@
 package com.github.pop4959.srbot.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Season {
-    private Integer seasonid;
-    private Integer tier;
-    private Integer gamecount;
-    private Double score;
-    private Boolean iselo;
+    @SerializedName("seasonid")
+    public Integer seasonId;
 
-    public Integer getSeasonid() {
-        return seasonid;
-    }
+    public Integer tier;
 
-    public Integer getTier() {
-        return tier;
-    }
+    @SerializedName("gamecount")
+    public Integer gameCount;
 
-    public Integer getGamecount() {
-        return gamecount;
-    }
+    public Double score;
 
-    public Double getScore() {
-        return score;
-    }
-
-    public Boolean getIselo() {
-        return iselo;
-    }
+    @SerializedName("iselo")
+    public Boolean isElo;
 }

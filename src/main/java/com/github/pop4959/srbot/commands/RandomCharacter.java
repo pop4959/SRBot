@@ -1,6 +1,6 @@
 package com.github.pop4959.srbot.commands;
 
-import com.github.pop4959.srbot.data.Config;
+import com.github.pop4959.srbot.models.Config;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 public class RandomCharacter extends Command {

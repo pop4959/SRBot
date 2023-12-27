@@ -1,14 +1,12 @@
 package com.github.pop4959.srbot;
 
 import com.github.pop4959.srbot.commands.Command;
-import com.github.pop4959.srbot.data.Config;
+import com.github.pop4959.srbot.models.Config;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -33,28 +31,19 @@ public class Bot extends ListenerAdapter {
     public void start() {
         System.out.println();
         var jda = JDABuilder
-            .createDefault(config.files.discordToken)
+            .createDefault(config.secrets.discordToken)
             .setAutoReconnect(true)
-            .setActivity(Activity.listening(config.gameName))
+            .setActivity(Activity.customStatus(config.botStatus))
             .addEventListeners(this)
             .build();
         jda
             .updateCommands()
-            .addCommands(
-                Commands
-                    .slash("playtime", "xdd")
-                    .addOption(OptionType.STRING, "asd", "aa", true)
-                    .addOption(OptionType.STRING, "zxc", "Time unit to display. Hours by default")
-            )
+            .addCommands(commands.stream().map(Command::getSlashCommand).toList())
             .queue();
-
-        // if they already exist
-//        commands.forEach(c -> jda.upsertCommand(c.name, c.description).queue());
-        jda.upsertCommand("playtime", "xdd").queue();
     }
 
     @Override
-    public void onReady(ReadyEvent event) {
+    public void onReady(@NotNull ReadyEvent event) {
         logger.log("Connected to Discord", "tf");
     }
 
@@ -69,6 +58,7 @@ public class Bot extends ListenerAdapter {
                 .get();
             command.execute(event);
         } catch (Exception e) {
+            e.printStackTrace();
             logger.log(e.getMessage(), "cf");
         }
     }

@@ -1,7 +1,7 @@
 package com.github.pop4959.srbot;
 
 import com.github.pop4959.srbot.commands.*;
-import com.github.pop4959.srbot.data.Config;
+import com.github.pop4959.srbot.models.Config;
 import com.google.gson.Gson;
 import com.ibasco.agql.protocols.valve.steam.webapi.SteamWebApiClient;
 
@@ -22,16 +22,22 @@ public class Main {
             var logger = new Logger(config);
 
             // steam
-            var steamWebApiClient = new SteamWebApiClient(config.files.steamToken);
+            var steamWebApiClient = new SteamWebApiClient(config.secrets.steamToken);
 
             // commands
             var commands = new ArrayList<Command>();
             commands.add(new Active(config));
             commands.add(new Changelog(config));
             commands.add(new Chart(config, steamWebApiClient));
+            commands.add(new Leaderboard(config, steamWebApiClient));
             commands.add(new Players(config, steamWebApiClient));
             commands.add(new Playtime(config, steamWebApiClient));
+            commands.add(new Points(config, steamWebApiClient));
+            commands.add(new Pop4959());
+            commands.add(new Private(config));
             commands.add(new RandomCharacter(config));
+            commands.add(new Say());
+            commands.add(new Stats(config, steamWebApiClient));
 
             // bot
             var bot = new Bot(commands, config, logger);

@@ -1,6 +1,6 @@
 package com.github.pop4959.srbot.commands;
 
-import com.github.pop4959.srbot.data.Config;
+import com.github.pop4959.srbot.models.Config;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -43,14 +43,14 @@ public class Active extends Command {
 
         if (players.isEmpty()) {
             event
-                .reply(config.language.noOnline)
+                .reply(config.messages.noOnline)
                 .setEphemeral(true)
                 .queue();
         } else {
             Collections.sort(players);
             var embeds = new ArrayList<MessageEmbed>();
             var embed = new EmbedBuilder()
-                .setTitle(String.format("%s (%d)", config.language.current, players.size()))
+                .setTitle(String.format("%s (%d)", config.messages.current, players.size()))
                 .setDescription(StringUtils.join(players, ", "));
             embeds.add(embed.build());
             event

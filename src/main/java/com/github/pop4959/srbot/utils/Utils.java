@@ -1,14 +1,22 @@
 package com.github.pop4959.srbot.utils;
 
+import com.google.gson.Gson;
 import com.ibasco.agql.protocols.valve.steam.webapi.SteamWebApiClient;
 import com.ibasco.agql.protocols.valve.steam.webapi.enums.VanityUrlType;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUser;
+import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Utils {
     public static String resolveSteamId(String possibleSteamId, SteamWebApiClient client, int queryTimeout) {
@@ -44,5 +52,25 @@ public class Utils {
             steamId = steamId64.group();
         }
         return steamId;
+    }
+
+    public static SteamPlayerProfile getSteamProfile(String steamId, SteamWebApiClient client, int queryTimeout) throws ExecutionException, InterruptedException, TimeoutException {
+        var steamUser = new SteamUser(client);
+        return steamUser
+            .getPlayerProfile(Long.parseLong(steamId))
+            .get(queryTimeout, TimeUnit.MILLISECONDS);
+    }
+
+    public static <T> T httpGetJson(URL url, String errMsg, Class<T> tClass) throws IOException {
+        var connection = url.openConnection();
+        String seasonJson = null;
+        try (var reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
+            seasonJson = reader.lines().collect(Collectors.joining("\n"));
+            if (seasonJson.isEmpty() || seasonJson.equals(errMsg)) throw new IOException();
+            if (!seasonJson.contains("{")) throw new IllegalArgumentException();
+        } catch (IOException | NullPointerException | IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        return new Gson().fromJson(seasonJson, tClass);
     }
 }

@@ -1,6 +1,6 @@
 package com.github.pop4959.srbot;
 
-import com.github.pop4959.srbot.data.Config;
+import com.github.pop4959.srbot.models.Config;
 
 import java.io.BufferedWriter;
 import java.io.File;

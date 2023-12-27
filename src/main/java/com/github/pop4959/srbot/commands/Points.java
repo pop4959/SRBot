@@ -1,30 +1,55 @@
 package com.github.pop4959.srbot.commands;
 
-import com.github.pop4959.srbot.data.Config;
+import com.github.pop4959.srbot.models.Config;
 import com.github.pop4959.srbot.models.Ranking;
+import com.github.pop4959.srbot.models.Season;
+import com.github.pop4959.srbot.utils.RankBoundaries;
 import com.github.pop4959.srbot.utils.Utils;
-import com.google.gson.Gson;
 import com.ibasco.agql.protocols.valve.steam.webapi.SteamWebApiClient;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.stream.Collectors;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Objects;
+
+import static com.github.pop4959.srbot.utils.Utils.httpGetJson;
 
 public class Points extends Command {
     private final Config config;
     private final SteamWebApiClient steamWebApiClient;
     private final String steamIdField = "steamid";
+    private final ArrayList<RankBoundaries> rankBoundaries = new ArrayList<>() {
+        {
+            add(new RankBoundaries("Diamond", 29000, 100_000));
+            add(new RankBoundaries("Platinum", 24000, 50_000));
+            add(new RankBoundaries("Gold", 20000, 25_000));
+            add(new RankBoundaries("Silver", 17000, 10_000));
+            add(new RankBoundaries("Bronze", 12000, 5_000));
+            add(new RankBoundaries("Expert", 10000, 1_000));
+            add(new RankBoundaries("Advanced", 9000, 500));
+            add(new RankBoundaries("Beginner", 8000, 300));
+            add(new RankBoundaries("Entry", 0, 0));
+        }
+    };
+    private final ArrayList<String> seasonNames = new ArrayList<>() {
+        {
+            add("Off-season");
+            add("Beta season");
+            add("Winter season");
+            add("Christmas season");
+        }
+    };
 
     public Points(Config config, SteamWebApiClient steamWebApiClient) {
-        super("points", "get user points");
+        super("points", "Get user points");
         this.config = config;
         this.steamWebApiClient = steamWebApiClient;
     }
@@ -33,31 +58,76 @@ public class Points extends Command {
     public SlashCommandData getSlashCommand() {
         return Commands
             .slash(name, description)
-            .addOption(OptionType.STRING, steamIdField, "Steam ID", true);
+            .addOption(OptionType.STRING, steamIdField, "Steam ID or vanity URL", true);
     }
 
     @Override
     public void execute(SlashCommandInteractionEvent event) throws Exception {
-        event
-            .deferReply()
-            .setEphemeral(true)
-            .queue();
+        event.deferReply(true).queue();
+
         var potentialSteamId = event.getOption(steamIdField, OptionMapping::getAsString);
         var steamId = Utils.resolveSteamId(potentialSteamId, steamWebApiClient, config.queryTimeout);
+        var steamProfile = Utils.getSteamProfile(steamId, steamWebApiClient, config.queryTimeout);
 
-        var rankUrl = new URL(config.language.apiRank + steamId);
-        var connection = rankUrl.openConnection();
+        var currentSeasonUrl = new URL(config.apiUrl.rank + steamId);
+        var oldSeasonUrl = new URL(config.apiUrl.season + steamId);
 
-        String json;
-        try (var reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
-            json = reader.lines().collect(Collectors.joining("\n"));
-            if (json.isEmpty() || json.equals(config.language.privateProfileDD)) throw new IOException();
-            if (!json.contains("{")) throw new IllegalArgumentException();
-        } catch (IOException | NullPointerException | IllegalArgumentException e) {
-            e.printStackTrace();
-            return;
+        var ranking = httpGetJson(currentSeasonUrl, config.messages.privateProfileDD, Ranking.class);
+        var seasons = httpGetJson(oldSeasonUrl, config.messages.privateProfileDD, Season[].class);
+
+        var isKos = Objects.equals(steamId, config.kingOfSpeedSteam);
+        var dcFormat = new DecimalFormat("#.##");
+        var messageTemplate = " %s %s League (%s)";
+
+        var embeds = new ArrayList<MessageEmbed>();
+        var embed = new EmbedBuilder()
+            .setAuthor(
+                steamProfile.getName(),
+                steamProfile.getProfileUrl(),
+                steamProfile.getAvatarFullUrl()
+            )
+            .setTitle("Ranking points");
+
+        {
+            // off-season
+            var offSeasonTierPair = rankBoundaries
+                .stream()
+                .filter(b -> b.offSeasonBoundary <= ranking.score)
+                .findFirst()
+                .orElse(rankBoundaries.getLast());
+
+            var offSeasonTierIndex = rankBoundaries.indexOf(offSeasonTierPair);
+            var offSeasonSeasonName = seasonNames.getFirst();
+            var offSeasonRankEmoji = config.rankEmojis.get(isKos ? 9 : offSeasonTierIndex);
+            var offSeasonFormattedScore = dcFormat.format(ranking.score);
+            var offSeasonMessage = messageTemplate.formatted(offSeasonRankEmoji, offSeasonTierPair.rank, offSeasonFormattedScore);
+
+            embed.addField(new MessageEmbed.Field(offSeasonSeasonName, offSeasonMessage, false));
         }
 
-        var ranking = new Gson().fromJson(json, Ranking.class);
+        for (var season : seasons) {
+            if (season.seasonId == 1) continue; // skip off-season, data is wrong
+            var isBeta = season.seasonId == 2; // if beta, multiply by 10
+
+            var tierPair = rankBoundaries
+                .stream()
+                .filter(b -> b.eloSeasonBoundary < season.score * (isBeta ? 10 : 1))
+                .findFirst()
+                .orElse(rankBoundaries.getLast());
+
+            var tierIndex = rankBoundaries.indexOf(tierPair);
+            var seasonName = seasonNames.get(season.seasonId - 1);
+            var rankEmoji = config.rankEmojis.get(isKos ? rankBoundaries.size() + 1 : tierIndex);
+            var formattedScore = dcFormat.format(season.score);
+            var message = messageTemplate.formatted(rankEmoji, tierPair.rank, formattedScore);
+
+            embed.addField(new MessageEmbed.Field(seasonName, message, false));
+        }
+
+        embeds.add(embed.build());
+        event
+            .getHook()
+            .editOriginal(MessageEditData.fromEmbeds(embeds))
+            .queue();
     }
 }

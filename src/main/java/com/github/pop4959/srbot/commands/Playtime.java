@@ -1,6 +1,6 @@
 package com.github.pop4959.srbot.commands;
 
-import com.github.pop4959.srbot.data.Config;
+import com.github.pop4959.srbot.models.Config;
 import com.github.pop4959.srbot.utils.Utils;
 import com.ibasco.agql.protocols.valve.steam.webapi.SteamWebApiClient;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamPlayerService;
@@ -16,30 +16,31 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static com.github.pop4959.srbot.constants.CommandFieldNames.STEAM_ID_FIELD;
+import static com.github.pop4959.srbot.constants.CommandFieldNames.UNIT_FIELD;
+
 public class Playtime extends Command {
     private final Config config;
     private final SteamWebApiClient steamWebApiClient;
-    private final String steamIdField = "steamid";
-    private final String unitField = "unit";
 
     public Playtime(Config config, SteamWebApiClient steamWebApiClient) {
-        super("playtime", "Get user playtime xdd");
+        super("playtime", "Get user playtime");
         this.config = config;
         this.steamWebApiClient = steamWebApiClient;
     }
 
     @Override
     public SlashCommandData getSlashCommand() {
-        System.out.println("xdd");
         return Commands
             .slash(name, description)
-            .addOption(OptionType.STRING, "asd", "aa", true)
-            .addOption(OptionType.STRING, unitField, "Time unit to display. Hours by default");
+            .addOption(OptionType.STRING, STEAM_ID_FIELD, "Steam ID or vanity URL", true)
+            .addOption(OptionType.STRING, UNIT_FIELD, "Time unit to display. Hours by default");
     }
 
     @Override
     public void execute(SlashCommandInteractionEvent event) throws Exception {
-        var possibleSteamId = event.getOption(steamIdField, OptionMapping::getAsString);
+        event.deferReply(true).queue();
+        var possibleSteamId = event.getOption(STEAM_ID_FIELD, OptionMapping::getAsString);
         var steamUser = new SteamUser(steamWebApiClient);
         var steamPlayerService = new SteamPlayerService(steamWebApiClient);
         var steamId = Utils.resolveSteamId(possibleSteamId, steamWebApiClient, config.queryTimeout);
@@ -56,20 +57,27 @@ public class Playtime extends Command {
                 .findFirst()
                 .get();
 
-            var unit = event.getOption(unitField, OptionMapping::getAsString);
+            var unit = event.getOption(UNIT_FIELD, OptionMapping::getAsString);
             var timeSpent = getTimeSpent(unit, game.getTotalPlaytime());
             var message = "%s has played %s of SpeedRunners.".formatted(steamPlayerProfile.getName(), timeSpent);
             event
-                .reply(message)
-                .setEphemeral(true)
+                .getHook()
+                .editOriginal(message)
                 .queue();
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            event.reply(config.language.unableData).queue();
+            e.printStackTrace();
+            event
+                .getHook()
+                .editOriginal(config.messages.unableData)
+                .queue();
         }
     }
 
     private String getTimeSpent(String unit, double minutes) {
         var df = new DecimalFormat("#.##");
+        if (unit == null) {
+            unit = "hours";
+        }
         return switch (unit.toLowerCase()) {
             case "seconds" -> "%s %s".formatted(df.format(minutes * 60), unit);
             case "hours" -> "%s %s".formatted(df.format(minutes / 60), unit);

@@ -11,13 +11,15 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import static com.github.pop4959.srbot.constants.CommandFieldNames.STEAM_ID_FIELD;
+import static com.github.pop4959.srbot.constants.CommandFields.STEAM_ID_FIELD_NAME;
+import static com.github.pop4959.srbot.constants.CommandFields.STEAM_ID_FIELD_DESC;
 
 public class Stats extends Command {
     private final Config config;
@@ -33,15 +35,25 @@ public class Stats extends Command {
     public SlashCommandData getSlashCommand() {
         return Commands
             .slash(name, description)
-            .addOption(OptionType.STRING, STEAM_ID_FIELD, "Steam ID or vanity URL", true);
+            .addOption(OptionType.STRING, STEAM_ID_FIELD_NAME, STEAM_ID_FIELD_DESC, true);
     }
 
     @Override
-    public void execute(SlashCommandInteractionEvent event) throws Exception {
+    public void execute(@NotNull SlashCommandInteractionEvent event) throws Exception {
         event.deferReply(true).queue();
 
-        var potentialSteamId = event.getOption(STEAM_ID_FIELD, OptionMapping::getAsString);
+        var potentialSteamId = event.getOption(STEAM_ID_FIELD_NAME, OptionMapping::getAsString);
+        if (potentialSteamId == null) {
+            event.getHook().sendMessage(config.messages.noId).queue();
+            return;
+        }
+
         var steamId = Utils.resolveSteamId(potentialSteamId, steamWebApiClient, config.queryTimeout);
+        if (steamId == null) {
+            event.getHook().sendMessage(config.messages.wrongId).queue();
+            return;
+        }
+
         var steamProfile = Utils.getSteamProfile(steamId, steamWebApiClient, config.queryTimeout);
         var steamUserStats = new SteamUserStats(steamWebApiClient);
 

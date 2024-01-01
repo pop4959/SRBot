@@ -1,6 +1,7 @@
 package com.github.pop4959.srbot.commands;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class Pop4959 extends Command {
     public Pop4959() {
@@ -8,7 +9,7 @@ public class Pop4959 extends Command {
     }
 
     @Override
-    public void execute(SlashCommandInteractionEvent event) throws Exception {
+    public void execute(@NotNull SlashCommandInteractionEvent event) throws Exception {
         var emojis = new String[]{
             "❤",
             "\uD83D\uDC99",

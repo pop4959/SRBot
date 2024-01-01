@@ -3,10 +3,9 @@
 *.iml
 src/test/
 build/
-data/*
 out/
 logs/
 bot/
-src/main/javascript/node_modules
-src/main/javascript/package.json
-src/main/javascript/package-lock.json
+node_modules
+package-lock.json
+*.js

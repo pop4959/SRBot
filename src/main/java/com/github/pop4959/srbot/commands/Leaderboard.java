@@ -12,14 +12,14 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import org.jetbrains.annotations.NotNull;
 
-import java.net.URL;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.regex.Pattern;
 
-import static com.github.pop4959.srbot.constants.CommandFieldNames.SEASON_FIELD;
-import static com.github.pop4959.srbot.constants.CommandFieldNames.STEAM_ID_FIELD;
+import static com.github.pop4959.srbot.constants.CommandFields.*;
 import static com.github.pop4959.srbot.utils.Utils.httpGetJson;
 
 public class Leaderboard extends Command {
@@ -36,26 +36,40 @@ public class Leaderboard extends Command {
     public SlashCommandData getSlashCommand() {
         return Commands
             .slash(name, description)
-            .addOption(OptionType.STRING, STEAM_ID_FIELD, "Steam ID or vanity URL", true)
-            .addOption(OptionType.INTEGER, SEASON_FIELD, "Ranking season 1 - off season, 2 - beta season, 3 - christmas season, 4 - winter season", true);
+            .addOption(OptionType.STRING, STEAM_ID_FIELD_NAME, STEAM_ID_FIELD_DESC, true)
+            .addOption(OptionType.INTEGER, SEASON_FIELD_NAME, SEASON_FIELD_DESC, true);
     }
 
     @Override
-    public void execute(SlashCommandInteractionEvent event) throws Exception {
+    public void execute(@NotNull SlashCommandInteractionEvent event) throws Exception {
         event.deferReply(true).queue();
 
-        var season = event.getOption(SEASON_FIELD, OptionMapping::getAsInt);
+        var potentialSteamId = event.getOption(STEAM_ID_FIELD_NAME, OptionMapping::getAsString);
+        if (potentialSteamId == null) {
+            event.getHook().sendMessage(config.messages.noId).queue();
+            return;
+        }
+
+        var steamId = Utils.resolveSteamId(potentialSteamId, steamWebApiClient, config.queryTimeout);
+        if (steamId == null) {
+            event.getHook().sendMessage(config.messages.wrongId).queue();
+            return;
+        }
+
+        var season = event.getOption(SEASON_FIELD_NAME, OptionMapping::getAsInt);
+        if (season == null) {
+            event.getHook().sendMessage(config.messages.noSeason).queue();
+            return;
+        }
         if (season < 1 || season > 4) {
             event.getHook().sendMessage(config.messages.wrongSeason).queue();
             return;
         }
 
-        var potentialSteamId = event.getOption(STEAM_ID_FIELD, OptionMapping::getAsString);
-        var steamId = Utils.resolveSteamId(potentialSteamId, steamWebApiClient, config.queryTimeout);
         var steamUser = new SteamUser(steamWebApiClient);
         var steamProfile = Utils.getSteamProfile(steamId, steamWebApiClient, config.queryTimeout);
 
-        var leaderboardUrl = new URL("%s%d&steamid=%s".formatted(config.apiUrl.leaderboard, season, steamId));
+        var leaderboardUrl = new URI("%s%d&steamid=%s".formatted(config.apiUrl.leaderboard, season, steamId)).toURL();
         var leaderboard = httpGetJson(leaderboardUrl, "", com.github.pop4959.srbot.models.Leaderboard.class).leaderboardEntryInformation;
 
         var size = leaderboard.leaderboardEntries.length;
@@ -93,10 +107,7 @@ public class Leaderboard extends Command {
             }
         }));
 
-        var message = list
-            .stream()
-            .reduce("", (acc, next) -> next + acc)
-            .trim();
+        var message = String.join("", list);
 
         System.out.println(message);
         var embeds = new ArrayList<MessageEmbed>();

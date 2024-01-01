@@ -9,11 +9,11 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.utils.FileUpload;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 
-import static com.github.pop4959.srbot.constants.CommandFieldNames.SEASON_FIELD;
-import static com.github.pop4959.srbot.constants.CommandFieldNames.STEAM_ID_FIELD;
+import static com.github.pop4959.srbot.constants.CommandFields.*;
 
 public class Chart extends Command {
     private final Config config;
@@ -29,18 +29,31 @@ public class Chart extends Command {
     public SlashCommandData getSlashCommand() {
         return Commands
             .slash(name, description)
-            .addOption(OptionType.STRING, STEAM_ID_FIELD, "Steam ID or vanity URL", true)
-            .addOption(OptionType.INTEGER, SEASON_FIELD, "Ranking season 1 - off season, 2 - beta season, 3 - christmas season, 4 - winter season", true);
+            .addOption(OptionType.STRING, STEAM_ID_FIELD_NAME, STEAM_ID_FIELD_DESC, true)
+            .addOption(OptionType.INTEGER, SEASON_FIELD_NAME, SEASON_FIELD_DESC, true);
     }
 
     @Override
-    public void execute(SlashCommandInteractionEvent event) throws Exception {
+    public void execute(@NotNull SlashCommandInteractionEvent event) throws Exception {
         event.deferReply(true).queue();
 
-        var possibleSteamId = event.getOption(STEAM_ID_FIELD, OptionMapping::getAsString);
-        var steamId = Utils.resolveSteamId(possibleSteamId, steamWebApiClient, config.queryTimeout);
+        var possibleSteamId = event.getOption(STEAM_ID_FIELD_NAME, OptionMapping::getAsString);
+        if (possibleSteamId == null) {
+            event.getHook().sendMessage(config.messages.wrongId).queue();
+            return;
+        }
 
-        var season = event.getOption(SEASON_FIELD, OptionMapping::getAsInt);
+        var steamId = Utils.resolveSteamId(possibleSteamId, steamWebApiClient, config.queryTimeout);
+        if (steamId == null) {
+            event.getHook().sendMessage(config.messages.wrongId).queue();
+            return;
+        }
+
+        var season = event.getOption(SEASON_FIELD_NAME, OptionMapping::getAsInt);
+        if (season == null) {
+            event.getHook().sendMessage(config.messages.noSeason).queue();
+            return;
+        }
         if (season < 1 || season > 4) {
             event.getHook().sendMessage(config.messages.wrongSeason).queue();
             return;
@@ -62,8 +75,7 @@ public class Chart extends Command {
             System.out.println(output);
         } catch (IOException e) {
             e.printStackTrace();
-//            logger.log(e.getMessage(), "ct");
-            event.getHook().sendMessage(config.messages.errPy).queue();
+            event.getHook().sendMessage(config.messages.errChart).queue();
             return;
         }
 

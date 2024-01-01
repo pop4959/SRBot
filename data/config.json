@@ -1,0 +1,302 @@
+{
+  "botStatus": "Bot for SR community!",
+  "embedColor": {
+    "r": 241,
+    "g": 186,
+    "b": 40
+  },
+  "srAppId": 207140,
+  "queryTimeout": 1000,
+  "servers": {
+    "main": 211576474254311425,
+    "admin": 480750037463334914
+  },
+  "mainChannel": 320646972338077697,
+  "logging": {
+    "server": 480750037463334914,
+    "channel": 525441394265948192
+  },
+  "secrets": {
+    "discordToken": "<discord bot token>",
+    "steamToken": "<steam api token>"
+  },
+  "characters": [
+    "Beach-Body SpeedRunner",
+    "Buckshot",
+    "Burger",
+    "Cannon Fyodor",
+    "CinnamonToastKen",
+    "Cosmonaut Comrade",
+    "Dashwell",
+    "Diamond Diva",
+    "Doctor Smart",
+    "Dodger",
+    "Excel",
+    "The Falcon",
+    "Flamenco",
+    "Fort Knight",
+    "Gil",
+    "Hothead",
+    "Jailbird",
+    "Jesse Cox",
+    "Luc J'adore",
+    "Maneki Neko",
+    "Markiplier",
+    "Moonraker",
+    "The Original Mr. Quick",
+    "PeanutButterGamer",
+    "PewDiePie",
+    "Salem",
+    "Showtime",
+    "The Scout",
+    "Sherlock Bones",
+    "SkullDuggery",
+    "SpeedRunner",
+    "Strippin",
+    "Summertime Cosmo",
+    "UberHaxorNova",
+    "Unic",
+    "Veloci-T-Rex",
+    "XL"
+  ],
+  "autoRankBlacklist": [
+    155413956511399936,
+    197016680717746176
+  ],
+  "roleKeys": [
+    "348050330413563914",
+    "348050371316547584",
+    "348050417902682112",
+    "348049472800161792",
+    "348050519841046538",
+    "348050557333798922",
+    "348050592817479680",
+    "348050641266147328",
+    "348050671460941824"
+  ],
+  "roleIds": [
+    447856686724546571,
+    447856627962609664,
+    447856592503832576,
+    447856504813649930,
+    447856480310525953,
+    447856450707128321,
+    447856390359220234,
+    447856348332556301,
+    447856313574227977
+  ],
+  "rankEmojis": [
+    "<:diamond_league:427677594368868353>",
+    "<:platinum_league:427677594582777888>",
+    "<:gold_league:427677594637565952>",
+    "<:silver_league:427677594289438732>",
+    "<:bronze_league:427677594259947522>",
+    "<:expert_league:427677594557612032>",
+    "<:advanced_league:427677594553679872>",
+    "<:beginner_league:427677594335576065>",
+    "<:entry_league:427677594587234304>",
+    "<:king_of_speed:427677594318536706>"
+  ],
+  "kingOfSpeedSteam": "76561198894386008",
+  "localizedStats": [
+    {
+      "group": "Golden Hooks",
+      "items": [
+        {
+          "key": "weapon_hook_shot",
+          "value": "Shot"
+        },
+        {
+          "key": "weapon_hook_hit",
+          "value": "Hit"
+        },
+        {
+          "key": "weapon_hook_dodged",
+          "value": "Dodged"
+        }
+      ]
+    },
+    {
+      "group": "Bombs",
+      "items": [
+        {
+          "key": "weapon_bomb_planted",
+          "value": "Planted"
+        },
+        {
+          "key": "weapon_bomb_victims",
+          "value": "Victims"
+        },
+        {
+          "key": "weapon_bomb_suicides",
+          "value": "Suicides"
+        }
+      ]
+    },
+    {
+      "group": "Shockwaves",
+      "items": [
+        {
+          "key": "weapon_shockwave_fired",
+          "value": "Fired"
+        },
+        {
+          "key": "weapon_shockwave_victims",
+          "value": "Victims"
+        },
+        {
+          "key": "weapon_shockwave_obstacles_removed",
+          "value": "Obstacles Removed"
+        }
+      ]
+    },
+    {
+      "group": "Boxes",
+      "items": [
+        {
+          "key": "weapon_crate_dropped",
+          "value": "Dropped"
+        },
+        {
+          "key": "weapon_crate_suicide",
+          "value": "Suicides"
+        },
+        {
+          "key": "weapon_crate_victims",
+          "value": "Victims"
+        },
+        {
+          "key": "weapon_crate_air_victims",
+          "value": "Victims in Air"
+        },
+        {
+          "key": "weapon_crate_rocket_victims",
+          "value": "Rockets Blocked"
+        }
+      ]
+    },
+    {
+      "group": "Rockets",
+      "items": [
+        {
+          "key": "weapon_rocket_shot",
+          "value": "Fired"
+        },
+        {
+          "key": "weapon_rocket_victims",
+          "value": "Victims"
+        },
+        {
+          "key": "weapon_rocket_suicide",
+          "value": "Suicides"
+        }
+      ]
+    },
+    {
+      "group": "Drills",
+      "items": [
+        {
+          "key": "weapon_drill_used",
+          "value": "Used"
+        },
+        {
+          "key": "weapon_drill_victims",
+          "value": "Victims"
+        },
+        {
+          "key": "weapon_drill_obstacles_removed",
+          "value": "Obstacles Removed"
+        }
+      ]
+    },
+    {
+      "group": "Movement",
+      "items": [
+        {
+          "key": "distance_traveled",
+          "value": "Distance"
+        },
+        {
+          "key": "jumps",
+          "value": "Jumps"
+        },
+        {
+          "key": "obstacles_hit",
+          "value": "Obstacles Hit"
+        },
+        {
+          "key": "overtakes",
+          "value": "Overtakes"
+        }
+      ]
+    },
+    {
+      "group": "Movement",
+      "items": [
+        {
+          "key": "weapon_hook_shot",
+          "value": "Shot"
+        },
+        {
+          "key": "weapon_hook_hit",
+          "value": "Hit"
+        },
+        {
+          "key": "weapon_hook_dodged",
+          "value": "Dodged"
+        }
+      ]
+    },
+    {
+      "group": "Sliding",
+      "items": [
+        {
+          "key": "slide_tackles",
+          "value": "Tackles"
+        },
+        {
+          "key": "slide_tackles_in_air",
+          "value": "Tackles in Air"
+        }
+      ]
+    },
+    {
+      "group": "Wins",
+      "items": [
+        {
+          "key": "game_wins",
+          "value": "Wins"
+        }
+      ]
+    }
+  ],
+  "messages": {
+    "errDD": "Error establishing connection to DD API.",
+    "errJson": "Error parsing JSON data.",
+    "errChart": "Error creating a chart.",
+    "noData": "No userdata found.",
+    "noId": "Please provide a Steam ID or vanity URL.",
+    "noOnline": "There are currently no players from this server online in SpeedRunners.",
+    "noPlay": "The requested user has not played this season.",
+    "noRank": "You must have a rank role in order to use this command.",
+    "noSeason": "Please provide a season name or number.",
+    "private": "The requested user does not own the game, or has their account's game details set to private.",
+    "privateDD": "This profile is private.",
+    "wrongId": "Invalid Steam ID or vanity URL provided.",
+    "wrongSeason": "Invalid season provided.",
+    "unableData": "Unable to retrieve data for the requested user.",
+    "unknownError": "Something went wrong :frowning:",
+    "current": "Currently playing SpeedRunners from this server",
+    "changelog": "<http://steamcommunity.com/app/207140/discussions/2/598199244892373717/>",
+    "imgUrl": "https://i.imgur.com/rJDeGgl.jpg",
+    "channelCon": "You must be connected to voice to create a custom channel.",
+    "channelLen": "The channel name you provide must be between 2 and 100 characters in length.",
+    "channelName": "You must provide the name of a channel to create!",
+    "channelSuccess": "Successfully created and joined voice channel"
+  },
+  "apiUrl": {
+    "rank": "http://api.speedrunners.doubledutchgames.com/GetRanking?id=",
+    "season": "http://api.speedrunners.doubledutchgames.com/GetSeasonHistory?id=",
+    "leaderboard": "http://api.speedrunners.doubledutchgames.com/GetLeaderboard?season="
+  }
+}

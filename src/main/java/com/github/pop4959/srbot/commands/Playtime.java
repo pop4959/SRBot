@@ -10,14 +10,14 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static com.github.pop4959.srbot.constants.CommandFieldNames.STEAM_ID_FIELD;
-import static com.github.pop4959.srbot.constants.CommandFieldNames.UNIT_FIELD;
+import static com.github.pop4959.srbot.constants.CommandFields.*;
 
 public class Playtime extends Command {
     private final Config config;
@@ -33,17 +33,29 @@ public class Playtime extends Command {
     public SlashCommandData getSlashCommand() {
         return Commands
             .slash(name, description)
-            .addOption(OptionType.STRING, STEAM_ID_FIELD, "Steam ID or vanity URL", true)
-            .addOption(OptionType.STRING, UNIT_FIELD, "Time unit to display. Hours by default");
+            .addOption(OptionType.STRING, STEAM_ID_FIELD_NAME, STEAM_ID_FIELD_DESC, true)
+            .addOption(OptionType.STRING, UNIT_FIELD_NAME, UNIT_FIELD_DESC);
     }
 
     @Override
-    public void execute(SlashCommandInteractionEvent event) throws Exception {
+    public void execute(@NotNull SlashCommandInteractionEvent event) throws Exception {
         event.deferReply(true).queue();
-        var possibleSteamId = event.getOption(STEAM_ID_FIELD, OptionMapping::getAsString);
+
+        var potentialSteamId = event.getOption(STEAM_ID_FIELD_NAME, OptionMapping::getAsString);
+        if (potentialSteamId == null) {
+            event.getHook().sendMessage(config.messages.noId).queue();
+            return;
+        }
+
+        var steamId = Utils.resolveSteamId(potentialSteamId, steamWebApiClient, config.queryTimeout);
+        if (steamId == null) {
+            event.getHook().sendMessage(config.messages.wrongId).queue();
+            return;
+        }
+
         var steamUser = new SteamUser(steamWebApiClient);
         var steamPlayerService = new SteamPlayerService(steamWebApiClient);
-        var steamId = Utils.resolveSteamId(possibleSteamId, steamWebApiClient, config.queryTimeout);
+        var message = config.messages.unableData;
         try {
             var longSteamId = Long.parseLong(steamId);
             var steamPlayerProfile = steamUser
@@ -57,20 +69,13 @@ public class Playtime extends Command {
                 .findFirst()
                 .get();
 
-            var unit = event.getOption(UNIT_FIELD, OptionMapping::getAsString);
+            var unit = event.getOption(UNIT_FIELD_NAME, OptionMapping::getAsString);
             var timeSpent = getTimeSpent(unit, game.getTotalPlaytime());
-            var message = "%s has played %s of SpeedRunners.".formatted(steamPlayerProfile.getName(), timeSpent);
-            event
-                .getHook()
-                .editOriginal(message)
-                .queue();
+            message = "%s has played %s of SpeedRunners.".formatted(steamPlayerProfile.getName(), timeSpent);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
-            event
-                .getHook()
-                .editOriginal(config.messages.unableData)
-                .queue();
         }
+        event.getHook().sendMessage(message).queue();
     }
 
     private String getTimeSpent(String unit, double minutes) {

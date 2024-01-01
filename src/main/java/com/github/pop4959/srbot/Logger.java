@@ -11,9 +11,14 @@ import java.util.Date;
 
 public class Logger {
     private final Config config;
+    private Bot bot;
 
     public Logger(Config config) {
         this.config = config;
+    }
+
+    public void setBot(Bot bot) {
+        this.bot = bot;
     }
 
     protected final String LOG_FILE = (
@@ -24,11 +29,13 @@ public class Logger {
         if (destination.contains("c")) {
             System.out.println(info);
         }
-//        if (destination.contains("t")) {
-//            Main2.getJda().getGuildById(this.config.logging.server)
-//                .getTextChannelById(this.config.logging.channel)
-//                .sendMessage(info).queue();
-//        }
+        if (destination.contains("t")) {
+            bot.getJda()
+                .getGuildById(config.logging.server)
+                .getTextChannelById(config.logging.channel)
+                .sendMessage(info)
+                .queue();
+        }
         if (destination.contains("f")) {
             try {
                 File logFolder = new File("logs/");

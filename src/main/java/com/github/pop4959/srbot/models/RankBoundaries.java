@@ -1,4 +1,4 @@
-package com.github.pop4959.srbot.utils;
+package com.github.pop4959.srbot.models;
 
 public class RankBoundaries {
 

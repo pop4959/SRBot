@@ -4,6 +4,7 @@ import com.github.pop4959.srbot.models.Config;
 import com.ibasco.agql.protocols.valve.steam.webapi.SteamWebApiClient;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUserStats;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +21,7 @@ public class Players extends Command {
     }
 
     @Override
-    public void execute(SlashCommandInteractionEvent event) {
+    public void execute(@NotNull SlashCommandInteractionEvent event) {
         event.deferReply(true).queue();
         var stats = new SteamUserStats(steamWebApiClient);
         String message;

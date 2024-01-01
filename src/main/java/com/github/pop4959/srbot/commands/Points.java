@@ -3,7 +3,7 @@ package com.github.pop4959.srbot.commands;
 import com.github.pop4959.srbot.models.Config;
 import com.github.pop4959.srbot.models.Ranking;
 import com.github.pop4959.srbot.models.Season;
-import com.github.pop4959.srbot.utils.RankBoundaries;
+import com.github.pop4959.srbot.models.RankBoundaries;
 import com.github.pop4959.srbot.utils.Utils;
 import com.ibasco.agql.protocols.valve.steam.webapi.SteamWebApiClient;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -13,20 +13,21 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
-import net.dv8tion.jda.api.utils.messages.MessageEditData;
+import org.jetbrains.annotations.NotNull;
 
-import java.net.URL;
+import java.net.URI;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static com.github.pop4959.srbot.constants.CommandFields.STEAM_ID_FIELD_NAME;
+import static com.github.pop4959.srbot.constants.CommandFields.STEAM_ID_FIELD_DESC;
 import static com.github.pop4959.srbot.utils.Utils.httpGetJson;
 
 public class Points extends Command {
     private final Config config;
     private final SteamWebApiClient steamWebApiClient;
-    private final String steamIdField = "steamid";
-    private final ArrayList<RankBoundaries> rankBoundaries = new ArrayList<>() {
+    private final ArrayList<RankBoundaries> RANK_BOUNDARIES = new ArrayList<>() {
         {
             add(new RankBoundaries("Diamond", 29000, 100_000));
             add(new RankBoundaries("Platinum", 24000, 50_000));
@@ -39,7 +40,7 @@ public class Points extends Command {
             add(new RankBoundaries("Entry", 0, 0));
         }
     };
-    private final ArrayList<String> seasonNames = new ArrayList<>() {
+    private final ArrayList<String> SEASON_NAMES = new ArrayList<>() {
         {
             add("Off-season");
             add("Beta season");
@@ -58,19 +59,29 @@ public class Points extends Command {
     public SlashCommandData getSlashCommand() {
         return Commands
             .slash(name, description)
-            .addOption(OptionType.STRING, steamIdField, "Steam ID or vanity URL", true);
+            .addOption(OptionType.STRING, STEAM_ID_FIELD_NAME, STEAM_ID_FIELD_DESC, true);
     }
 
     @Override
-    public void execute(SlashCommandInteractionEvent event) throws Exception {
+    public void execute(@NotNull SlashCommandInteractionEvent event) throws Exception {
         event.deferReply(true).queue();
 
-        var potentialSteamId = event.getOption(steamIdField, OptionMapping::getAsString);
+        var potentialSteamId = event.getOption(STEAM_ID_FIELD_NAME, OptionMapping::getAsString);
+        if (potentialSteamId == null) {
+            event.getHook().sendMessage(config.messages.noId).queue();
+            return;
+        }
+
         var steamId = Utils.resolveSteamId(potentialSteamId, steamWebApiClient, config.queryTimeout);
+        if (steamId == null) {
+            event.getHook().sendMessage(config.messages.wrongId).queue();
+            return;
+        }
+
         var steamProfile = Utils.getSteamProfile(steamId, steamWebApiClient, config.queryTimeout);
 
-        var currentSeasonUrl = new URL(config.apiUrl.rank + steamId);
-        var oldSeasonUrl = new URL(config.apiUrl.season + steamId);
+        var currentSeasonUrl = new URI(config.apiUrl.rank + steamId).toURL();
+        var oldSeasonUrl = new URI(config.apiUrl.season + steamId).toURL();
 
         var ranking = httpGetJson(currentSeasonUrl, config.messages.privateProfileDD, Ranking.class);
         var seasons = httpGetJson(oldSeasonUrl, config.messages.privateProfileDD, Season[].class);
@@ -90,14 +101,14 @@ public class Points extends Command {
 
         {
             // off-season
-            var offSeasonTierPair = rankBoundaries
+            var offSeasonTierPair = RANK_BOUNDARIES
                 .stream()
                 .filter(b -> b.offSeasonBoundary <= ranking.score)
                 .findFirst()
-                .orElse(rankBoundaries.getLast());
+                .orElse(RANK_BOUNDARIES.getLast());
 
-            var offSeasonTierIndex = rankBoundaries.indexOf(offSeasonTierPair);
-            var offSeasonSeasonName = seasonNames.getFirst();
+            var offSeasonTierIndex = RANK_BOUNDARIES.indexOf(offSeasonTierPair);
+            var offSeasonSeasonName = SEASON_NAMES.getFirst();
             var offSeasonRankEmoji = config.rankEmojis.get(isKos ? 9 : offSeasonTierIndex);
             var offSeasonFormattedScore = dcFormat.format(ranking.score);
             var offSeasonMessage = messageTemplate.formatted(offSeasonRankEmoji, offSeasonTierPair.rank, offSeasonFormattedScore);
@@ -109,15 +120,15 @@ public class Points extends Command {
             if (season.seasonId == 1) continue; // skip off-season, data is wrong
             var isBeta = season.seasonId == 2; // if beta, multiply by 10
 
-            var tierPair = rankBoundaries
+            var tierPair = RANK_BOUNDARIES
                 .stream()
                 .filter(b -> b.eloSeasonBoundary < season.score * (isBeta ? 10 : 1))
                 .findFirst()
-                .orElse(rankBoundaries.getLast());
+                .orElse(RANK_BOUNDARIES.getLast());
 
-            var tierIndex = rankBoundaries.indexOf(tierPair);
-            var seasonName = seasonNames.get(season.seasonId - 1);
-            var rankEmoji = config.rankEmojis.get(isKos ? rankBoundaries.size() + 1 : tierIndex);
+            var tierIndex = RANK_BOUNDARIES.indexOf(tierPair);
+            var seasonName = SEASON_NAMES.get(season.seasonId - 1);
+            var rankEmoji = config.rankEmojis.get(isKos ? RANK_BOUNDARIES.size() + 1 : tierIndex);
             var formattedScore = dcFormat.format(season.score);
             var message = messageTemplate.formatted(rankEmoji, tierPair.rank, formattedScore);
 
@@ -127,7 +138,7 @@ public class Points extends Command {
         embeds.add(embed.build());
         event
             .getHook()
-            .editOriginal(MessageEditData.fromEmbeds(embeds))
+            .sendMessageEmbeds(embeds)
             .queue();
     }
 }

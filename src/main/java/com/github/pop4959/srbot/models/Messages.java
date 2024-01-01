@@ -3,7 +3,7 @@ package com.github.pop4959.srbot.models;
 public class Messages {
     public String errDD;
     public String errJson;
-    public String errPy;
+    public String errChart;
     public String noData;
     public String noId;
     public String noOnline;

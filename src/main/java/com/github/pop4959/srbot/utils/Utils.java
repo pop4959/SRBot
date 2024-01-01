@@ -6,6 +6,8 @@ import com.ibasco.agql.protocols.valve.steam.webapi.enums.VanityUrlType;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUser;
 import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,7 +21,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Utils {
-    public static String resolveSteamId(String possibleSteamId, SteamWebApiClient client, int queryTimeout) {
+    public static @Nullable String resolveSteamId(String possibleSteamId, SteamWebApiClient client, int queryTimeout) {
         var steamUser = new SteamUser(client);
 
         var steamId64 = Pattern.compile("765\\d{14}+").matcher(possibleSteamId);
@@ -61,7 +63,7 @@ public class Utils {
             .get(queryTimeout, TimeUnit.MILLISECONDS);
     }
 
-    public static <T> T httpGetJson(URL url, String errMsg, Class<T> tClass) throws IOException {
+    public static <T> T httpGetJson(@NotNull URL url, String errMsg, Class<T> tClass) throws IOException {
         var connection = url.openConnection();
         String seasonJson = null;
         try (var reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {

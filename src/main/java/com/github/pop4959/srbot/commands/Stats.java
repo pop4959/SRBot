@@ -77,7 +77,7 @@ public class Stats extends Command {
             .findFirst()
             .get()
             .items
-            .getFirst();
+            .get(0);
 
         var wins = stats
             .stream()

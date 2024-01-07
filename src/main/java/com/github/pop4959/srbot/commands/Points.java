@@ -105,10 +105,10 @@ public class Points extends Command {
                 .stream()
                 .filter(b -> b.offSeasonBoundary <= ranking.score)
                 .findFirst()
-                .orElse(RANK_BOUNDARIES.getLast());
+                .orElse(RANK_BOUNDARIES.get(RANK_BOUNDARIES.size() - 1));
 
             var offSeasonTierIndex = RANK_BOUNDARIES.indexOf(offSeasonTierPair);
-            var offSeasonSeasonName = SEASON_NAMES.getFirst();
+            var offSeasonSeasonName = SEASON_NAMES.get(0);
             var offSeasonRankEmoji = config.rankEmojis.get(isKos ? 9 : offSeasonTierIndex);
             var offSeasonFormattedScore = dcFormat.format(ranking.score);
             var offSeasonMessage = messageTemplate.formatted(offSeasonRankEmoji, offSeasonTierPair.rank, offSeasonFormattedScore);
@@ -124,7 +124,7 @@ public class Points extends Command {
                 .stream()
                 .filter(b -> b.eloSeasonBoundary < season.score * (isBeta ? 10 : 1))
                 .findFirst()
-                .orElse(RANK_BOUNDARIES.getLast());
+                .orElse(RANK_BOUNDARIES.get(RANK_BOUNDARIES.size() - 1));
 
             var tierIndex = RANK_BOUNDARIES.indexOf(tierPair);
             var seasonName = SEASON_NAMES.get(season.seasonId - 1);

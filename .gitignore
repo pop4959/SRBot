@@ -6,6 +6,6 @@ build/
 out/
 logs/
 bot/
+dist/
 node_modules
-package-lock.json
 *.js

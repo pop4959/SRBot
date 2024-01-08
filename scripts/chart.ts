@@ -13,12 +13,10 @@ import Shape from './types/shape';
 
     const config = JSON.parse(fs.readFileSync('./config.json', { encoding: 'utf8' })) as Config;
 
-    const steamKey = process.argv[2];
-    const steamId = process.argv[3];
-    const seasonNumber = Number(process.argv[4]);
+    const [steamId, seasonNumber] = [process.argv[2], Number(process.argv[3])];
     const season = config.seasons.find(s => s.seasonNumber === seasonNumber)!;
 
-    const steamApi = new SteamAPI(steamKey);
+    const steamApi = new SteamAPI(config.steamApiKey);
     const summary = await steamApi.getUserSummary(steamId);
     const rankHistoryRes = await axios.get<RankHistory[]>(config.ddApiRankUrl, { params: { id: steamId } });
 
@@ -104,9 +102,9 @@ import Shape from './types/shape';
 
     // gray out areas that would have had elo seasons
     if (season.seasonName === 'Off-season') {
-        const elo = [new Date('2018-02-01'), new Date('2019-01-01')];
+        const eloSeasons = [new Date('2018-02-01'), new Date('2019-01-01')];
 
-        for (let season of elo) {
+        for (let season of eloSeasons) {
             const boundaries = binarySearch(trace.x, Number(season));
             if (trace.x.at(-1) === boundaries.at(-1) || trace.x.at(0) === boundaries.at(0)) {
                 continue;

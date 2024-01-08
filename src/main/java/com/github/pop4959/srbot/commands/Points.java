@@ -11,7 +11,6 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,14 +28,14 @@ public class Points extends Command {
     private final SteamWebApiClient steamWebApiClient;
     private final ArrayList<RankBoundaries> RANK_BOUNDARIES = new ArrayList<>() {
         {
-            add(new RankBoundaries("Diamond", 29000, 100_000));
-            add(new RankBoundaries("Platinum", 24000, 50_000));
-            add(new RankBoundaries("Gold", 20000, 25_000));
-            add(new RankBoundaries("Silver", 17000, 10_000));
-            add(new RankBoundaries("Bronze", 12000, 5_000));
-            add(new RankBoundaries("Expert", 10000, 1_000));
-            add(new RankBoundaries("Advanced", 9000, 500));
-            add(new RankBoundaries("Beginner", 8000, 300));
+            add(new RankBoundaries("Diamond", 29_000, 100_000));
+            add(new RankBoundaries("Platinum", 24_000, 50_000));
+            add(new RankBoundaries("Gold", 20_000, 25_000));
+            add(new RankBoundaries("Silver", 17_000, 10_000));
+            add(new RankBoundaries("Bronze", 12_000, 5_000));
+            add(new RankBoundaries("Expert", 10_000, 1_000));
+            add(new RankBoundaries("Advanced", 9_000, 500));
+            add(new RankBoundaries("Beginner", 8_000, 300));
             add(new RankBoundaries("Entry", 0, 0));
         }
     };
@@ -57,8 +56,7 @@ public class Points extends Command {
 
     @Override
     public SlashCommandData getSlashCommand() {
-        return Commands
-            .slash(name, description)
+        return super.getSlashCommand()
             .addOption(OptionType.STRING, STEAM_ID_FIELD_NAME, STEAM_ID_FIELD_DESC, true);
     }
 

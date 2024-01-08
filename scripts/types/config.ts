@@ -5,6 +5,7 @@ export default interface Config {
     };
     seasons: Season[];
     rankColours: string[];
+    steamApiKey: string;
     ddApiRankUrl: string;
 }
 

@@ -189,5 +189,6 @@
         "#309b43",
         "#3ad94c"
     ],
+    "steamApiKey": "<steam api key>",
     "ddApiRankUrl": "http://api.speedrunners.doubledutchgames.com/GetRankHistory"
 }

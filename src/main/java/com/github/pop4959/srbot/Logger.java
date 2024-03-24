@@ -1,6 +1,6 @@
 package com.github.pop4959.srbot;
 
-import com.github.pop4959.srbot.data.Data;
+import com.github.pop4959.srbot.models.Config;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,19 +10,31 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Logger {
+    private final Config config;
+    private Bot bot;
 
-    protected static final String LOG_FILE = (
-            new SimpleDateFormat("yyyy-MM-dd'.log'"))
-            .format(new Date(System.currentTimeMillis()));
+    public Logger(Config config) {
+        this.config = config;
+    }
 
-    public static void log(String info, String destination) {
+    public void setBot(Bot bot) {
+        this.bot = bot;
+    }
+
+    protected final String LOG_FILE = (
+        new SimpleDateFormat("yyyy-MM-dd'.log'"))
+        .format(new Date(System.currentTimeMillis()));
+
+    public void log(String info, String destination) {
         if (destination.contains("c")) {
             System.out.println(info);
         }
         if (destination.contains("t")) {
-            Main.getJda().getGuildById(Data.config().getLogging().getServer())
-                    .getTextChannelById(Data.config().getLogging().getChannel())
-                    .sendMessage(info).queue();
+            bot.getJda()
+                .getGuildById(config.logging.server)
+                .getTextChannelById(config.logging.channel)
+                .sendMessage(info)
+                .queue();
         }
         if (destination.contains("f")) {
             try {

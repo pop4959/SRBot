@@ -1,73 +1,68 @@
 package com.github.pop4959.srbot;
 
-import com.github.pop4959.srbot.command.BotCommand;
-import com.github.pop4959.srbot.command.BotCommandHandler;
-import com.github.pop4959.srbot.data.Data;
-import com.github.pop4959.srbot.task.SteamOpenID;
+import com.github.pop4959.srbot.commands.*;
+import com.github.pop4959.srbot.models.Config;
+import com.github.pop4959.srbot.services.AutoRank;
+import com.github.pop4959.srbot.services.ChatLog;
+import com.github.pop4959.srbot.services.GuildActivity;
+import com.github.pop4959.srbot.services.SuperChat;
+import com.google.gson.Gson;
 import com.ibasco.agql.protocols.valve.steam.webapi.SteamWebApiClient;
-import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.events.ReadyEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
-import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.grizzly.ssl.SSLContextConfigurator;
-import org.glassfish.grizzly.ssl.SSLEngineConfigurator;
-import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.reflections.Reflections;
-import org.reflections.util.ClasspathHelper;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import javax.security.auth.login.LoginException;
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
-import java.util.Set;
+import java.io.FileReader;
+import java.util.ArrayList;
 
-public class Main extends ListenerAdapter {
+public class Main {
 
-    private static JDA jda;
-    private static SteamWebApiClient client;
-
-    public static void main(String[] arguments) {
-        Reflections reflections = new Reflections(ClasspathHelper.forClass(Main.class));
-        Set<Class<? extends BotCommand>> commands = reflections.getSubTypesOf(BotCommand.class);
-        Set<Class<? extends ListenerAdapter>> listeners = reflections.getSubTypesOf(ListenerAdapter.class);
+    public static void main(String[] args) {
         try {
-            JDABuilder jdabuilder = new JDABuilder(AccountType.BOT)
-                    .setToken(Data.fromFile(Data.config().getFiles().getDiscordToken()))
-                    .setAutoReconnect(true).setGame(Game.of(Game.GameType.LISTENING, Data.config().getGameName()));
-            for (Class<? extends ListenerAdapter> listener : listeners) {
-                jdabuilder.addEventListener(listener.newInstance());
-            }
-            jda = jdabuilder.buildAsync();
-            for (Class<? extends BotCommand> command : commands) {
-                BotCommand instance = command.newInstance();
-                BotCommandHandler.registerCommand(instance.getName().toLowerCase(), instance);
-            }
-        } catch (LoginException | InstantiationException | IllegalAccessException e) {
+            var gson = new Gson();
+
+            // config
+            var configPath = "data/config.json";
+            var config = gson.fromJson(new FileReader(configPath), Config.class);
+
+            // logger
+            var logger = new Logger(config);
+
+            // steam
+            var steamWebApiClient = new SteamWebApiClient(config.secrets.steamToken);
+
+            // services
+            var services = new ArrayList<ListenerAdapter>() {
+                {
+                    add(new AutoRank(config));
+                    add(new GuildActivity(config, logger));
+                    add(new SuperChat());
+                    add(new ChatLog(logger));
+                }
+            };
+
+            // commands
+            var commands = new ArrayList<Command>() {
+                {
+                    add(new Active(config));
+                    add(new Changelog(config));
+                    add(new Chart(config, steamWebApiClient));
+                    add(new Leaderboard(config, steamWebApiClient));
+                    add(new Players(config, steamWebApiClient));
+                    add(new Playtime(config, steamWebApiClient));
+                    add(new Points(config, steamWebApiClient));
+                    add(new Pop4959());
+                    add(new Private(config));
+                    add(new RandomCharacter(config));
+                    add(new Say());
+                    add(new Stats(config, steamWebApiClient));
+                }
+            };
+
+            // bot
+            var bot = new Bot(commands, services, config, logger);
+            logger.setBot(bot);
+            bot.start();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        client = new SteamWebApiClient(Data.fromFile(Data.config().getFiles().getSteamToken()));
-        URI webUri = UriBuilder.fromUri(Data.config().getWeb().getHost()).port(Data.config().getWeb().getPort()).build();
-        ResourceConfig config = new ResourceConfig(SteamOpenID.class);
-        SSLContextConfigurator sslContext = new SSLContextConfigurator();
-        sslContext.setKeyStoreFile(Data.config().getWeb().getKeystoreFile());
-        sslContext.setKeyStorePass(Data.config().getWeb().getKeystorePass());
-        HttpServer grizzlyServer = GrizzlyHttpServerFactory.createHttpServer(webUri, config, true, new SSLEngineConfigurator(sslContext).setClientMode(false).setNeedClientAuth(false));
     }
-
-    @Override
-    public void onReady(ReadyEvent event) {
-        Logger.log("Connected to Discord.", "tf");
-    }
-
-    public static JDA getJda() {
-        return jda;
-    }
-
-    public static SteamWebApiClient getClient() {
-        return client;
-    }
-
 }

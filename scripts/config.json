@@ -1,0 +1,194 @@
+{
+    "plotly": {
+        "plotlyUsername": "<plotly username>",
+        "plotlyApikey": "<plotly api key>"
+    },
+    "seasonNames": [
+        "Off-season",
+        "Beta season",
+        "Winter season",
+        "Christmas season"
+    ],
+    "seasons": [
+        {
+            "seasonName": "Off-season",
+            "seasonNumber": 1,
+            "seasonRanks": [
+                {
+                    "rankName": "diamond",
+                    "rankPoints": 100000
+                },
+                {
+                    "rankName": "platinum",
+                    "rankPoints": 50000
+                },
+                {
+                    "rankName": "gold",
+                    "rankPoints": 25000
+                },
+                {
+                    "rankName": "silver",
+                    "rankPoints": 10000
+                },
+                {
+                    "rankName": "bronze",
+                    "rankPoints": 5000
+                },
+                {
+                    "rankName": "expert",
+                    "rankPoints": 2500
+                },
+                {
+                    "rankName": "advanced",
+                    "rankPoints": 1000
+                },
+                {
+                    "rankName": "beginner",
+                    "rankPoints": 300
+                },
+                {
+                    "rankName": "entry",
+                    "rankPoints": 0
+                }
+            ]
+        },
+        {
+            "seasonName": "Beta season",
+            "seasonNumber": 2,
+            "seasonRanks": [
+                {
+                    "rankName": "diamond",
+                    "rankPoints": 2900
+                },
+                {
+                    "rankName": "platinum",
+                    "rankPoints": 2400
+                },
+                {
+                    "rankName": "gold",
+                    "rankPoints": 2000
+                },
+                {
+                    "rankName": "silver",
+                    "rankPoints": 1700
+                },
+                {
+                    "rankName": "bronze",
+                    "rankPoints": 1200
+                },
+                {
+                    "rankName": "expert",
+                    "rankPoints": 1000
+                },
+                {
+                    "rankName": "advanced",
+                    "rankPoints": 900
+                },
+                {
+                    "rankName": "beginner",
+                    "rankPoints": 800
+                },
+                {
+                    "rankName": "entry",
+                    "rankPoints": 0
+                }
+            ]
+        },
+        {
+            "seasonName": "Winter season",
+            "seasonNumber": 3,
+            "seasonRanks": [
+                {
+                    "rankName": "diamond",
+                    "rankPoints": 29000
+                },
+                {
+                    "rankName": "platinum",
+                    "rankPoints": 24000
+                },
+                {
+                    "rankName": "gold",
+                    "rankPoints": 20000
+                },
+                {
+                    "rankName": "silver",
+                    "rankPoints": 17000
+                },
+                {
+                    "rankName": "bronze",
+                    "rankPoints": 12000
+                },
+                {
+                    "rankName": "expert",
+                    "rankPoints": 10000
+                },
+                {
+                    "rankName": "advanced",
+                    "rankPoints": 9000
+                },
+                {
+                    "rankName": "beginner",
+                    "rankPoints": 8000
+                },
+                {
+                    "rankName": "entry",
+                    "rankPoints": 0
+                }
+            ]
+        },
+        {
+            "seasonName": "Christmas season",
+            "seasonNumber": 4,
+            "seasonRanks": [
+                {
+                    "rankName": "diamond",
+                    "rankPoints": 29000
+                },
+                {
+                    "rankName": "platinum",
+                    "rankPoints": 24000
+                },
+                {
+                    "rankName": "gold",
+                    "rankPoints": 20000
+                },
+                {
+                    "rankName": "silver",
+                    "rankPoints": 17000
+                },
+                {
+                    "rankName": "bronze",
+                    "rankPoints": 12000
+                },
+                {
+                    "rankName": "expert",
+                    "rankPoints": 10000
+                },
+                {
+                    "rankName": "advanced",
+                    "rankPoints": 9000
+                },
+                {
+                    "rankName": "beginner",
+                    "rankPoints": 8000
+                },
+                {
+                    "rankName": "entry",
+                    "rankPoints": 0
+                }
+            ]
+        }
+    ],
+    "rankColours": [
+        "#69bdff",
+        "#3789e6",
+        "#d8d038",
+        "#757575",
+        "#a8512d",
+        "#175f19",
+        "#309b43",
+        "#3ad94c"
+    ],
+    "steamApiKey": "<steam api key>",
+    "ddApiRankUrl": "http://api.speedrunners.doubledutchgames.com/GetRankHistory"
+}

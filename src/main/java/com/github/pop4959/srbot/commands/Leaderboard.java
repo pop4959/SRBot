@@ -67,7 +67,7 @@ public class Leaderboard extends Command {
         var steamUser = new SteamUser(steamWebApiClient);
         var steamProfile = Utils.getSteamProfile(steamId, steamWebApiClient, config.queryTimeout);
 
-        var leaderboardUrl = new URI("%s%d&steamid=%s".formatted(config.apiUrl.leaderboard, season, steamId)).toURL();
+        var leaderboardUrl = new URI("%s%d&steamid=%s&start=-10&end=10".formatted(config.apiUrl.leaderboard, season, steamId)).toURL();
         var leaderboard = httpGetJson(leaderboardUrl, "", com.github.pop4959.srbot.models.Leaderboard.class).leaderboardEntryInformation;
 
         var size = leaderboard.leaderboardEntries.length;

@@ -49,7 +49,6 @@ public class Main {
                     add(new Players(config, steamWebApiClient));
                     add(new Playtime(config, steamWebApiClient));
                     add(new Points(config, steamWebApiClient));
-                    add(new Pop4959());
                     add(new Private(config));
                     add(new RandomCharacter(config));
                     add(new Say());

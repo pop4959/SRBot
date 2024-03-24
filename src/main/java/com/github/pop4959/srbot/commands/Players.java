@@ -22,7 +22,7 @@ public class Players extends Command {
 
     @Override
     public void execute(@NotNull SlashCommandInteractionEvent event) {
-        event.deferReply(true).queue();
+        event.deferReply(false).queue();
         var stats = new SteamUserStats(steamWebApiClient);
         String message;
         try {
@@ -35,7 +35,6 @@ public class Players extends Command {
         }
         event
             .reply(message)
-            .setEphemeral(true)
             .queue();
     }
 }

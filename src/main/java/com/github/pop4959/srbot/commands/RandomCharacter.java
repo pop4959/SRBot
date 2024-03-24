@@ -19,7 +19,6 @@ public class RandomCharacter extends Command {
         var randomCharacter = characters.get((int)randomIdx);
         event
             .reply(randomCharacter)
-            .setEphemeral(true)
             .queue();
     }
 }

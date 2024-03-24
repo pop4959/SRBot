@@ -62,7 +62,7 @@ public class Points extends Command {
 
     @Override
     public void execute(@NotNull SlashCommandInteractionEvent event) throws Exception {
-        event.deferReply(true).queue();
+        event.deferReply(false).queue();
 
         var potentialSteamId = event.getOption(STEAM_ID_FIELD_NAME, OptionMapping::getAsString);
         if (potentialSteamId == null) {

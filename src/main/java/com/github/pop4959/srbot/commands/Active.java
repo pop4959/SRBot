@@ -45,7 +45,6 @@ public class Active extends Command {
         if (players.isEmpty()) {
             event
                 .reply(config.messages.noOnline)
-                .setEphemeral(true)
                 .queue();
         } else {
             Collections.sort(players);
@@ -56,7 +55,6 @@ public class Active extends Command {
             embeds.add(embed.build());
             event
                 .reply(MessageCreateData.fromEmbeds(embeds))
-                .setEphemeral(true)
                 .queue();
         }
     }

@@ -33,7 +33,7 @@ public class Chart extends Command {
 
     @Override
     public void execute(@NotNull SlashCommandInteractionEvent event) throws Exception {
-        event.deferReply(true).queue();
+        event.deferReply(false).queue();
 
         var possibleSteamId = event.getOption(STEAM_ID_FIELD_NAME, OptionMapping::getAsString);
         if (possibleSteamId == null) {

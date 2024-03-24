@@ -16,7 +16,6 @@ public class Changelog extends Command {
     public void execute(@NotNull SlashCommandInteractionEvent event) {
         event
             .reply(config.messages.changelog)
-            .setEphemeral(true)
             .queue();
     }
 }

@@ -23,10 +23,10 @@ public class Players extends Command {
     @Override
     public void execute(@NotNull SlashCommandInteractionEvent event) {
         event.deferReply(false).queue();
-        var stats = new SteamUserStats(steamWebApiClient);
+        SteamUserStats stats = new SteamUserStats(steamWebApiClient);
         String message;
         try {
-            var playerCount = stats
+            Integer playerCount = stats
                 .getNumberOfCurrentPlayers(config.srAppId)
                 .get(config.queryTimeout, TimeUnit.MILLISECONDS);
             message = "Current player count: %d".formatted(playerCount);

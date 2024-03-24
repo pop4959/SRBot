@@ -1,9 +1,12 @@
 package com.github.pop4959.srbot.commands;
 
 import com.github.pop4959.srbot.models.Config;
+import com.github.pop4959.srbot.models.LocalizedStat;
 import com.github.pop4959.srbot.utils.Utils;
 import com.ibasco.agql.protocols.valve.steam.webapi.SteamWebApiClient;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUserStats;
+import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamKeyValuePair;
+import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -14,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -40,36 +44,36 @@ public class Stats extends Command {
     public void execute(@NotNull SlashCommandInteractionEvent event) throws Exception {
         event.deferReply(false).queue();
 
-        var potentialSteamId = event.getOption(STEAM_ID_FIELD_NAME, OptionMapping::getAsString);
+        String potentialSteamId = event.getOption(STEAM_ID_FIELD_NAME, OptionMapping::getAsString);
         if (potentialSteamId == null) {
             event.getHook().sendMessage(config.messages.noId).queue();
             return;
         }
 
-        var steamId = Utils.resolveSteamId(potentialSteamId, steamWebApiClient, config.queryTimeout);
+        String steamId = Utils.resolveSteamId(potentialSteamId, steamWebApiClient, config.queryTimeout);
         if (steamId == null) {
             event.getHook().sendMessage(config.messages.wrongId).queue();
             return;
         }
 
-        var steamProfile = Utils.getSteamProfile(steamId, steamWebApiClient, config.queryTimeout);
-        var steamUserStats = new SteamUserStats(steamWebApiClient);
+        SteamPlayerProfile steamProfile = Utils.getSteamProfile(steamId, steamWebApiClient, config.queryTimeout);
+        SteamUserStats steamUserStats = new SteamUserStats(steamWebApiClient);
 
-        var stats = steamUserStats
+        List<SteamKeyValuePair<String, Integer>> stats = steamUserStats
             .getUserStatsForGame(Long.parseLong(steamId), config.srAppId)
             .get(config.queryTimeout, TimeUnit.MILLISECONDS)
             .getStats();
 
-        var embeds = new ArrayList<MessageEmbed>();
-        var embed = new EmbedBuilder()
+        ArrayList<MessageEmbed> embeds = new ArrayList<MessageEmbed>();
+        EmbedBuilder embed = new EmbedBuilder()
             .setAuthor(
                 "Stats for %s".formatted(steamProfile.getName()),
                 steamProfile.getProfileUrl(),
                 steamProfile.getAvatarFullUrl()
             );
-        var numberFormat = NumberFormat.getInstance(Locale.CANADA);
+        NumberFormat numberFormat = NumberFormat.getInstance(Locale.CANADA);
 
-        var localizedWin = config.localizedStats
+        LocalizedStat.LocalizedStatItem localizedWin = config.localizedStats
             .stream()
             .filter(s -> s.group.equals("Wins"))
             .findFirst()
@@ -77,7 +81,7 @@ public class Stats extends Command {
             .items
             .get(0);
 
-        var wins = stats
+        Integer wins = stats
             .stream()
             .filter(s -> s.getName().equals(localizedWin.key))
             .findFirst()
@@ -85,12 +89,12 @@ public class Stats extends Command {
             .getValue();
 
         embed.setDescription("%s: %s".formatted(localizedWin.value, numberFormat.format(wins)));
-        for (var stat : config.localizedStats) {
+        for (LocalizedStat stat : config.localizedStats) {
             if (stat.group.equals("Wins")) continue; // skip wins, they are for description only
 
-            var fieldValue = new StringBuilder();
-            for (var localizedStatItem : stat.items) {
-                var statValue = stats
+            StringBuilder fieldValue = new StringBuilder();
+            for (LocalizedStat.LocalizedStatItem localizedStatItem : stat.items) {
+                Integer statValue = stats
                     .stream()
                     .filter(s -> s.getName().equals(localizedStatItem.key))
                     .findFirst()

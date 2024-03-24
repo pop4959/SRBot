@@ -1,10 +1,12 @@
 package com.github.pop4959.srbot.commands;
 
 import com.github.pop4959.srbot.models.Config;
+import com.github.pop4959.srbot.models.LeaderboardEntry;
 import com.github.pop4959.srbot.utils.LeaderboardThread;
 import com.github.pop4959.srbot.utils.Utils;
 import com.ibasco.agql.protocols.valve.steam.webapi.SteamWebApiClient;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUser;
+import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -14,8 +16,10 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.github.pop4959.srbot.constants.CommandFields.*;
@@ -42,19 +46,19 @@ public class Leaderboard extends Command {
     public void execute(@NotNull SlashCommandInteractionEvent event) throws Exception {
         event.deferReply(false).queue();
 
-        var potentialSteamId = event.getOption(STEAM_ID_FIELD_NAME, OptionMapping::getAsString);
+        String potentialSteamId = event.getOption(STEAM_ID_FIELD_NAME, OptionMapping::getAsString);
         if (potentialSteamId == null) {
             event.getHook().sendMessage(config.messages.noId).queue();
             return;
         }
 
-        var steamId = Utils.resolveSteamId(potentialSteamId, steamWebApiClient, config.queryTimeout);
+        String steamId = Utils.resolveSteamId(potentialSteamId, steamWebApiClient, config.queryTimeout);
         if (steamId == null) {
             event.getHook().sendMessage(config.messages.wrongId).queue();
             return;
         }
 
-        var season = event.getOption(SEASON_FIELD_NAME, OptionMapping::getAsInt);
+        Integer season = event.getOption(SEASON_FIELD_NAME, OptionMapping::getAsInt);
         if (season == null) {
             event.getHook().sendMessage(config.messages.noSeason).queue();
             return;
@@ -64,37 +68,37 @@ public class Leaderboard extends Command {
             return;
         }
 
-        var steamUser = new SteamUser(steamWebApiClient);
-        var steamProfile = Utils.getSteamProfile(steamId, steamWebApiClient, config.queryTimeout);
+        SteamUser steamUser = new SteamUser(steamWebApiClient);
+        SteamPlayerProfile steamProfile = Utils.getSteamProfile(steamId, steamWebApiClient, config.queryTimeout);
 
-        var leaderboardUrl = new URI("%s%d&steamid=%s&start=-10&end=10".formatted(config.apiUrl.leaderboard, season, steamId)).toURL();
-        var leaderboard = httpGetJson(leaderboardUrl, "", com.github.pop4959.srbot.models.Leaderboard.class).leaderboardEntryInformation;
+        URL leaderboardUrl = new URI("%s%d&steamid=%s&start=-10&end=10".formatted(config.apiUrl.leaderboard, season, steamId)).toURL();
+        com.github.pop4959.srbot.models.Leaderboard.LeaderboardEntryInformation leaderboard = httpGetJson(leaderboardUrl, "", com.github.pop4959.srbot.models.Leaderboard.class).leaderboardEntryInformation;
 
-        var size = leaderboard.leaderboardEntries.length;
+        int size = leaderboard.leaderboardEntries.length;
         if (size == 0) {
             event.getHook().sendMessage(config.messages.noPlay).queue();
             return;
         }
 
-        var idx = 0;
-        var threads = new Thread[size];
-        var list = new ArrayList<String>();
+        int idx = 0;
+        Thread[] threads = new Thread[size];
+        ArrayList<String> list = new ArrayList<String>();
 
-        for (var entry : leaderboard.leaderboardEntries) {
+        for (LeaderboardEntry entry : leaderboard.leaderboardEntries) {
             threads[idx] = new LeaderboardThread(entry, steamUser, steamProfile, list, config.queryTimeout);
             threads[idx++].start();
         }
 
-        for (var i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             threads[i].join();
         }
 
-        var standard = Pattern.compile("^(\\d{1,8})\\.\\s.+");
-        var current = Pattern.compile("^\\*\\*(\\d{1,8})\\.\\s.+");
+        Pattern standard = Pattern.compile("^(\\d{1,8})\\.\\s.+");
+        Pattern current = Pattern.compile("^\\*\\*(\\d{1,8})\\.\\s.+");
 
         list.sort(Comparator.comparingInt(str -> {
-            var matcher1 = standard.matcher(str);
-            var matcher2 = current.matcher(str);
+            Matcher matcher1 = standard.matcher(str);
+            Matcher matcher2 = current.matcher(str);
 
             if (matcher1.find()) {
                 return Integer.parseInt(matcher1.group(1));
@@ -105,11 +109,11 @@ public class Leaderboard extends Command {
             }
         }));
 
-        var message = String.join("", list);
+        String message = String.join("", list);
 
         System.out.println(message);
-        var embeds = new ArrayList<MessageEmbed>();
-        var embed = new EmbedBuilder()
+        ArrayList<MessageEmbed> embeds = new ArrayList<MessageEmbed>();
+        EmbedBuilder embed = new EmbedBuilder()
             .setAuthor(
                 "Leaderboard for %s".formatted(steamProfile.getName()),
                 steamProfile.getProfileUrl(),

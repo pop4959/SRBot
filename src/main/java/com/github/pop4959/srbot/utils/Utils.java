@@ -13,24 +13,26 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Utils {
     public static @Nullable String resolveSteamId(String possibleSteamId, SteamWebApiClient client, int queryTimeout) {
-        var steamUser = new SteamUser(client);
+        SteamUser steamUser = new SteamUser(client);
 
-        var steamId64 = Pattern.compile("765\\d{14}+").matcher(possibleSteamId);
-        var vanityUrl = Pattern.compile("https?://steamcommunity\\.com/id/.+").matcher(possibleSteamId);
+        Matcher steamId64 = Pattern.compile("765\\d{14}+").matcher(possibleSteamId);
+        Matcher vanityUrl = Pattern.compile("https?://steamcommunity\\.com/id/.+").matcher(possibleSteamId);
 
         String steamId = null;
         if (!steamId64.find()) {
             if (vanityUrl.find()) {
-                var match = vanityUrl.group();
+                String match = vanityUrl.group();
                 if (match.endsWith("/")) {
                     steamId = StringUtils.substringBetween(match, "id/", "/");
                 } else {
@@ -38,7 +40,7 @@ public class Utils {
                 }
             }
             try {
-                var result = steamUser.getSteamIdFromVanityUrl(
+                Long result = steamUser.getSteamIdFromVanityUrl(
                     steamId == null ? possibleSteamId : steamId,
                     VanityUrlType.INDIVIDUAL_PROFILE
                 ).get(queryTimeout, TimeUnit.MILLISECONDS);
@@ -57,16 +59,16 @@ public class Utils {
     }
 
     public static SteamPlayerProfile getSteamProfile(String steamId, SteamWebApiClient client, int queryTimeout) throws ExecutionException, InterruptedException, TimeoutException {
-        var steamUser = new SteamUser(client);
+        SteamUser steamUser = new SteamUser(client);
         return steamUser
             .getPlayerProfile(Long.parseLong(steamId))
             .get(queryTimeout, TimeUnit.MILLISECONDS);
     }
 
     public static <T> T httpGetJson(@NotNull URL url, String errMsg, Class<T> tClass) throws IOException {
-        var connection = url.openConnection();
+        URLConnection connection = url.openConnection();
         String seasonJson = null;
-        try (var reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
             seasonJson = reader.lines().collect(Collectors.joining("\n"));
             if (seasonJson.isEmpty() || seasonJson.equals(errMsg)) throw new IOException();
             if (!seasonJson.contains("{")) throw new IllegalArgumentException();

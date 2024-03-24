@@ -28,7 +28,7 @@ public class SuperChat extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
-        var message = event.getMessage().getContentRaw();
+        String message = event.getMessage().getContentRaw();
         if (!event.getAuthor().isBot()) {
             if (RESPONSES.containsKey(message)) {
                 event.getChannel().sendMessage(RESPONSES.get(message)).queue();

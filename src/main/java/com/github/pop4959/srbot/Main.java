@@ -17,17 +17,17 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            var gson = new Gson();
+            Gson gson = new Gson();
 
             // config
-            var configPath = "data/config.json";
-            var config = gson.fromJson(new FileReader(configPath), Config.class);
+            String configPath = "data/config.json";
+            Config config = gson.fromJson(new FileReader(configPath), Config.class);
 
             // logger
-            var logger = new Logger(config);
+            Logger logger = new Logger(config);
 
             // steam
-            var steamWebApiClient = new SteamWebApiClient(config.secrets.steamToken);
+            SteamWebApiClient steamWebApiClient = new SteamWebApiClient(config.secrets.steamToken);
 
             // services
             var services = new ArrayList<ListenerAdapter>() {
@@ -57,7 +57,7 @@ public class Main {
             };
 
             // bot
-            var bot = new Bot(commands, services, config, logger);
+            Bot bot = new Bot(commands, services, config, logger);
             logger.setBot(bot);
             bot.start();
         } catch (Exception e) {

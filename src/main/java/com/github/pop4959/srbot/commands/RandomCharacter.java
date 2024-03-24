@@ -4,6 +4,8 @@ import com.github.pop4959.srbot.models.Config;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class RandomCharacter extends Command {
     private final Config config;
 
@@ -14,9 +16,9 @@ public class RandomCharacter extends Command {
 
     @Override
     public void execute(@NotNull SlashCommandInteractionEvent event) {
-        var characters = config.characters;
-        var randomIdx = Math.random() * characters.size();
-        var randomCharacter = characters.get((int)randomIdx);
+        List<String> characters = config.characters;
+        double randomIdx = Math.random() * characters.size();
+        String randomCharacter = characters.get((int)randomIdx);
         event
             .reply(randomCharacter)
             .queue();

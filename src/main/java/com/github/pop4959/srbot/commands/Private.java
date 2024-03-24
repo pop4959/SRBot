@@ -18,8 +18,8 @@ public class Private extends Command {
 
     @Override
     public void execute(@NotNull SlashCommandInteractionEvent event) throws Exception {
-        var embeds = new ArrayList<MessageEmbed>();
-        var embed = new EmbedBuilder()
+        ArrayList<MessageEmbed> embeds = new ArrayList<MessageEmbed>();
+        EmbedBuilder embed = new EmbedBuilder()
             .setImage(config.messages.imgUrl)
             .setColor(event.getGuild().getSelfMember().getColor());
         embeds.add(embed.build());

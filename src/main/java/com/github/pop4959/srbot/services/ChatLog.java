@@ -1,6 +1,7 @@
 package com.github.pop4959.srbot.services;
 
 import com.github.pop4959.srbot.Logger;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -42,7 +43,7 @@ public class ChatLog extends ListenerAdapter {
             }
         }
         if (ATTACHMENT_LOCATION.getFreeSpace() > 1e10) {
-            for (var attachment : event.getMessage().getAttachments()) {
+            for (Message.Attachment attachment : event.getMessage().getAttachments()) {
                 attachment.getProxy().downloadToFile(
                     Paths.get(
                         ATTACHMENT_LOCATION.getAbsolutePath(),

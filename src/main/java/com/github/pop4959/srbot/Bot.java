@@ -65,8 +65,8 @@ public class Bot extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
         try {
-            var name = event.getName();
-            var command = commands
+            String name = event.getName();
+            Command command = commands
                 .stream()
                 .filter(c -> Objects.equals(c.name, name))
                 .findFirst()

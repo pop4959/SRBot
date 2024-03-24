@@ -6,6 +6,7 @@ import com.github.pop4959.srbot.models.Season;
 import com.github.pop4959.srbot.models.RankBoundaries;
 import com.github.pop4959.srbot.utils.Utils;
 import com.ibasco.agql.protocols.valve.steam.webapi.SteamWebApiClient;
+import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -15,6 +16,7 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URI;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -64,32 +66,32 @@ public class Points extends Command {
     public void execute(@NotNull SlashCommandInteractionEvent event) throws Exception {
         event.deferReply(false).queue();
 
-        var potentialSteamId = event.getOption(STEAM_ID_FIELD_NAME, OptionMapping::getAsString);
+        String potentialSteamId = event.getOption(STEAM_ID_FIELD_NAME, OptionMapping::getAsString);
         if (potentialSteamId == null) {
             event.getHook().sendMessage(config.messages.noId).queue();
             return;
         }
 
-        var steamId = Utils.resolveSteamId(potentialSteamId, steamWebApiClient, config.queryTimeout);
+        String steamId = Utils.resolveSteamId(potentialSteamId, steamWebApiClient, config.queryTimeout);
         if (steamId == null) {
             event.getHook().sendMessage(config.messages.wrongId).queue();
             return;
         }
 
-        var steamProfile = Utils.getSteamProfile(steamId, steamWebApiClient, config.queryTimeout);
+        SteamPlayerProfile steamProfile = Utils.getSteamProfile(steamId, steamWebApiClient, config.queryTimeout);
 
-        var currentSeasonUrl = new URI(config.apiUrl.rank + steamId).toURL();
-        var oldSeasonUrl = new URI(config.apiUrl.season + steamId).toURL();
+        URL currentSeasonUrl = new URI(config.apiUrl.rank + steamId).toURL();
+        URL oldSeasonUrl = new URI(config.apiUrl.season + steamId).toURL();
 
-        var ranking = httpGetJson(currentSeasonUrl, config.messages.privateProfileDD, Ranking.class);
-        var seasons = httpGetJson(oldSeasonUrl, config.messages.privateProfileDD, Season[].class);
+        Ranking ranking = httpGetJson(currentSeasonUrl, config.messages.privateProfileDD, Ranking.class);
+        Season[] seasons = httpGetJson(oldSeasonUrl, config.messages.privateProfileDD, Season[].class);
 
-        var isKos = Objects.equals(steamId, config.kingOfSpeedSteam);
-        var dcFormat = new DecimalFormat("#.##");
-        var messageTemplate = " %s %s League (%s)";
+        boolean isKos = Objects.equals(steamId, config.kingOfSpeedSteam);
+        DecimalFormat dcFormat = new DecimalFormat("#.##");
+        String messageTemplate = " %s %s League (%s)";
 
-        var embeds = new ArrayList<MessageEmbed>();
-        var embed = new EmbedBuilder()
+        ArrayList<MessageEmbed> embeds = new ArrayList<MessageEmbed>();
+        EmbedBuilder embed = new EmbedBuilder()
             .setAuthor(
                 steamProfile.getName(),
                 steamProfile.getProfileUrl(),
@@ -99,36 +101,36 @@ public class Points extends Command {
 
         {
             // off-season
-            var offSeasonTierPair = RANK_BOUNDARIES
+            RankBoundaries offSeasonTierPair = RANK_BOUNDARIES
                 .stream()
                 .filter(b -> b.offSeasonBoundary <= ranking.score)
                 .findFirst()
                 .orElse(RANK_BOUNDARIES.get(RANK_BOUNDARIES.size() - 1));
 
-            var offSeasonTierIndex = RANK_BOUNDARIES.indexOf(offSeasonTierPair);
-            var offSeasonSeasonName = SEASON_NAMES.get(0);
-            var offSeasonRankEmoji = config.rankEmojis.get(isKos ? 9 : offSeasonTierIndex);
-            var offSeasonFormattedScore = dcFormat.format(ranking.score);
-            var offSeasonMessage = messageTemplate.formatted(offSeasonRankEmoji, offSeasonTierPair.rank, offSeasonFormattedScore);
+            int offSeasonTierIndex = RANK_BOUNDARIES.indexOf(offSeasonTierPair);
+            String offSeasonSeasonName = SEASON_NAMES.get(0);
+            String offSeasonRankEmoji = config.rankEmojis.get(isKos ? 9 : offSeasonTierIndex);
+            String offSeasonFormattedScore = dcFormat.format(ranking.score);
+            String offSeasonMessage = messageTemplate.formatted(offSeasonRankEmoji, offSeasonTierPair.rank, offSeasonFormattedScore);
 
             embed.addField(new MessageEmbed.Field(offSeasonSeasonName, offSeasonMessage, false));
         }
 
-        for (var season : seasons) {
+        for (Season season : seasons) {
             if (season.seasonId == 1) continue; // skip off-season, data is wrong
-            var isBeta = season.seasonId == 2; // if beta, multiply by 10
+            boolean isBeta = season.seasonId == 2; // if beta, multiply by 10
 
-            var tierPair = RANK_BOUNDARIES
+            RankBoundaries tierPair = RANK_BOUNDARIES
                 .stream()
                 .filter(b -> b.eloSeasonBoundary < season.score * (isBeta ? 10 : 1))
                 .findFirst()
                 .orElse(RANK_BOUNDARIES.get(RANK_BOUNDARIES.size() - 1));
 
-            var tierIndex = RANK_BOUNDARIES.indexOf(tierPair);
-            var seasonName = SEASON_NAMES.get(season.seasonId - 1);
-            var rankEmoji = config.rankEmojis.get(isKos ? RANK_BOUNDARIES.size() + 1 : tierIndex);
-            var formattedScore = dcFormat.format(season.score);
-            var message = messageTemplate.formatted(rankEmoji, tierPair.rank, formattedScore);
+            int tierIndex = RANK_BOUNDARIES.indexOf(tierPair);
+            String seasonName = SEASON_NAMES.get(season.seasonId - 1);
+            String rankEmoji = config.rankEmojis.get(isKos ? RANK_BOUNDARIES.size() + 1 : tierIndex);
+            String formattedScore = dcFormat.format(season.score);
+            String message = messageTemplate.formatted(rankEmoji, tierPair.rank, formattedScore);
 
             embed.addField(new MessageEmbed.Field(seasonName, message, false));
         }

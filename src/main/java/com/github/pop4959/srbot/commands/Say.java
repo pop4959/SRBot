@@ -23,7 +23,7 @@ public class Say extends Command {
 
     @Override
     public void execute(@NotNull SlashCommandInteractionEvent event) throws Exception {
-        var message = event.getOption(MESSAGE_FIELD_NAME, OptionMapping::getAsString);
+        String message = event.getOption(MESSAGE_FIELD_NAME, OptionMapping::getAsString);
         if (message != null) {
             event.reply(message).queue();
         }

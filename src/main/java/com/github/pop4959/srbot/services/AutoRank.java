@@ -4,11 +4,14 @@ import com.github.pop4959.srbot.models.Config;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.RichPresence;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.user.update.UserUpdateActivitiesEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -18,31 +21,31 @@ public class AutoRank extends ListenerAdapter {
 
     public AutoRank(@NotNull Config config) {
         this.config = config;
-        for (var i = 0; i < config.roleKeys.size(); i++) {
+        for (int i = 0; i < config.roleKeys.size(); i++) {
             ROLES.put(config.roleKeys.get(i), config.roleIds.get(i));
         }
     }
 
     @Override
     public void onUserUpdateActivities(@NotNull UserUpdateActivitiesEvent event) {
-        var guild = event.getGuild();
-        var activities = event.getMember().getActivities();
-        var game = activities
+        Guild guild = event.getGuild();
+        List<Activity> activities = event.getMember().getActivities();
+        Activity game = activities
             .stream()
             .filter(a -> a.getType() == Activity.ActivityType.PLAYING)
             .findFirst()
             .get();
         if (guild.getIdLong() == config.servers.main && game.getName().equals("SpeedRunners")) {
-            var image = Objects.requireNonNull(game.asRichPresence()).getSmallImage();
+            RichPresence.Image image = Objects.requireNonNull(game.asRichPresence()).getSmallImage();
             if (image == null) return;
-            var roleKey = image.getKey();
+            String roleKey = image.getKey();
 
             if (ROLES.containsKey(roleKey)) {
-                var member = event.getMember();
-                var roleId = ROLES.get(roleKey);
-                var league = guild.getRoleById(roleId).getName();
-                var hasRole = hasRole(member);
-                var roleChanged = manageRankRoles(event.getGuild(), member, roleId);
+                Member member = event.getMember();
+                Long roleId = ROLES.get(roleKey);
+                String league = guild.getRoleById(roleId).getName();
+                boolean hasRole = hasRole(member);
+                boolean roleChanged = manageRankRoles(event.getGuild(), member, roleId);
 
                 if (roleChanged) {
                     event
@@ -62,7 +65,7 @@ public class AutoRank extends ListenerAdapter {
     }
 
     private boolean hasRole(@NotNull Member member) {
-        for (var memberRole : member.getRoles()) {
+        for (Role memberRole : member.getRoles()) {
             if (ROLES.containsValue(memberRole.getIdLong())) {
                 return true;
             }
@@ -75,7 +78,7 @@ public class AutoRank extends ListenerAdapter {
             return false;
         }
 
-        for (var memberRole : member.getRoles()) {
+        for (Role memberRole : member.getRoles()) {
             long memberRoleId = memberRole.getIdLong();
             if (memberRoleId == newRole) {
                 return false;

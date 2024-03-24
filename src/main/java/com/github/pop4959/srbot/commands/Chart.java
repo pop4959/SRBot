@@ -35,19 +35,19 @@ public class Chart extends Command {
     public void execute(@NotNull SlashCommandInteractionEvent event) throws Exception {
         event.deferReply(false).queue();
 
-        var possibleSteamId = event.getOption(STEAM_ID_FIELD_NAME, OptionMapping::getAsString);
+        String possibleSteamId = event.getOption(STEAM_ID_FIELD_NAME, OptionMapping::getAsString);
         if (possibleSteamId == null) {
             event.getHook().sendMessage(config.messages.wrongId).queue();
             return;
         }
 
-        var steamId = Utils.resolveSteamId(possibleSteamId, steamWebApiClient, config.queryTimeout);
+        String steamId = Utils.resolveSteamId(possibleSteamId, steamWebApiClient, config.queryTimeout);
         if (steamId == null) {
             event.getHook().sendMessage(config.messages.wrongId).queue();
             return;
         }
 
-        var season = event.getOption(SEASON_FIELD_NAME, OptionMapping::getAsInt);
+        Integer season = event.getOption(SEASON_FIELD_NAME, OptionMapping::getAsInt);
         if (season == null) {
             event.getHook().sendMessage(config.messages.noSeason).queue();
             return;
@@ -59,14 +59,14 @@ public class Chart extends Command {
 
         String output;
         try {
-            var chartProcessBuilder = new ProcessBuilder("node", "chart.js", steamId, season.toString());
+            ProcessBuilder chartProcessBuilder = new ProcessBuilder("node", "chart.js", steamId, season.toString());
             chartProcessBuilder.directory(new File("./scripts"));
-            var chartProcess = chartProcessBuilder.start();
+            Process chartProcess = chartProcessBuilder.start();
 
-            var out = new BufferedReader(new InputStreamReader(chartProcess.getInputStream()));
+            BufferedReader out = new BufferedReader(new InputStreamReader(chartProcess.getInputStream()));
             output = out.readLine();
             if (output == null) {
-                var err = new BufferedReader(new InputStreamReader(chartProcess.getErrorStream()));
+                BufferedReader err = new BufferedReader(new InputStreamReader(chartProcess.getErrorStream()));
                 err.lines().forEach(System.out::println);
                 output = config.messages.unknownError;
             }
@@ -77,7 +77,7 @@ public class Chart extends Command {
             return;
         }
 
-        var outputFile = new File("scripts/%s".formatted(output));
+        File outputFile = new File("scripts/%s".formatted(output));
         event.getHook().sendFiles(FileUpload.fromData(outputFile)).queue();
     }
 }

@@ -36,12 +36,12 @@ public class LeaderboardThread extends Thread {
     @Override
     public void run() {
         try {
-            var userProfile = user
+            SteamPlayerProfile userProfile = user
                 .getPlayerProfile(Long.parseLong(entry.steamID))
                 .get(queryTimeout, TimeUnit.MILLISECONDS);
-            var embold = steamProfile.getName().equals(userProfile.getName()) ? "**" : "";
-            var rank = Integer.parseInt(entry.score.toString().substring(1));
-            var points = NumberFormat.getInstance(Locale.UK).format(rank);
+            String embold = steamProfile.getName().equals(userProfile.getName()) ? "**" : "";
+            int rank = Integer.parseInt(entry.score.toString().substring(1));
+            String points = NumberFormat.getInstance(Locale.UK).format(rank);
             message = String.format("%s%d. %s - %s%s%n", embold, entry.rank, userProfile.getName(), points, embold);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             System.out.println(e.getMessage());

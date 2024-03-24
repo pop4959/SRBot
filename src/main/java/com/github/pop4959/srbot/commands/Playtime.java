@@ -5,6 +5,8 @@ import com.github.pop4959.srbot.utils.Utils;
 import com.ibasco.agql.protocols.valve.steam.webapi.SteamWebApiClient;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamPlayerService;
 import com.ibasco.agql.protocols.valve.steam.webapi.interfaces.SteamUser;
+import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerOwnedGame;
+import com.ibasco.agql.protocols.valve.steam.webapi.pojos.SteamPlayerProfile;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -39,27 +41,27 @@ public class Playtime extends Command {
     public void execute(@NotNull SlashCommandInteractionEvent event) throws Exception {
         event.deferReply(false).queue();
 
-        var potentialSteamId = event.getOption(STEAM_ID_FIELD_NAME, OptionMapping::getAsString);
+        String potentialSteamId = event.getOption(STEAM_ID_FIELD_NAME, OptionMapping::getAsString);
         if (potentialSteamId == null) {
             event.getHook().sendMessage(config.messages.noId).queue();
             return;
         }
 
-        var steamId = Utils.resolveSteamId(potentialSteamId, steamWebApiClient, config.queryTimeout);
+        String steamId = Utils.resolveSteamId(potentialSteamId, steamWebApiClient, config.queryTimeout);
         if (steamId == null) {
             event.getHook().sendMessage(config.messages.wrongId).queue();
             return;
         }
 
-        var steamUser = new SteamUser(steamWebApiClient);
-        var steamPlayerService = new SteamPlayerService(steamWebApiClient);
-        var message = config.messages.unableData;
+        SteamUser steamUser = new SteamUser(steamWebApiClient);
+        SteamPlayerService steamPlayerService = new SteamPlayerService(steamWebApiClient);
+        String message = config.messages.unableData;
         try {
-            var longSteamId = Long.parseLong(steamId);
-            var steamPlayerProfile = steamUser
+            long longSteamId = Long.parseLong(steamId);
+            SteamPlayerProfile steamPlayerProfile = steamUser
                 .getPlayerProfile(longSteamId)
                 .get(config.queryTimeout, TimeUnit.MILLISECONDS);
-            var game = steamPlayerService
+            SteamPlayerOwnedGame game = steamPlayerService
                 .getOwnedGames(longSteamId, true, false)
                 .get(config.queryTimeout, TimeUnit.MILLISECONDS)
                 .stream()
@@ -67,8 +69,8 @@ public class Playtime extends Command {
                 .findFirst()
                 .get();
 
-            var unit = event.getOption(UNIT_FIELD_NAME, OptionMapping::getAsString);
-            var timeSpent = getTimeSpent(unit, game.getTotalPlaytime());
+            String unit = event.getOption(UNIT_FIELD_NAME, OptionMapping::getAsString);
+            String timeSpent = getTimeSpent(unit, game.getTotalPlaytime());
             message = "%s has played %s of SpeedRunners.".formatted(steamPlayerProfile.getName(), timeSpent);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
@@ -77,7 +79,7 @@ public class Playtime extends Command {
     }
 
     private String getTimeSpent(String unit, double minutes) {
-        var df = new DecimalFormat("#.##");
+        DecimalFormat df = new DecimalFormat("#.##");
         if (unit == null) {
             unit = "hours";
         }

@@ -100,112 +100,11 @@
   "kingOfSpeedSteam": "76561198894386008",
   "localizedStats": [
     {
-      "group": "Golden Hooks",
+      "group": "Wins",
       "items": [
         {
-          "key": "weapon_hook_shot",
-          "value": "Shot"
-        },
-        {
-          "key": "weapon_hook_hit",
-          "value": "Hit"
-        },
-        {
-          "key": "weapon_hook_dodged",
-          "value": "Dodged"
-        }
-      ]
-    },
-    {
-      "group": "Bombs",
-      "items": [
-        {
-          "key": "weapon_bomb_planted",
-          "value": "Planted"
-        },
-        {
-          "key": "weapon_bomb_victims",
-          "value": "Victims"
-        },
-        {
-          "key": "weapon_bomb_suicides",
-          "value": "Suicides"
-        }
-      ]
-    },
-    {
-      "group": "Shockwaves",
-      "items": [
-        {
-          "key": "weapon_shockwave_fired",
-          "value": "Fired"
-        },
-        {
-          "key": "weapon_shockwave_victims",
-          "value": "Victims"
-        },
-        {
-          "key": "weapon_shockwave_obstacles_removed",
-          "value": "Obstacles Removed"
-        }
-      ]
-    },
-    {
-      "group": "Boxes",
-      "items": [
-        {
-          "key": "weapon_crate_dropped",
-          "value": "Dropped"
-        },
-        {
-          "key": "weapon_crate_suicide",
-          "value": "Suicides"
-        },
-        {
-          "key": "weapon_crate_victims",
-          "value": "Victims"
-        },
-        {
-          "key": "weapon_crate_air_victims",
-          "value": "Victims in Air"
-        },
-        {
-          "key": "weapon_crate_rocket_victims",
-          "value": "Rockets Blocked"
-        }
-      ]
-    },
-    {
-      "group": "Rockets",
-      "items": [
-        {
-          "key": "weapon_rocket_shot",
-          "value": "Fired"
-        },
-        {
-          "key": "weapon_rocket_victims",
-          "value": "Victims"
-        },
-        {
-          "key": "weapon_rocket_suicide",
-          "value": "Suicides"
-        }
-      ]
-    },
-    {
-      "group": "Drills",
-      "items": [
-        {
-          "key": "weapon_drill_used",
-          "value": "Used"
-        },
-        {
-          "key": "weapon_drill_victims",
-          "value": "Victims"
-        },
-        {
-          "key": "weapon_drill_obstacles_removed",
-          "value": "Obstacles Removed"
+          "key": "game_wins",
+          "value": "Wins"
         }
       ]
     },
@@ -231,7 +130,33 @@
       ]
     },
     {
-      "group": "Movement",
+      "group": "Sliding",
+      "items": [
+        {
+          "key": "slide_tackles",
+          "value": "Tackles"
+        },
+        {
+          "key": "slide_tackles_in_air",
+          "value": "Tackles in Air"
+        }
+      ]
+    },
+    {
+      "group": "Grappling",
+      "items": [
+        {
+          "key": "hooks_shot",
+          "value": "Shot"
+        },
+        {
+          "key": "hooks_hit",
+          "value": "Hit"
+        }
+      ]
+    },
+    {
+      "group": "Golden Hook",
       "items": [
         {
           "key": "weapon_hook_shot",
@@ -248,24 +173,95 @@
       ]
     },
     {
-      "group": "Sliding",
+      "group": "Bomb",
       "items": [
         {
-          "key": "slide_tackles",
-          "value": "Tackles"
+          "key": "weapon_bomb_planted",
+          "value": "Planted"
         },
         {
-          "key": "slide_tackles_in_air",
-          "value": "Tackles in Air"
+          "key": "weapon_bomb_victims",
+          "value": "Victims"
+        },
+        {
+          "key": "weapon_bomb_suicides",
+          "value": "Suicides"
         }
       ]
     },
     {
-      "group": "Wins",
+      "group": "Shockwave",
       "items": [
         {
-          "key": "game_wins",
-          "value": "Wins"
+          "key": "weapon_shockwave_fired",
+          "value": "Fired"
+        },
+        {
+          "key": "weapon_shockwave_victims",
+          "value": "Victims"
+        },
+        {
+          "key": "weapon_shockwave_obstacles_removed",
+          "value": "Obstacles Removed"
+        }
+      ]
+    },
+    {
+      "group": "Crate",
+      "items": [
+        {
+          "key": "weapon_crate_dropped",
+          "value": "Dropped"
+        },
+        {
+          "key": "weapon_crate_suicide",
+          "value": "Suicides"
+        },
+        {
+          "key": "weapon_crate_victims",
+          "value": "Victims"
+        },
+        {
+          "key": "weapon_crate_air_victims",
+          "value": "Victims in Air"
+        },
+        {
+          "key": "weapon_crate_rocket_victims",
+          "value": "Rockets Blocked"
+        }
+      ]
+    },
+    {
+      "group": "Rocket",
+      "items": [
+        {
+          "key": "weapon_rocket_shot",
+          "value": "Fired"
+        },
+        {
+          "key": "weapon_rocket_victims",
+          "value": "Victims"
+        },
+        {
+          "key": "weapon_rocket_suicide",
+          "value": "Suicides"
+        }
+      ]
+    },
+    {
+      "group": "Drill",
+      "items": [
+        {
+          "key": "weapon_drill_used",
+          "value": "Used"
+        },
+        {
+          "key": "weapon_drill_victims",
+          "value": "Victims"
+        },
+        {
+          "key": "weapon_drill_obstacles_removed",
+          "value": "Obstacles Removed"
         }
       ]
     }

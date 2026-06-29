@@ -1,8 +1,4 @@
 {
-    "plotly": {
-        "plotlyUsername": "<plotly username>",
-        "plotlyApikey": "<plotly api key>"
-    },
     "seasonNames": [
         "Off-season",
         "Beta season",

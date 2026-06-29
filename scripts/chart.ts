@@ -5,6 +5,7 @@ import QuickChart from 'quickchart-js';
 import binarySearch from './utils/binarySearch';
 import Config from './types/config';
 import RankHistory from './types/rankHistory';
+import { AnnotationOptions } from 'chartjs-plugin-annotation';
 
 (async () => {
     const args = process.argv;
@@ -13,7 +14,12 @@ import RankHistory from './types/rankHistory';
     const config = JSON.parse(fs.readFileSync('./config.json', { encoding: 'utf8' })) as Config;
 
     const [steamId, seasonNumber] = [process.argv[2], Number(process.argv[3])];
-    const season = config.seasons.find(s => s.seasonNumber === seasonNumber)!;
+    const season = config.seasons.find(s => s.seasonNumber === seasonNumber);
+
+    if (!season) {
+        console.error(`Season ${seasonNumber} not found`);
+        return;
+    }
 
     const steamApi = new SteamAPI(config.steamApiKey);
     const summary = await steamApi.getUserSummary(steamId);
@@ -26,21 +32,23 @@ import RankHistory from './types/rankHistory';
 
     const rankHistory = rankHistoryRes.data;
 
-    const labels: string[] = [];
-    const points: number[] = [];
+    const dailyTotals = new Map(
+        rankHistory
+            .filter(({ season }) => season === seasonNumber)
+            .map(({ score, rating, time }) => [
+                new Date(time * 1e3).toISOString().slice(0, 10),
+                seasonNumber === 1 ? score : rating
+            ])
+    );
     let mode: 'lines+markers' | 'lines' = 'lines+markers';
 
-    for (const tab of rankHistory) {
-        if (tab.season !== seasonNumber) {
-            continue;
-        }
+    const dailyPoints = [...dailyTotals.entries()].sort(([dayA], [dayB]) => dayA.localeCompare(dayB));
 
-        if (points.length > 150) {
-            mode = 'lines';
-        }
+    const labels = dailyPoints.map(([day]) => `${day}T00:00:00.000Z`);
+    const points = dailyPoints.map(([, total]) => total);
 
-        labels.push(new Date(tab.time * 1e3).toISOString());
-        points.push(tab.season === 1 ? tab.score : tab.rating);
+    if (points.length > 150) {
+        mode = 'lines';
     }
 
     if (points.length === 0) {
@@ -53,7 +61,7 @@ import RankHistory from './types/rankHistory';
 
     const max = Math.max(...points);
     const min = Math.min(...points);
-    const annotations: Record<string, unknown> = {};
+    const annotations: Record<string, AnnotationOptions> = {};
 
     // Add rank lines
     season.seasonRanks.forEach((rank, index) => {
@@ -136,9 +144,9 @@ import RankHistory from './types/rankHistory';
                 legend: {
                     display: false
                 },
-                // annotation: {
-                //     annotations
-                // }
+                annotation: {
+                    annotations
+                }
             },
             scales: {
                 x: {

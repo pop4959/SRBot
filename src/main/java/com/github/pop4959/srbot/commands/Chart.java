@@ -59,7 +59,7 @@ public class Chart extends Command {
 
         String output;
         try {
-            ProcessBuilder chartProcessBuilder = new ProcessBuilder("node", "chart.js", steamId, season.toString());
+            ProcessBuilder chartProcessBuilder = new ProcessBuilder("yarn", "-s", "start", "--", steamId, season.toString());
             chartProcessBuilder.directory(new File("./scripts"));
             Process chartProcess = chartProcessBuilder.start();
 

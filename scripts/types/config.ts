@@ -1,8 +1,4 @@
 export default interface Config {
-    plotly: {
-        plotlyUsername: string;
-        plotlyApikey: string;
-    };
     seasons: Season[];
     rankColours: string[];
     steamApiKey: string;
@@ -30,4 +26,4 @@ export enum RankNames {
     ADVANCED = 'advanced',
     BEGINNER = 'beginner',
     ENTRY = 'entry',
-};
+}

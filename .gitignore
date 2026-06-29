@@ -7,5 +7,6 @@ out/
 logs/
 bot/
 dist/
+charts/
 node_modules
 *.js
